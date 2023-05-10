@@ -18,8 +18,8 @@ services:
       target: dev
     command: npm run start:dev
     volumes:
-      - ./auth-service:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./auth-service:/home/node
+      - /home/node/node_modules
     ports:
       - "3000:3000"
       - "5555:5555"
@@ -32,8 +32,8 @@ services:
       target: dev
     command: npm run start:dev
     volumes:
-      - ./gateway-service:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./gateway-service:/home/node
+      - /home/node/node_modules
     ports:
       - "3000:3000"
       - "5555:5555"
@@ -46,8 +46,8 @@ services:
       target: dev
     command: npm run start:dev
     volumes:
-      - ./user-service:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./user-service:/home/node
+      - /home/node/node_modules
     ports:
       - "3000:3000"
       - "5555:5555"
