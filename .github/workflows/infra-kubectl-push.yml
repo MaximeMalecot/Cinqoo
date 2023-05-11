@@ -1,0 +1,20 @@
+name: Push k8s infra
+
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - master
+    paths:
+      - infra/k8s/**
+
+jobs:
+  push:
+    name: push
+    runs-on: ubuntu-latest
+    steps:  
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: echo
+        run: echo "INFRA"

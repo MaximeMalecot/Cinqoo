@@ -1,0 +1,20 @@
+name: API-gateway build and push docker image
+
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - master
+    paths:
+      - gateway-service/**
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:  
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: echo
+        run: echo "API GATEWAY"
