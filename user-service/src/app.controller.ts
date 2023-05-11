@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
 
@@ -6,8 +6,8 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern("getHello")
-  getHello(): string {
+  @EventPattern('getHello')
+  getHello() {
     return this.appService.getHello();
   }
 }
