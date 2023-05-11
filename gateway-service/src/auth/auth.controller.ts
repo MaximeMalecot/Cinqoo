@@ -11,5 +11,10 @@ export class AuthController {
     public getAuthHello() {
         return this.authService.send("getHello", {});
     }
+
+    @Get("decode")
+    public decodeToken() {
+        return this.authService.send("decode_token", {token: "HIHI"});
+    }
     
 }
