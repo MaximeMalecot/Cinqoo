@@ -19,6 +19,7 @@ services:
     command: npm run start:dev
     volumes:
       - ./gateway-service:/home/node
+      - /home/node/node_modules
     ports:
       - "3000:3000"
     depends_on:
@@ -31,6 +32,7 @@ services:
     command: npm run start:dev
     volumes:
       - ./auth-service:/home/node
+      - /home/node/node_modules
     environment:
       PORT: 3001
     depends_on:
@@ -43,6 +45,7 @@ services:
     command: npm run start:dev
     volumes:
       - ./user-service:/home/node
+      - /home/node/node_modules
     environment:
       PORT: 3002
     depends_on:
@@ -55,6 +58,7 @@ services:
     command: npm run start:dev
     volumes:
       - ./prestation-service:/home/node
+      - /home/node/node_modules
     environment:
       PORT: 3003
     depends_on:
@@ -67,6 +71,7 @@ services:
     command: npm run start:dev
     volumes:
       - ./review-service:/home/node
+      - /home/node/node_modules
     environment:
       PORT: 3004
     depends_on:
