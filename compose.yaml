@@ -1,82 +1,81 @@
 version: "3.8"
 
 services:
-  db:
-    image: postgres:13-alpine
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_MULTIPLE_DATABASES: user,prestation,review
-    ports:
-      - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
+    db:
+        image: postgres:13-alpine
+        environment:
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_MULTIPLE_DATABASES: user,prestation,review
+        ports:
+            - "5432:5432"
+        volumes:
+            - db_data:/var/lib/postgresql/data
 
-  gateway-service:
-    build:
-      context: ./gateway-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./gateway-service:/home/node
-      - /home/node/node_modules
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-  
-  auth-service:
-    build:
-      context: ./auth-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./auth-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3001
-    depends_on:
-      - db
-  
-  user-service:
-    build:
-      context: ./user-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./user-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3002
-    depends_on:
-      - db
+    gateway-service:
+        build:
+            context: ./gateway-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./gateway-service:/home/node
+            - /home/node/node_modules
+        ports:
+            - "3000:3000"
+        depends_on:
+            - db
 
-  prestation-service:
-    build:
-      context: ./prestation-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./prestation-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3003
-    depends_on:
-      - db
+    auth-service:
+        build:
+            context: ./auth-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./auth-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3001
+        depends_on:
+            - db
 
-  review-service:
-    build:
-      context: ./review-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./review-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3004
-    depends_on:
-      - db
-      
+    user-service:
+        build:
+            context: ./user-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./user-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3002
+        depends_on:
+            - db
+
+    prestation-service:
+        build:
+            context: ./prestation-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./prestation-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3003
+        depends_on:
+            - db
+
+    review-service:
+        build:
+            context: ./review-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./review-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3004
+        depends_on:
+            - db
 
 volumes:
-  db_data:
+    db_data:
