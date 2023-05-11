@@ -5,11 +5,8 @@ import { PrismaService } from './prisma.service';
 export class AppService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getHello(): string {
-    return 'Review service!';
-  }
-
-  async countReviews(): Promise<number | null> {
-    return await this.prisma.review.count();
+  async getHello(): Promise<string> {
+    const count = await this.prisma.review.count();
+    return `Review service! There are currently ${count} reviews in the database`;
   }
 }

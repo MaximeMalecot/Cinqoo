@@ -8,11 +8,6 @@ export class AppController {
 
   @EventPattern('getHello')
   async getHello(): Promise<string> {
-    const count = await this.appService.countReviews();
-
-    return (
-      this.appService.getHello() +
-      `, there are currently ${count} reviews in the database`
-    );
+    return await this.appService.getHello();
   }
 }
