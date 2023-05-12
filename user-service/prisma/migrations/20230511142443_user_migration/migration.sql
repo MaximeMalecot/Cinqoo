@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "roles" "Roles" NOT NULL DEFAULT 'USER',
+    "roles" "Roles"[] DEFAULT ARRAY['USER']::"Roles"[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

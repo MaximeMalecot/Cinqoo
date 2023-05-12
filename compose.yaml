@@ -11,6 +11,11 @@ services:
             - /home/node/node_modules
         ports:
             - "3000:3000"
+        depends_on:
+            - auth-service
+            - user-service
+            - prestation-service
+            - review-service
 
     auth-service:
         build:
