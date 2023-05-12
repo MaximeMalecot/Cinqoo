@@ -15,6 +15,7 @@ export class AppController {
 
   @EventPattern('login')
   login(@Payload() data: LoginDto) {
+    console.log(process.env.JWT_SECRET);
     return this.appService.login(data);
   }
 

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
@@ -21,6 +22,7 @@ import { AppService } from './app.service';
       secret: process.env.JWT_SECRET ?? 'secret',
       signOptions: { expiresIn: '3600s' },
     }),
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
