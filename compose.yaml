@@ -1,6 +1,15 @@
 version: "3.8"
 
 services:
+    tracing:
+        image: jaegertracing/all-in-one:latest
+        environment:
+            - COLLECTOR_OTLP_ENABLED=true
+        ports:
+            - 16686:16686
+            - 14268:14268
+            - 4318:4318
+
     gateway-service:
         build:
             context: ./gateway-service
@@ -9,6 +18,9 @@ services:
         volumes:
             - ./gateway-service:/home/node
             - /home/node/node_modules
+        environment:
+            PORT: 3000
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
         ports:
             - "3000:3000"
         depends_on:
@@ -27,6 +39,7 @@ services:
             - /home/node/node_modules
         environment:
             PORT: 3001
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
 
     user-db:
         image: postgres:13-alpine
@@ -47,6 +60,7 @@ services:
             - /home/node/node_modules
         environment:
             PORT: 3002
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
         depends_on:
             - user-db
 
@@ -69,6 +83,7 @@ services:
             - /home/node/node_modules
         environment:
             PORT: 3003
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
         depends_on:
             - prestation-db
 
@@ -91,6 +106,7 @@ services:
             - /home/node/node_modules
         environment:
             PORT: 3004
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
         depends_on:
             - review-db
 

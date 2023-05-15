@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { Controller, Req } from '@nestjs/common';
+import { Ctx, EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { HidePassword } from './decorators/users.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,12 +9,18 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @EventPattern('getHello')
-  getHello() {
+  getHello(@Ctx() ctx) {
+    ctx
+      .getArgs()
+      .sendRatflowIntercept({ event: 'HelloEvent', tag: 'HelloTag' });
     return this.appService.getHello();
   }
 
   @EventPattern('getUsers')
-  getUsers() {
+  getUsers(@Ctx() ctx) {
+    ctx
+      .getArgs()
+      .sendRatflowIntercept({ event: 'HelloEvent', tag: 'HelloTag' });
     return this.appService.getUsers();
   }
 

@@ -5,6 +5,7 @@ import {
   HttpException,
   Inject,
   Post,
+  Req,
   ValidationPipe,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -20,8 +21,15 @@ export class UserController {
   ) {}
 
   @Get()
-  public getUserHello() {
-    return this.userService.send('getHello', {});
+  public getUserHello(@Req() req) {
+    return this.userService.send('getHello', {
+      ...req['clientData'],
+    });
+  }
+
+  @Get('test')
+  public getUserTest() {
+    return this.userService.send('getUsers', {});
   }
 
   @Post()
