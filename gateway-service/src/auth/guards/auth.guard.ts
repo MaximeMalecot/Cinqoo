@@ -56,8 +56,8 @@ export class AuthGuard implements CanActivate {
       if (err instanceof HttpException) {
         throw err;
       }
-      if (err.message && err.code) {
-        throw new HttpException(err.message, err.code);
+      if (err.message && err.statusCode) {
+        throw new HttpException(err.message, err.statusCode);
       }
       throw new UnauthorizedException('Invalid token');
     }

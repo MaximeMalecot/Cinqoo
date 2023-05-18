@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   Param,
   ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
@@ -39,25 +40,18 @@ export class UserController {
   @Public()
   @Post()
   public async createUser(@Body(ValidationPipe) body: CreateUserDto) {
-    try {
-      let user = await firstValueFrom(
-        this.userService.send('createUser', { ...body }),
-      );
-      return user;
-    } catch (err) {
-      throw new HttpException(err.message, err.code ?? 500);
-    }
+    console.log('create');
+    return await firstValueFrom(
+      this.userService.send('createUser', { ...body }),
+    );
   }
 
+  @HttpCode(204)
   @Delete(':id')
   public async deleteUser(@Param('id', ParseUUIDPipe) id: string, @Req() req) {
-    try {
-      let user = await firstValueFrom(
-        this.userService.send('deleteUser', { id, sub: req.user }),
-      );
-      return user;
-    } catch (err) {
-      throw new HttpException(err.message, err.code ?? 500);
-    }
+    await firstValueFrom(
+      this.userService.send('deleteUser', { id, sub: req.user }),
+    );
+    return null;
   }
 }

@@ -37,7 +37,7 @@ export class AppService {
         if (error.code === 'P2002') {
           throw new RpcException({
             message: `${error.meta.target[0]} already used`,
-            code: 400,
+            statusCode: 400,
           });
         }
       }
@@ -54,6 +54,10 @@ export class AppService {
   }
 
   async deleteUser(id: string) {
-    return `deleting ${id}`;
+    return await this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

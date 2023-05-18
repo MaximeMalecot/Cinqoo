@@ -39,7 +39,6 @@ export class AppController {
   @UseGuards(OwnerOrAdminGards)
   @EventPattern('deleteUser')
   async deleteUser(@Payload() data: { id: string }) {
-    console.log('onéla');
     return this.appService.deleteUser(data.id);
   }
 }

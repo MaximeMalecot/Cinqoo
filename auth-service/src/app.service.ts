@@ -28,13 +28,13 @@ export class AppService {
       if (!user) {
         throw new RpcException({
           message: "Email or password don't match",
-          code: 404,
+          statusCode: 404,
         });
       }
       if (!compareSync(data.password, user.password)) {
         throw new RpcException({
           message: "Email or password don't match",
-          code: 400,
+          statusCode: 400,
         });
       }
       const payload = {
@@ -51,7 +51,7 @@ export class AppService {
       }
       throw new RpcException({
         message: err.message,
-        code: 500,
+        statusCode: 500,
       });
     }
   }
@@ -69,12 +69,12 @@ export class AppService {
       if (err instanceof JsonWebTokenError) {
         throw new RpcException({
           message: err.message,
-          code: 401,
+          statusCode: 401,
         });
       }
       throw new RpcException({
         message: err.message,
-        code: 500,
+        statusCode: 500,
       });
     }
   }

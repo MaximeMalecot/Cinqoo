@@ -26,10 +26,6 @@ export class AuthController {
   @Public()
   @Post('login')
   public async login(@Body(ValidationPipe) body: LoginDto) {
-    try {
-      return await firstValueFrom(this.authService.send('login', { ...body }));
-    } catch (err) {
-      throw new HttpException(err.message, err.code ?? 500);
-    }
+    return await firstValueFrom(this.authService.send('login', { ...body }));
   }
 }
