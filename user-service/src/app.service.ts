@@ -44,4 +44,12 @@ export class AppService {
       throw new RpcException({ code: 500 });
     }
   }
+
+  async getUserById(id: string) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
 }

@@ -1,116 +1,124 @@
 version: "3.8"
 
 services:
-    tracing:
-        image: jaegertracing/all-in-one:latest
-        environment:
-            - COLLECTOR_OTLP_ENABLED=true
-        ports:
-            - 16686:16686
-            - 14268:14268
-            - 4318:4318
+  tracing:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 16686:16686
+      - 14268:14268
+      - 4318:4318
 
-    gateway-service:
-        build:
-            context: ./gateway-service
-            target: dev
-        command: npm run start:dev
-        volumes:
-            - ./gateway-service:/home/node
-            - /home/node/node_modules
-        environment:
-            PORT: 3000
-            TRACER_ENDPOINT: http://tracing:4318/v1/traces
-        ports:
-            - "3000:3000"
-        depends_on:
-            - auth-service
-            - user-service
-            - prestation-service
-            - review-service
+  gateway-service:
+    build:
+      context: ./gateway-service
+      target: dev
+    command: npm run start:dev
+    volumes:
+      - ./gateway-service:/home/node
+      - /home/node/node_modules
+    environment:
+      PORT: 3000
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-service
+      - user-service
+      - prestation-service
+      - review-service
 
-    auth-service:
-        build:
-            context: ./auth-service
-            target: dev
-        command: npm run start:dev
-        volumes:
-            - ./auth-service:/home/node
-            - /home/node/node_modules
-        environment:
-            PORT: 3001
-            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+  auth-service:
+    build:
+      context: ./auth-service
+      target: dev
+    command: npm run start:dev
+    volumes:
+      - ./auth-service:/home/node
+      - /home/node/node_modules
+    environment:
+      PORT: 3001
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+    ports:
+      - "5555:5555"
 
-    user-db:
-        image: postgres:13-alpine
-        environment:
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_USER: postgres
-            POSTGRES_DB: user
-        volumes:
-            - user-db:/var/lib/postgresql/data
+  user-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: user
+    volumes:
+      - user-db:/var/lib/postgresql/data
 
-    user-service:
-        build:
-            context: ./user-service
-            target: dev
-        command: npm run start:dev
-        volumes:
-            - ./user-service:/home/node
-            - /home/node/node_modules
-        environment:
-            PORT: 3002
-            TRACER_ENDPOINT: http://tracing:4318/v1/traces
-        depends_on:
-            - user-db
+  user-service:
+    build:
+      context: ./user-service
+      target: dev
+    command: npm run start:dev
+    volumes:
+      - ./user-service:/home/node
+      - /home/node/node_modules
+    environment:
+      PORT: 3002
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+    ports:
+      - "5556:5555"
+    depends_on:
+      - user-db
 
-    prestation-db:
-        image: postgres:13-alpine
-        environment:
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_USER: postgres
-            POSTGRES_DB: prestation
-        volumes:
-            - prestation-db:/var/lib/postgresql/data
+  prestation-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: prestation
+    volumes:
+      - prestation-db:/var/lib/postgresql/data
 
-    prestation-service:
-        build:
-            context: ./prestation-service
-            target: dev
-        command: npm run start:dev
-        volumes:
-            - ./prestation-service:/home/node
-            - /home/node/node_modules
-        environment:
-            PORT: 3003
-            TRACER_ENDPOINT: http://tracing:4318/v1/traces
-        depends_on:
-            - prestation-db
+  prestation-service:
+    build:
+      context: ./prestation-service
+      target: dev
+    command: npm run start:dev
+    volumes:
+      - ./prestation-service:/home/node
+      - /home/node/node_modules
+    environment:
+      PORT: 3003
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+    ports:
+      - "5557:5555"
+    depends_on:
+      - prestation-db
 
-    review-db:
-        image: postgres:13-alpine
-        environment:
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_USER: postgres
-            POSTGRES_DB: review
-        volumes:
-            - review-db:/var/lib/postgresql/data
+  review-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: review
+    volumes:
+      - review-db:/var/lib/postgresql/data
 
-    review-service:
-        build:
-            context: ./review-service
-            target: dev
-        command: npm run start:dev
-        volumes:
-            - ./review-service:/home/node
-            - /home/node/node_modules
-        environment:
-            PORT: 3004
-            TRACER_ENDPOINT: http://tracing:4318/v1/traces
-        depends_on:
-            - review-db
+  review-service:
+    build:
+      context: ./review-service
+      target: dev
+    command: npm run start:dev
+    volumes:
+      - ./review-service:/home/node
+      - /home/node/node_modules
+    environment:
+      PORT: 3004
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+    ports:
+      - "5558:5555"
+    depends_on:
+      - review-db
 
 volumes:
-    user-db:
-    prestation-db:
-    review-db:
+  user-db:
+  prestation-db:
+  review-db:

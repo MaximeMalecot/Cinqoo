@@ -10,6 +10,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { LoginDto } from './dto/login.dto';
+import { Public } from './decorators/public.decator';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,7 @@ export class AuthController {
     return this.authService.send('getHello', {});
   }
 
+  @Public()
   @Post('login')
   public async login(@Body(ValidationPipe) body: LoginDto) {
     try {
@@ -29,10 +31,5 @@ export class AuthController {
     } catch (err) {
       throw new HttpException(err.message, err.code ?? 500);
     }
-  }
-
-  @Get('decode')
-  public decodeToken() {
-    return this.authService.send('decode_token', { token: 'HIHI' });
   }
 }

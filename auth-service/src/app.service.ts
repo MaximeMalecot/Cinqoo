@@ -4,6 +4,8 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { compareSync } from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
 import { LoginDto } from './dto/login.dto';
+import { secret } from './constants';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 @Injectable()
 export class AppService {
@@ -54,7 +56,26 @@ export class AppService {
     }
   }
 
-  decodeToken(token: string): any {
-    return `decode ${token}`;
+  async decodeToken(token: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: secret,
+      });
+      return payload;
+    } catch (err) {
+      if (err instanceof RpcException) {
+        throw err;
+      }
+      if (err instanceof JsonWebTokenError) {
+        throw new RpcException({
+          message: err.message,
+          code: 401,
+        });
+      }
+      throw new RpcException({
+        message: err.message,
+        code: 500,
+      });
+    }
   }
 }

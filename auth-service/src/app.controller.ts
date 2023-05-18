@@ -19,7 +19,7 @@ export class AppController {
   }
 
   @EventPattern('decode_token')
-  decodeToken(@Payload() data: DecodeDto) {
-    return this.appService.decodeToken(data.token);
+  async decodeToken(@Payload() data: DecodeDto) {
+    return await this.appService.decodeToken(data.token);
   }
 }

@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { secret } from './constants';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AppService } from './app.service';
     ]),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET ?? 'secret',
+      secret: secret,
       signOptions: { expiresIn: '3600s' },
     }),
     ConfigModule.forRoot(),

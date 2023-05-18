@@ -9,24 +9,23 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @EventPattern('getHello')
-  getHello(@Ctx() ctx) {
-    ctx
-      .getArgs()
-      .sendRatflowIntercept({ event: 'HelloEvent', tag: 'HelloTag' });
+  getHello() {
     return this.appService.getHello();
   }
 
   @EventPattern('getUsers')
-  getUsers(@Ctx() ctx) {
-    ctx
-      .getArgs()
-      .sendRatflowIntercept({ event: 'HelloEvent', tag: 'HelloTag' });
+  getUsers() {
     return this.appService.getUsers();
   }
 
   @EventPattern('getUserByEmail')
   getUserByEmail(@Payload() data: { email: string }) {
     return this.appService.getUserByEmail(data.email);
+  }
+
+  @EventPattern('getUserById')
+  getUserById(@Payload() data: { id: string }) {
+    return this.appService.getUserById(data.id);
   }
 
   @HidePassword
