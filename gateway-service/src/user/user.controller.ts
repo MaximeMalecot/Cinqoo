@@ -1,12 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   Inject,
   Post,
   Req,
   ValidationPipe,
+  Param,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
@@ -39,6 +42,18 @@ export class UserController {
     try {
       let user = await firstValueFrom(
         this.userService.send('createUser', { ...body }),
+      );
+      return user;
+    } catch (err) {
+      throw new HttpException(err.message, err.code ?? 500);
+    }
+  }
+
+  @Delete(':id')
+  public async deleteUser(@Param('id', ParseUUIDPipe) id: string, @Req() req) {
+    try {
+      let user = await firstValueFrom(
+        this.userService.send('deleteUser', { id, sub: req.user }),
       );
       return user;
     } catch (err) {

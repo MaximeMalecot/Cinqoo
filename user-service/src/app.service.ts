@@ -52,4 +52,8 @@ export class AppService {
       },
     });
   }
+
+  async deleteUser(id: string) {
+    return `deleting ${id}`;
+  }
 }

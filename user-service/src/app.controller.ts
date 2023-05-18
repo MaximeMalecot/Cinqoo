@@ -1,8 +1,10 @@
-import { Controller, Req } from '@nestjs/common';
+import { Controller, Req, UseGuards } from '@nestjs/common';
 import { Ctx, EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { HidePassword } from './decorators/users.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
+import { User } from '@prisma/client';
+import { OwnerOrAdminGards } from './guards/user.guards';
 
 @Controller()
 export class AppController {
@@ -32,5 +34,12 @@ export class AppController {
   @EventPattern('createUser')
   async createUser(@Payload() data: CreateUserDto) {
     return this.appService.createUser(data);
+  }
+
+  @UseGuards(OwnerOrAdminGards)
+  @EventPattern('deleteUser')
+  async deleteUser(@Payload() data: { id: string }) {
+    console.log('onéla');
+    return this.appService.deleteUser(data.id);
   }
 }

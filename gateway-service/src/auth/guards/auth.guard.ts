@@ -49,7 +49,6 @@ export class AuthGuard implements CanActivate {
         console.log('no user');
         throw new NotFoundException('User not found');
       }
-      console.log(user);
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
       request['user'] = user;
