@@ -1,0 +1,11 @@
+{
+    "name": "cinqoo",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^16"
+    },
+    "dependencies": {
+        "@pulumi/gcp": "^6.57.0",
+        "@pulumi/pulumi": "^3.0.0"
+    }
+}
