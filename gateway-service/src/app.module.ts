@@ -8,6 +8,7 @@ import { PaymentModule } from './payment/payment.module';
 import { ReportModule } from './report/report.module';
 import { OrderModule } from './order/order.module';
 import { DeliverableModule } from './deliverable/deliverable.module';
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DeliverableModule } from './deliverable/deliverable.module';
     ReportModule,
     OrderModule,
     DeliverableModule,
+    FavoriteModule
   ],
   controllers: [AppController],
 })

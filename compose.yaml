@@ -48,6 +48,7 @@ services:
             - payment-service
             - deliverable-service
             - order-service
+            - favorite-service
 
     auth-service:
         build:
@@ -181,6 +182,23 @@ services:
             DATABASE_URL: mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
         ports:
             - "5562:5555"
+        depends_on:
+            - mongo-db
+
+    favorite-service:
+        build:
+            context: ./favorite-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./favorite-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3009
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
+        ports:
+            - "5563:5555"
         depends_on:
             - mongo-db
 
