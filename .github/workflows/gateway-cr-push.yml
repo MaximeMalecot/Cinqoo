@@ -49,4 +49,4 @@ jobs:
           context: "{{defaultContext}}:gateway-service"
           push: true
           tags: |
-            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/gateway-service/gw-service:latest
+            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/gateway-service:latest

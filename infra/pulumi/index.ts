@@ -5,22 +5,13 @@ import "dotenv/config";
 const DB_USER = process.env.DB_USER || "user";
 const DB_PWD = process.env.DB_PWD || "Password123+=";
 
-const artifactRegistryNames = [
-  "auth-service",
-  "gateway-service",
-  "prestation-service",
-  "review-service",
-  "user-service",
-];
 const dbNames = ["prestation", "review", "user"];
 
 // Create Artifact Registries
-artifactRegistryNames.forEach((registryName) => {
-  new gcp.artifactregistry.Repository(registryName, {
-    repositoryId: registryName,
-    format: "DOCKER",
-    location: "europe-west9",
-  });
+new gcp.artifactregistry.Repository("challenge", {
+  repositoryId: "challenge",
+  format: "DOCKER",
+  location: "europe-west9",
 });
 
 // Create a PostgreSQL instance and 3 databases
