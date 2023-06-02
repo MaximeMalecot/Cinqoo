@@ -1,4 +1,4 @@
-name: Prestation-ms build and push docker image
+name: Payment-ms build and push docker image
 
 on:
   workflow_dispatch:

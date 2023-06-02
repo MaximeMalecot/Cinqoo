@@ -1,0 +1,98 @@
+version: "3.8"
+
+services:
+  tracing:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 16686:16686
+      - 14268:14268
+      - 4318:4318
+
+  mongo-db:
+    image: "mongo:latest"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=payment
+      - MONGO_INITDB_DATABASE=order
+      - MONGO_INITDB_DATABASE=deliverable
+      - MONGO_INITDB_DATABASE=review
+      - MONGO_INITDB_DATABASE=favorite
+    ports:
+      - "27017:27017"
+    volumes:
+      - "mongo-db:/data/db"
+
+  gateway-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
+    environment:
+      NODE_OPTIONS: --max-old-space-size=16192
+      PORT: 3000
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-service
+      - user-service
+      - prestation-service
+      - review-service
+      - report-service
+      - payment-service
+
+  auth-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/auth-service:latest
+    environment:
+      NODE_OPTIONS: --max-old-space-size=16192
+      PORT: 3001
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+
+  user-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/user-service:latest
+    environment:
+      NODE_OPTIONS: --max-old-space-size=16192
+      PORT: 3002
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+  prestation-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/prestation-service:latest
+    environment:
+      PORT: 3003
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+  review-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/review-service:latest
+    environment:
+      PORT: 3004
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+  report-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/report-service:latest
+    environment:
+      PORT: 3005
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+  payment-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/payment-service:latest
+    environment:
+      PORT: 3006
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+volumes:
+  mongo-db:
