@@ -21,6 +21,21 @@ services:
         volumes:
             - postgres-db:/var/lib/postgresql/data
 
+    mongo-db:
+        image: "mongo:latest"
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=password
+            - MONGO_INITDB_DATABASE=payment
+            - MONGO_INITDB_DATABASE=order
+            - MONGO_INITDB_DATABASE=deliverable
+            - MONGO_INITDB_DATABASE=review
+            - MONGO_INITDB_DATABASE=favorite
+        ports:
+            - "27017:27017"
+        volumes:
+            - "mongo-db:/data/db"
+
     gateway-service:
         build:
             context: ./gateway-service
@@ -41,6 +56,7 @@ services:
             - prestation-service
             - review-service
             - report-service
+            - payment-service
 
     auth-service:
         build:
@@ -56,15 +72,6 @@ services:
             TRACER_ENDPOINT: http://tracing:4318/v1/traces
         ports:
             - "5555:5555"
-
-    # user-db:
-    #     image: postgres:13-alpine
-    #     environment:
-    #         POSTGRES_PASSWORD: postgres
-    #         POSTGRES_USER: postgres
-    #         POSTGRES_DB: user
-    #     volumes:
-    #         - user-db:/var/lib/postgresql/data
 
     user-service:
         build:
@@ -135,5 +142,23 @@ services:
         depends_on:
             - postgres-db
 
+    payment-service:
+        build:
+            context: ./payment-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./payment-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3006
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
+        # ports:
+        #     - "5560:5555"
+        depends_on:
+            - postgres-db
+
 volumes:
     postgres-db:
+    mongo-db:
