@@ -1,5 +1,9 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
+import "dotenv/config";
+
+const DB_USER = process.env.DB_USER || "user";
+const DB_PWD = process.env.DB_PWD || "Password123+=";
 
 const artifactRegistryNames = [
   "auth-service",
@@ -29,12 +33,10 @@ const postgresInstance = new gcp.sql.DatabaseInstance("cinqoo", {
   },
 });
 
-console.log(process.env.DB_USER, process.env.DB_PWD);
-
 export const user = new gcp.sql.User("user", {
   instance: postgresInstance.name,
-  name: process.env.DB_USER || "user",
-  password: process.env.DB_PWD || "Password123+=",
+  name: DB_USER,
+  password: DB_PWD,
 });
 
 dbNames.forEach((dbName) => {

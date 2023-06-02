@@ -19,7 +19,7 @@ ENV NODE_ENV production
 RUN npm ci --omit=dev && npm cache clean --force
 USER node
 
-FROM node:18-alpine as prod
+FROM node:18-alpine 
 
 COPY --chown=node:node --from=build /home/node/node_modules ./node_modules
 COPY --chown=node:node --from=build /home/node/dist ./dist
