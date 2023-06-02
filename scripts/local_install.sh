@@ -9,7 +9,7 @@ script_directory="$(cd "$(dirname "$0")" && pwd)"
 # Chemin absolu vers le dossier des projets
 full_projects_directory="$script_directory/$projects_directory"
 
-# Fonction pour exécuter le script "migrate"
+# Fonction pour exécuter l'install
 execute_migrate_script() {
   local project_dir=$1
   local package_file="$project_dir/package.json"
@@ -19,11 +19,9 @@ execute_migrate_script() {
     # Récupération du contenu de package.json
     package_content=$(cat "$package_file")
 
-    # Vérification de l'existence du script "migrate" dans package.json
-    if [[ $package_content == *'"migrate":'* ]]; then
-      echo "Running script 'migrate' for $project_dir."
-      (cd "$project_dir" && npm run migrate)
-    fi
+    echo "Installing for project $project_dir."
+    (cd "$project_dir" && npm ci)
+    
   fi
 }
 

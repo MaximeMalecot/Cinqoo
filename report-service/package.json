@@ -1,5 +1,5 @@
 {
-  "name": "prestation-service",
+  "name": "report-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate:docker": "docker compose exec prestation-service npm run migrate",
+    "migrate:docker": "docker compose exec report-service npm run migrate",
     "migrate": "prisma generate && prisma migrate dev"
   },
   "dependencies": {
