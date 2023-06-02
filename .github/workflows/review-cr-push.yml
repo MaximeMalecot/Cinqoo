@@ -1,6 +1,7 @@
 name: Review-ms build and push docker image
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - opened
