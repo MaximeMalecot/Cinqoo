@@ -20,9 +20,9 @@ execute_migrate_script() {
     package_content=$(cat "$package_file")
 
     # Vérification de l'existence du script "migrate" dans package.json
-    if [[ $package_content == *'"migrate":'* ]]; then
-      echo "Running script 'migrate' for $project_dir."
-      (cd "$project_dir" && npm run migrate)
+    if [[ $package_content == *'"migrate:docker":'* ]]; then
+      echo "Running script 'migrate:docker' for $project_dir."
+      (cd "$project_dir" && npm run migrate:docker)
     fi
   fi
 }
