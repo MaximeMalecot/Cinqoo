@@ -3,6 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 
 export type PrestationDocument = HydratedDocument<Prestation>;
 
+@Schema()
 export class Prestation {
   id: string;
   @Prop({

@@ -119,7 +119,7 @@ services:
     environment:
       PORT: 3004
       TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/review
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
     ports:
       - "5558:5555"
     depends_on:
