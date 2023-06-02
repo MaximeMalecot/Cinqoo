@@ -6,8 +6,8 @@ import { Model } from 'mongoose';
 @Injectable()
 export class AppService {
   constructor(@InjectModel('Order') private orderModel: Model<Order>) {}
-  
+
   getHello(): string {
-    return 'Hello World!';
+    return 'Hello World from order!';
   }
 }

@@ -5,9 +5,12 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectModel('Deliverable') private deliverableModel: Model<Deliverable>) {}
+  constructor(
+    @InjectModel(Deliverable.name)
+    private readonly deliverableModel: Model<Deliverable>,
+  ) {}
 
-  getHello(): string {
-    return 'Hello World!';
+  async getHello(): Promise<string> {
+    return 'Hello World from deliverable!';
   }
 }

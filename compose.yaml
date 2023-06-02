@@ -1,152 +1,188 @@
 version: "3.8"
 
 services:
-  tracing:
-    image: jaegertracing/all-in-one:latest
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-    ports:
-      - 16686:16686
-      - 14268:14268
-      - 4318:4318
+    tracing:
+        image: jaegertracing/all-in-one:latest
+        environment:
+            - COLLECTOR_OTLP_ENABLED=true
+        ports:
+            - 16686:16686
+            - 14268:14268
+            - 4318:4318
 
-  mongo-db:
-    image: "mongo:latest"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=payment
-      - MONGO_INITDB_DATABASE=order
-      - MONGO_INITDB_DATABASE=deliverable
-      - MONGO_INITDB_DATABASE=review
-      - MONGO_INITDB_DATABASE=favorite
-    ports:
-      - "27017:27017"
-    volumes:
-      - "mongo-db:/data/db"
+    mongo-db:
+        image: "mongo:latest"
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=password
+            - MONGO_INITDB_DATABASE=payment
+            - MONGO_INITDB_DATABASE=order
+            - MONGO_INITDB_DATABASE=deliverable
+            - MONGO_INITDB_DATABASE=review
+            - MONGO_INITDB_DATABASE=favorite
+        ports:
+            - "27017:27017"
+        volumes:
+            - "mongo-db:/data/db"
 
-  gateway-service:
-    build:
-      context: ./gateway-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./gateway-service:/home/node
-      - /home/node/node_modules
-    environment:
-      NODE_OPTIONS: --max-old-space-size=16192
-      PORT: 3000
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-    ports:
-      - "3000:3000"
-    depends_on:
-      - auth-service
-      - user-service
-      - prestation-service
-      - review-service
-      - report-service
-      - payment-service
+    gateway-service:
+        build:
+            context: ./gateway-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./gateway-service:/home/node
+            - /home/node/node_modules
+        environment:
+            NODE_OPTIONS: --max-old-space-size=16192
+            PORT: 3000
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+        ports:
+            - "3000:3000"
+        depends_on:
+            - auth-service
+            - user-service
+            - prestation-service
+            - review-service
+            - report-service
+            - payment-service
+            - deliverable-service
+            - order-service
 
-  auth-service:
-    build:
-      context: ./auth-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./auth-service:/home/node
-      - /home/node/node_modules
-    environment:
-      NODE_OPTIONS: --max-old-space-size=16192
-      PORT: 3001
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-    ports:
-      - "5555:5555"
+    auth-service:
+        build:
+            context: ./auth-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./auth-service:/home/node
+            - /home/node/node_modules
+        environment:
+            NODE_OPTIONS: --max-old-space-size=16192
+            PORT: 3001
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+        ports:
+            - "5555:5555"
 
-  user-service:
-    build:
-      context: ./user-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./user-service:/home/node
-      - /home/node/node_modules
-    environment:
-      NODE_OPTIONS: --max-old-space-size=16192
-      PORT: 3002
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
-    ports:
-      - "5556:5555"
-    depends_on:
-      - mongo-db
+    user-service:
+        build:
+            context: ./user-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./user-service:/home/node
+            - /home/node/node_modules
+        environment:
+            NODE_OPTIONS: --max-old-space-size=16192
+            PORT: 3002
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
+        ports:
+            - "5556:5555"
+        depends_on:
+            - mongo-db
 
-  prestation-service:
-    build:
-      context: ./prestation-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./prestation-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3003
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
-    ports:
-      - "5557:5555"
-    depends_on:
-      - mongo-db
+    prestation-service:
+        build:
+            context: ./prestation-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./prestation-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3003
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
+        ports:
+            - "5557:5555"
+        depends_on:
+            - mongo-db
 
-  review-service:
-    build:
-      context: ./review-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./review-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3004
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
-    ports:
-      - "5558:5555"
-    depends_on:
-      - mongo-db
+    review-service:
+        build:
+            context: ./review-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./review-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3004
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
+        ports:
+            - "5558:5555"
+        depends_on:
+            - mongo-db
 
-  report-service:
-    build:
-      context: ./report-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./report-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3005
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
-    ports:
-      - "5559:5555"
-    depends_on:
-      - mongo-db
+    report-service:
+        build:
+            context: ./report-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./report-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3005
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
+        ports:
+            - "5559:5555"
+        depends_on:
+            - mongo-db
 
-  payment-service:
-    build:
-      context: ./payment-service
-      target: dev
-    command: npm run start:dev
-    volumes:
-      - ./payment-service:/home/node
-      - /home/node/node_modules
-    environment:
-      PORT: 3006
-      TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
-    # ports:
-    #     - "5560:5555"
-    depends_on:
-      - mongo-db
+    payment-service:
+        build:
+            context: ./payment-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./payment-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3006
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
+        # ports:
+        #     - "5560:5555"
+        depends_on:
+            - mongo-db
+
+    order-service:
+        build:
+            context: ./order-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./order-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3007
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
+        # ports:
+        #     - "5561:5555"
+        depends_on:
+            - mongo-db
+
+    deliverable-service:
+        build:
+            context: ./deliverable-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./deliverable-service:/home/node
+            - /home/node/node_modules
+        environment:
+            PORT: 3008
+            TRACER_ENDPOINT: http://tracing:4318/v1/traces
+            DATABASE_URL: mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
+        ports:
+            - "5562:5555"
+        depends_on:
+            - mongo-db
 
 volumes:
-  mongo-db:
+    mongo-db:
