@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor() {}
 
   async getHello(): Promise<string> {
-    const count = await this.prisma.prestation.count();
+    const count = 0;
     return `Prestation service, there are currently ${count} prestations in the database`;
   }
 }

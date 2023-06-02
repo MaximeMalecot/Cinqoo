@@ -26,6 +26,7 @@ export class AppService {
   }
 
   async createUser(data: CreateUserDto) {
+    console.log('onéla');
     try {
       data.password = await bcrypt.hash(data.password, 10);
       const res = await this.prisma.user.create({
