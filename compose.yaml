@@ -10,17 +10,6 @@ services:
       - 14268:14268
       - 4318:4318
 
-  postgres-db:
-    image: postgres:13-alpine
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      DATABASE_COUNT: 5
-      DATABASE_NAMES: auth,user,prestation,report,review
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
-
   mongo-db:
     image: "mongo:latest"
     environment:
@@ -85,11 +74,11 @@ services:
       NODE_OPTIONS: --max-old-space-size=16192
       PORT: 3002
       TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/user
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
     ports:
       - "5556:5555"
     depends_on:
-      - postgres-db
+      - mongo-db
 
   prestation-service:
     build:
@@ -106,7 +95,7 @@ services:
     ports:
       - "5557:5555"
     depends_on:
-      - postgres-db
+      - mongo-db
 
   review-service:
     build:
@@ -119,11 +108,11 @@ services:
     environment:
       PORT: 3004
       TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/review
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
     ports:
       - "5558:5555"
     depends_on:
-      - postgres-db
+      - mongo-db
 
   report-service:
     build:
@@ -136,11 +125,11 @@ services:
     environment:
       PORT: 3005
       TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/report
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
     ports:
       - "5559:5555"
     depends_on:
-      - postgres-db
+      - mongo-db
 
   payment-service:
     build:
@@ -157,8 +146,7 @@ services:
     # ports:
     #     - "5560:5555"
     depends_on:
-      - postgres-db
+      - mongo-db
 
 volumes:
-  postgres-db:
   mongo-db:

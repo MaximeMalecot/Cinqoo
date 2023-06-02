@@ -10,6 +10,7 @@ export class AppService {
   ) {}
 
   async getHello(): Promise<string> {
-    return `Bill service`;
+    const billCount = await this.billModel.countDocuments();
+    return `Payment service : there are currently ${billCount} bills in the database`;
   }
 }

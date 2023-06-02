@@ -39,14 +39,12 @@ export class AuthGuard implements CanActivate {
         this.authService.send('decode_token', { token }),
       );
       if (!payload) {
-        console.log('no payload');
         throw new UnauthorizedException('Invalid token');
       }
       const user = await firstValueFrom(
         this.userService.send('getUserById', { id: payload.sub }),
       );
       if (!user) {
-        console.log('no user');
         throw new NotFoundException('User not found');
       }
       // 💡 We're assigning the payload to the request object here
