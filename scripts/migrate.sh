@@ -21,7 +21,7 @@ execute_migrate_script() {
 
     # Vérification de l'existence du script "migrate" dans package.json
     if [[ $package_content == *'"migrate":'* ]]; then
-      echo "Exécution du script 'migrate' pour le projet $project_dir."
+      echo "Running script 'migrate' for $project_dir."
       (cd "$project_dir" && npm run migrate)
     fi
   fi

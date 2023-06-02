@@ -38,8 +38,9 @@ export class AppService {
         });
       }
       const payload = {
-        sub: user.id,
+        sub: user._id,
         username: user.username,
+        email: user.email,
         roles: user.roles,
       };
       return {

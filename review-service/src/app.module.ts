@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Review, ReviewSchema } from './schema/review.schema';
+
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
+    MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
+  ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {}
