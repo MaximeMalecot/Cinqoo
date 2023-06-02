@@ -85,7 +85,7 @@ services:
       NODE_OPTIONS: --max-old-space-size=16192
       PORT: 3002
       TRACER_ENDPOINT: http://tracing:4318/v1/traces
-      DATABASE_URL: postgresql://postgres:postgres@postgres-db:5432/user
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
     ports:
       - "5556:5555"
     depends_on:

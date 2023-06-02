@@ -8,7 +8,6 @@ import {
 } from '@opentelemetry/sdk-trace-node';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { PrismaInstrumentation } from '@prisma/instrumentation';
 
 /* OpenTelemetry Service Base config */
 const resource = new Resource({
@@ -47,7 +46,6 @@ registerInstrumentations({
         enabled: false,
       },
     }),
-    new PrismaInstrumentation(),
   ],
 });
 

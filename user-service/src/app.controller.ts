@@ -1,9 +1,7 @@
-import { Controller, Req, UseGuards } from '@nestjs/common';
-import { Ctx, EventPattern, Payload } from '@nestjs/microservices';
+import { Controller, UseGuards } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { HidePassword } from './decorators/users.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from '@prisma/client';
 import { OwnerOrAdminGards } from './guards/user.guards';
 
 @Controller()
@@ -30,7 +28,6 @@ export class AppController {
     return this.appService.getUserById(data.id);
   }
 
-  @HidePassword
   @EventPattern('createUser')
   async createUser(@Payload() data: CreateUserDto) {
     return this.appService.createUser(data);
@@ -38,7 +35,7 @@ export class AppController {
 
   @UseGuards(OwnerOrAdminGards)
   @EventPattern('deleteUser')
-  async deleteUser(@Payload() data: { id: string }) {
-    return this.appService.deleteUser(data.id);
+  async removeUser(@Payload() data: { id: string }) {
+    return this.appService.removeUser(data.id);
   }
 }
