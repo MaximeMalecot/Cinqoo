@@ -26,7 +26,7 @@ services:
       - "mongo-db:/data/db"
 
   gateway-service:
-    image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:0.0.1
     environment:
       NODE_OPTIONS: --max-old-space-size=16192
       PORT: 3000
