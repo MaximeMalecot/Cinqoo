@@ -1,7 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
 
-const project = gcp.config.project;
 const repo = "MaximeMalecot/challenge-s2-g19";
 
 // Create Artifact Registries and give access to all users
@@ -10,6 +9,8 @@ const repository = new gcp.artifactregistry.Repository("cinqoo", {
   format: "DOCKER",
   location: "europe-west9",
 });
+
+// Allow all users to read the repository
 
 new gcp.artifactregistry.RepositoryIamMember("publicRead", {
   location: repository.location,
@@ -48,11 +49,22 @@ const oidcProvider = new gcp.iam.WorkloadIdentityPoolProvider("github-oidc", {
   },
 });
 
-const iamMember = new gcp.serviceaccount.IAMMember("iamMember", {
+// Allow repository to impersonate the service account
+
+new gcp.serviceaccount.IAMMember("iamMember", {
   serviceAccountId: serviceAccount.name,
   role: "roles/iam.workloadIdentityUser",
   member: pulumi.interpolate`principalSet://iam.googleapis.com/${widp.name}/attribute.repository/${repo}`,
 });
 
-export const SA = serviceAccount;
-export const POOL = widp.name;
+// Allow service account to push to the repository
+
+new gcp.artifactregistry.RepositoryIamMember("admin", {
+  location: repository.location,
+  repository: repository.name,
+  role: "roles/artifactregistry.admin",
+  member: pulumi.interpolate`serviceAccount:${serviceAccount.email}`,
+});
+
+export const SA = serviceAccount.email;
+export const POOL = oidcProvider.name;
