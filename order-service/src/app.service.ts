@@ -7,7 +7,8 @@ import { Model } from 'mongoose';
 export class AppService {
   constructor(@InjectModel('Order') private orderModel: Model<Order>) {}
 
-  getHello(): string {
-    return 'Hello World from order!';
+  async getHello(): Promise<string> {
+    const count = await this.orderModel.countDocuments();
+    return `Order service : there are currently ${count} orders in the database`;
   }
 }

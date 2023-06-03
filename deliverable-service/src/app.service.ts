@@ -11,6 +11,7 @@ export class AppService {
   ) {}
 
   async getHello(): Promise<string> {
-    return 'Hello World from deliverable!';
+    const count = await this.deliverableModel.countDocuments();
+    return `Deliverable service : there are currently ${count} deliverables in the database`;
   }
 }

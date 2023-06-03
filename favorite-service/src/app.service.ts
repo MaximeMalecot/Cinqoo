@@ -12,7 +12,8 @@ export class AppService {
   ) {}
 
   @EventPattern('getHello')
-  getHello(): string {
-    return 'Hello World from favorite-service!';
+  async getHello(): Promise<string> {
+    const count = await this.deliverableModel.countDocuments();
+    return `Favorite service : there are currently ${count} favorites in the database`;
   }
 }

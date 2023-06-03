@@ -94,5 +94,32 @@ services:
     depends_on:
       - mongo-db
 
+  order-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/order-service:latest
+    environment:
+      PORT: 3007
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+  deliverable-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/deliverable-service:latest
+    environment:
+      PORT: 3008
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
+  favorite-service:
+    image: europe-west9-docker.pkg.dev/cinqoo/challenge/favorite-service:latest
+    environment:
+      PORT: 3009
+      TRACER_ENDPOINT: http://tracing:4318/v1/traces
+      DATABASE_URL: mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
+    depends_on:
+      - mongo-db
+
 volumes:
   mongo-db:
