@@ -1,4 +1,4 @@
-name: Report-ms build and push docker image
+name: Deliverable-ms build and push docker image
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - report-service/**
+      - deliverable-service/**
 
 jobs:
   push-to-gcr:
@@ -22,7 +22,7 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         with:
-          path: report-service
+          path: deliverable-service
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
@@ -42,8 +42,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: "{{defaultContext}}:report-service"
+          context: "{{defaultContext}}:deliverable-service"
           push: true
           tags: |
-            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/report-service:latest
-            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/report-service:${{ steps.package-version.outputs.current-version }}
+            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/deliverable-service:latest
+            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/deliverable-service:${{ steps.package-version.outputs.version }}

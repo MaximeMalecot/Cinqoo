@@ -2,9 +2,7 @@ name: User-ms build and push docker image
 
 on:
   workflow_dispatch:
-  pull_request:
-    types:
-      - opened
+  push:
     branches:
       - master
     paths:
@@ -24,9 +22,7 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         with:
-          path: gateway-service
-      - name: echo
-        run: echo ${{ steps.auth.outputs.current-version }}
+          path: user-service
       - id: auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v0
@@ -50,3 +46,4 @@ jobs:
           push: true
           tags: |
             europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/user-service:latest
+            europe-west9-docker.pkg.dev/${{ secrets.PROJECT_ID }}/challenge/user-service:${{ steps.package-version.outputs.current-version }}

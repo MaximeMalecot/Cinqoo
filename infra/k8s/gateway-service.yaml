@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gw-service
+  namespace: cinqoo
+spec:
+  selector:
+    matchLabels:
+      run: gw-service
+  template:
+    metadata:
+      labels:
+        run: gw-service
+    spec:
+      containers:
+        - name: gw-service
+          image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
+          env:
+            - name: PORT
+              value: "3000"
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gw-service
+  namespace: cinqoo
+  labels:
+    run: gw-service
+spec:
+  type: NodePort
+  selector:
+    app: gw-service
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31000
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gw-service
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gw-service
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
