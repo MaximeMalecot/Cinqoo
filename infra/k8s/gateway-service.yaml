@@ -1,19 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gw-service
+  name: gateway
   namespace: cinqoo
+  labels:
+    app: gateway
 spec:
   selector:
     matchLabels:
-      run: gw-service
+      app: gateway
   template:
     metadata:
       labels:
-        run: gw-service
+        app: gateway
     spec:
       containers:
-        - name: gw-service
+        - name: gateway
           image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
           env:
             - name: PORT
@@ -29,30 +31,27 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gw-service
+  name: gateway
   namespace: cinqoo
   labels:
-    run: gw-service
+    app: gateway
 spec:
   type: NodePort
   selector:
-    app: gw-service
+    app: gateway
   ports:
-    - protocol: TCP
-      port: 3000
+    - port: 3000
       targetPort: 3000
-      nodePort: 31000
-
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: gw-service
+  name: gateway
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: gw-service
+    name: gateway
   minReplicas: 1
   maxReplicas: 10
   metrics:
