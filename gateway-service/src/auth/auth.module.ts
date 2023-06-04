@@ -1,29 +1,30 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { APP_GUARD } from "@nestjs/core";
-import { AuthGuard } from "./guards/auth.guard";
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
+import { PORTS, SERVICES } from 'src/constants';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: "AUTH_SERVICE",
+        name: 'AUTH_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: "auth-service",
-          port: 3001
-        }
+          host: SERVICES.AUTH,
+          port: PORTS.AUTH,
+        },
       },
       {
         name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'user-service',
-          port: 3002,
+          host: SERVICES.USER,
+          port: PORTS.USER,
         },
       },
-    ])
+    ]),
   ],
   controllers: [AuthController],
   providers: [

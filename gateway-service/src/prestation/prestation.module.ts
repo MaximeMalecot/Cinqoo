@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrestationController } from './prestation.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PORTS, SERVICES } from 'src/constants';
 
 @Module({
   imports: [
@@ -9,8 +10,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'PRESTATION_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'prestation-service',
-          port: 3003,
+          host: SERVICES.PRESTATION,
+          port: PORTS.PRESTATION,
         },
       },
     ]),

@@ -12,6 +12,7 @@ async function bootstrap() {
       port: process.env.PORT || 3000,
     },
   });
+  console.log('Microservice is listening on port', process.env.PORT || '3000');
 
   app.useGlobalPipes(
     new ValidationPipe({
