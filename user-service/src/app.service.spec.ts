@@ -16,7 +16,7 @@ describe('AppService', () => {
   let userModel: Model<User>;
   let freelancerModel: Model<FreelancerProfile>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
     mongoConnection = (await connect(uri)).connection;

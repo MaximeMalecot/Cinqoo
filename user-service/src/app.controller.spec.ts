@@ -18,7 +18,7 @@ describe('AppController', () => {
   let userModel: Model<User>;
   let freelancerModel: Model<FreelancerProfile>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
     mongoConnection = (await connect(uri)).connection;
@@ -63,7 +63,8 @@ describe('AppController', () => {
     });
 
     it('should return an array', async () => {
-      expect(Array.isArray(await controller.getHello())).toBe(true);
+      const users = await controller.getHello();
+      expect(Array.isArray(users)).toBe(true);
     });
   });
 });
