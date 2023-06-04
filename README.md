@@ -9,6 +9,7 @@ To start the project, you need Docker with (at least) 9gb of memory allocated, o
 Run the following command:
 
 ```
+cp .env.example .env
 docker compose up --build -d
 ```
 
