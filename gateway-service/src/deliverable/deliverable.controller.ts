@@ -1,6 +1,8 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('deliverable')
 @Controller('deliverable')
 export class DeliverableController {
   constructor(
