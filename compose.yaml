@@ -202,5 +202,18 @@ services:
         depends_on:
             - mongo-db
 
+    front:
+        build:
+            context: ./front
+            target: dev
+        command: npm run dev
+        volumes:
+            - ./front:/usr/src/app
+            - /usr/src/app/node_modules
+        environment:
+            VITE_API_ENDPOINT: http://localhost:3000
+        ports:
+            - "8080:8080"
+
 volumes:
     mongo-db:

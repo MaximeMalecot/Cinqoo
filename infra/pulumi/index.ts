@@ -66,5 +66,6 @@ new gcp.artifactregistry.RepositoryIamMember("admin", {
   member: pulumi.interpolate`serviceAccount:${serviceAccount.email}`,
 });
 
-export const SA = serviceAccount.email;
-export const POOL = oidcProvider.name;
+export const SERVICE_ACCOUNT = serviceAccount.email;
+export const PROVIDER_ID = oidcProvider.name;
+export const PROJECT_ID = pulumi.getProject();
