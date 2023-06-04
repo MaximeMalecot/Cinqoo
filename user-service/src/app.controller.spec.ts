@@ -1,16 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, Model, connect } from 'mongoose';
-import { User, UserSchema } from './schema/user.schema';
 import {
   FreelancerProfile,
   FreelancerProfileSchema,
 } from './schema/freelancer-profile.schema';
+import { User, UserSchema } from './schema/user.schema';
 import { getModelToken } from '@nestjs/mongoose';
 
-describe('AppService', () => {
-  let service: AppService;
+describe('AppController', () => {
+  let controller: AppController;
   let mongod: MongoMemoryServer;
   let mongoConnection: Connection;
   let userModel: Model<User>;
@@ -26,7 +28,8 @@ describe('AppService', () => {
       FreelancerProfileSchema,
     );
 
-    const app: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [AppController],
       providers: [
         AppService,
         { provide: getModelToken(User.name), useValue: userModel },
@@ -37,7 +40,7 @@ describe('AppService', () => {
       ],
     }).compile();
 
-    service = app.get<AppService>(AppService);
+    controller = module.get<AppController>(AppController);
   });
 
   afterAll(async () => {
@@ -55,8 +58,13 @@ describe('AppService', () => {
   });
 
   describe('root', () => {
+    it('should be defined', () => {
+      expect(controller).toBeDefined();
+    });
+
     it('should return an array', async () => {
-      expect(Array.isArray(await service.getHello())).toBe(true);
+      const users = await controller.getHello();
+      expect(Array.isArray(users)).toBe(true);
     });
   });
 });
