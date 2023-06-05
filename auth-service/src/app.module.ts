@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { secret } from './constants';
+import { PORTS, secret, SERVICES } from './constants';
 
 @Module({
   imports: [
@@ -13,8 +13,8 @@ import { secret } from './constants';
         name: 'USER_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'user-service',
-          port: 3002,
+          host: SERVICES.USER,
+          port: PORTS.USER,
         },
       },
     ]),

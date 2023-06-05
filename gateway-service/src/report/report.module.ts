@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ReportController } from './report.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PORTS, SERVICES } from 'src/constants';
 
 @Module({
   imports: [
@@ -9,8 +10,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'REPORT_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'report-service',
-          port: 3005,
+          host: SERVICES.REPORT,
+          port: PORTS.REPORT,
         },
       },
     ]),

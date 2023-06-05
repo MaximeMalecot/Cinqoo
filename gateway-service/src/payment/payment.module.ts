@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PaymentController } from './payment.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PORTS, SERVICES } from 'src/constants';
 
 @Module({
   imports: [
@@ -9,8 +10,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'PAYMENT_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'payment-service',
-          port: 3006,
+          host: SERVICES.PAYMENT,
+          port: PORTS.PAYMENT,
         },
       },
     ]),

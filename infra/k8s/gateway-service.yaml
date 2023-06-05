@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gateway
+  name: gateway-service
   namespace: cinqoo
   labels:
-    app: gateway
+    app: gateway-service
 spec:
   selector:
     matchLabels:
-      app: gateway
+      app: gateway-service
   template:
     metadata:
       labels:
-        app: gateway
+        app: gateway-service
     spec:
       containers:
-        - name: gateway
+        - name: gateway-service
           image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
           env:
             - name: PORT
@@ -31,14 +31,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gateway
+  name: gateway-service
   namespace: cinqoo
   labels:
-    app: gateway
+    app: gateway-service
 spec:
   type: NodePort
   selector:
-    app: gateway
+    app: gateway-service
   ports:
     - port: 3000
       targetPort: 3000
@@ -46,12 +46,12 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: gateway
+  name: gateway-service
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: gateway
+    name: gateway-service
   minReplicas: 1
   maxReplicas: 10
   metrics:

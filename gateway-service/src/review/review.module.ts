@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common';
 import { ReviewController } from './review.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PORTS, SERVICES } from 'src/constants';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: "REVIEW_SERVICE",
+        name: 'REVIEW_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: "review-service",
-          port: 3004
-        }
-      }
-    ])
+          host: SERVICES.REVIEW,
+          port: PORTS.REVIEW,
+        },
+      },
+    ]),
   ],
-  controllers: [ReviewController]
+  controllers: [ReviewController],
 })
 export class ReviewModule {}
