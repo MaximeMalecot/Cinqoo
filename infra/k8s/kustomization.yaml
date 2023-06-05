@@ -1,0 +1,8 @@
+configMapGenerator:
+  - name: variables
+    files:
+      - .env
+secretGenerator:
+  - name: secrets
+    files:
+      - .env.secrets
