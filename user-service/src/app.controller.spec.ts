@@ -19,7 +19,11 @@ describe('AppController', () => {
   let freelancerModel: Model<FreelancerProfile>;
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
+    mongod = await MongoMemoryServer.create({
+      binary: {
+        version: '5.0.13',
+      },
+    });
     const uri = mongod.getUri();
     mongoConnection = (await connect(uri)).connection;
     userModel = mongoConnection.model(User.name, UserSchema);
