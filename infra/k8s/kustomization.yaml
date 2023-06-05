@@ -1,3 +1,5 @@
+kind: Kustomization
+namespace: cinqoo
 configMapGenerator:
   - name: variables
     files:
