@@ -26,7 +26,4 @@ export class CreatePrestationDto {
   @IsArray()
   @IsOptional()
   categories?: string[];
-
-  @IsNumber()
-  price: number;
 }

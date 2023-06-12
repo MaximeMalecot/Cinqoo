@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -11,7 +11,7 @@ export class CategoryController {
   ) {}
 
   @Get()
-  public getCategoryHello() {
+  public getCategoryHello(@Req() req: any) {
     return this.categoryService.send('CATEGORY.GET_HELLO', {});
   }
 }
