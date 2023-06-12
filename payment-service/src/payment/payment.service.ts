@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
 import { Bill } from './schemas/bill.schema';
@@ -11,6 +12,8 @@ import { Bill } from './schemas/bill.schema';
 export class PaymentService {
   constructor(
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
+    @Inject('PRESTATION_SERVICE')
+    private readonly prestationService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -19,23 +22,47 @@ export class PaymentService {
   }
 
   async createPaymentIntent(createPaymentIntentDto: CreatePaymentIntentDto) {
-    const stripeCheckoutSession: null | any = {
-      id: `stripe_ckout_session_${crypto.randomUUID().toString()}`,
-    }; // MOCK
+    try {
+      const serviceExists = await firstValueFrom(
+        this.prestationService.send(
+          'PRESTATION.GET_ONE',
+          createPaymentIntentDto.serviceId,
+        ),
+      );
 
-    if (!stripeCheckoutSession || !stripeCheckoutSession?.id) {
+      if (!serviceExists) {
+        throw new RpcException({
+          message: 'Service not found',
+          statusCode: 404,
+        });
+      }
+
+      const stripeCheckoutSession: null | any = {
+        id: `stripe_ckout_session_${crypto.randomUUID().toString()}`,
+      }; // MOCK
+
+      if (!stripeCheckoutSession || !stripeCheckoutSession?.id) {
+        throw new RpcException({
+          message: 'Error while creating payment intent',
+          statusCode: 500,
+        });
+      }
+
+      const bill = new this.billModel({
+        ...createPaymentIntentDto,
+        stripeId: stripeCheckoutSession.id,
+      });
+      const newBill = await bill.save();
+      return newBill.toObject();
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
       throw new RpcException({
-        message: 'Error while creating payment intent',
-        statusCode: 500,
+        message: e.message ?? 'Error while creating payment intent ',
+        statusCode: e.statusCode ?? 500,
       });
     }
-
-    const bill = new this.billModel({
-      ...createPaymentIntentDto,
-      stripeId: stripeCheckoutSession.id,
-    });
-    const newBill = await bill.save();
-    return newBill.toObject();
   }
 
   async updateBillStatus(stripeWebhookAnswer: StripeWebhookAnswer) {
@@ -53,7 +80,6 @@ export class PaymentService {
         });
       }
 
-      console.log('BILL', bill);
       if (bill.status === 'SUCCESS' || bill.status === 'FAILED') {
         return { success: true, message: 'Bill already processed' };
       }

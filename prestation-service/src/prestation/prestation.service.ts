@@ -103,7 +103,7 @@ export class PrestationService {
     if (!prestation) {
       throw new RpcException({
         statusCode: 404,
-        message: 'Not Found',
+        message: 'Prestation not Found',
       });
     }
 
