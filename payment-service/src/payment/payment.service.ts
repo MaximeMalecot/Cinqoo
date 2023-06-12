@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
-import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { STRIPE_CLIENT } from 'src/stripe/constants';
+import Stripe from 'stripe';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
 import { Bill } from './schemas/bill.schema';
@@ -14,6 +15,7 @@ export class PaymentService {
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
     @Inject('PRESTATION_SERVICE')
     private readonly prestationService: ClientProxy,
+    @Inject(STRIPE_CLIENT) private stripe: Stripe,
   ) {}
 
   async getHello(): Promise<string> {
@@ -23,6 +25,7 @@ export class PaymentService {
 
   async createPaymentIntent(createPaymentIntentDto: CreatePaymentIntentDto) {
     try {
+      //checking if service exists
       const serviceExists = await firstValueFrom(
         this.prestationService.send(
           'PRESTATION.GET_ONE',
@@ -37,11 +40,28 @@ export class PaymentService {
         });
       }
 
-      const stripeCheckoutSession: null | any = {
-        id: `stripe_ckout_session_${crypto.randomUUID().toString()}`,
-      }; // MOCK
+      //creating stripe price
+      const price = await this.stripe.prices.create({
+        currency: 'eur',
+        unit_amount: serviceExists.price * 100,
+        product: serviceExists.stripeId,
+      });
 
-      if (!stripeCheckoutSession || !stripeCheckoutSession?.id) {
+      //creating stripe checkout session with created price
+      const stripeCheckoutSession = await this.stripe.checkout.sessions.create({
+        success_url: 'http://localhost:3000/success',
+        cancel_url: 'http://localhost:3000/cancel',
+        mode: 'payment',
+        line_items: [
+          {
+            price: price.id,
+            quantity: 1,
+          },
+        ],
+      });
+
+      console.log(stripeCheckoutSession);
+      if (!stripeCheckoutSession.id) {
         throw new RpcException({
           message: 'Error while creating payment intent',
           statusCode: 500,
@@ -54,7 +74,7 @@ export class PaymentService {
         userId: new Types.ObjectId(createPaymentIntentDto.userId),
       });
       const newBill = await bill.save();
-      return newBill.toObject();
+      return { url: stripeCheckoutSession.url };
     } catch (e: any) {
       if (e instanceof RpcException) {
         throw e;
