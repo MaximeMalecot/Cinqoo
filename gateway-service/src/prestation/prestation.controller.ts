@@ -54,6 +54,20 @@ export class PrestationController {
     });
   }
 
+  @Patch('enable/:prestationId')
+  public enablePrestation(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.prestationService.send('PRESTATION.ENABLE_ONE', prestationId);
+  }
+
+  @Patch('disable/:prestationId')
+  public disablePrestation(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.prestationService.send('PRESTATION.DISABLE_ONE', prestationId);
+  }
+
   @Delete(':prestationId')
   public deletePrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,

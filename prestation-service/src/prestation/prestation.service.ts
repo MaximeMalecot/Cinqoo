@@ -66,7 +66,7 @@ export class PrestationService {
     if (!prestations) {
       throw new RpcException({
         statusCode: 404,
-        error: 'Not Found',
+        message: 'Not Found',
       });
     }
 
@@ -88,7 +88,7 @@ export class PrestationService {
     if (!prestations) {
       throw new RpcException({
         statusCode: 404,
-        error: 'Not Found',
+        message: 'Not Found',
       });
     }
 
@@ -103,7 +103,7 @@ export class PrestationService {
     if (!prestation) {
       throw new RpcException({
         statusCode: 404,
-        error: 'Not Found',
+        message: 'Not Found',
       });
     }
 
@@ -130,7 +130,7 @@ export class PrestationService {
     if (!prestation) {
       throw new RpcException({
         statusCode: 404,
-        error: 'Not Found',
+        message: 'Not Found',
       });
     }
 
@@ -150,7 +150,7 @@ export class PrestationService {
     if (!prestation) {
       throw new RpcException({
         statusCode: 404,
-        error: 'Not Found',
+        message: 'Not Found',
       });
     }
 
@@ -170,7 +170,7 @@ export class PrestationService {
     if (!prestation) {
       throw new RpcException({
         statusCode: 404,
-        error: 'Not Found',
+        message: 'Not Found',
       });
     }
 

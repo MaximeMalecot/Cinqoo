@@ -43,6 +43,16 @@ export class PrestationController {
     return await this.appService.updatePrestation(id, prestation);
   }
 
+  @EventPattern('PRESTATION.ENABLE_ONE')
+  async enablePrestation(id: string) {
+    return await this.appService.enablePrestation(id);
+  }
+
+  @EventPattern('PRESTATION.DISABLE_ONE')
+  async disablePrestation(id: string) {
+    return await this.appService.disablePrestation(id);
+  }
+
   @EventPattern('PRESTATION.DELETE_ONE')
   async deletePrestation(id: string) {
     return await this.appService.deletePrestation(id);
