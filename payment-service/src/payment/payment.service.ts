@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import * as crypto from 'crypto';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
@@ -51,6 +51,7 @@ export class PaymentService {
       const bill = new this.billModel({
         ...createPaymentIntentDto,
         stripeId: stripeCheckoutSession.id,
+        userId: new Types.ObjectId(createPaymentIntentDto.userId),
       });
       const newBill = await bill.save();
       return newBill.toObject();
@@ -112,5 +113,14 @@ export class PaymentService {
         statusCode: 500,
       });
     }
+  }
+
+  async getBillsOfUser(userId: string) {
+    const bills = await this.billModel
+      .find({ userId: new Types.ObjectId(userId) })
+      .select({
+        __v: false,
+      });
+    return bills;
   }
 }

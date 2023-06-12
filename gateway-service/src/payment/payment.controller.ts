@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Req } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
@@ -16,12 +16,20 @@ export class PaymentController {
     return this.paymentService.send('getHello', {});
   }
 
-  @Post()
-  public createPaymentIntent(@Body() data: CreatePaymentIntentDto) {
-    return this.paymentService.send('PAYMENT.CREATE_PAYMENT_INTENT', data);
+  @Get('history/self')
+  public getSelfBills(@Req() req: any) {
+    return this.paymentService.send('PAYMENT.GET_BILLS_OF_USER', req.user._id);
   }
 
-  @Post("/webhook")
+  @Post()
+  public createPaymentIntent(
+    @Body() body: CreatePaymentIntentDto,
+    @Req() req: any,
+  ) {
+    const data = { ...body, userId: req.user._id };
+    return this.paymentService.send('PAYMENT.CREATE_PAYMENT_INTENT', data);
+  }
+  @Post('/webhook')
   public updateBillStatus(@Body() data: StripeWebhookAnswer) {
     return this.paymentService.send('PAYMENT.UPDATE_BILL_STATUS', data);
   }

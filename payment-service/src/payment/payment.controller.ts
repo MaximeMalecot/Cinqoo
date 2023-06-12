@@ -22,4 +22,9 @@ export class PaymentController {
   async updateBillStatus(data: StripeWebhookAnswer) {
     return await this.paymentService.updateBillStatus(data);
   }
+
+  @EventPattern('PAYMENT.GET_BILLS_OF_USER')
+  async getBillsOfUser(userId: string) {
+    return await this.paymentService.getBillsOfUser(userId);
+  }
 }
