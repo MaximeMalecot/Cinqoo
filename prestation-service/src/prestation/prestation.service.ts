@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
@@ -12,9 +13,15 @@ export class PrestationService {
     @InjectModel(Prestation.name) private prestationModel: Model<Prestation>,
   ) {}
 
-  async getHello(): Promise<string> {
-    const prestationCount = await this.prestationModel.countDocuments();
-    return `Prestation service : there are currently ${prestationCount} prestations in the database`;
+  async getAll() {
+    const prestations = await this.prestationModel
+      .find({ isActive: true })
+      .select({
+        __v: false,
+        stripeId: false,
+      })
+      .limit(10);
+    return prestations;
   }
 
   async create(prestation: CreatePrestationDto, user: any) {
@@ -47,18 +54,27 @@ export class PrestationService {
     };
   }
 
-  getPrestationsOfUser(userId: string) {
-    return this.prestationModel
+  async getPrestationsOfUser(userId: string) {
+    const prestations = await this.prestationModel
       .find({ owner: new Types.ObjectId(userId) })
       .select({
         __v: false,
         owner: false,
         stripeId: false,
       });
+
+    if (!prestations) {
+      throw new RpcException({
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    return prestations;
   }
 
-  getActivePrestationsOfUser(userId: string) {
-    return this.prestationModel
+  async getActivePrestationsOfUser(userId: string) {
+    const prestations = await this.prestationModel
       .find({
         owner: new Types.ObjectId(userId),
         isActive: true,
@@ -68,12 +84,30 @@ export class PrestationService {
         owner: false,
         stripeId: false,
       });
+
+    if (!prestations) {
+      throw new RpcException({
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    return prestations;
   }
 
   async getPrestation(prestationId: string) {
-    return await this.prestationModel.findById(
+    const prestation = await this.prestationModel.findById(
       new Types.ObjectId(prestationId),
     );
+
+    if (!prestation) {
+      throw new RpcException({
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    return prestation.toObject();
   }
 
   async updatePrestation(
@@ -86,5 +120,63 @@ export class PrestationService {
       { new: true },
     );
     return updatedPrestation;
+  }
+
+  async disablePrestation(prestationId: string) {
+    const prestation = await this.prestationModel.findById(
+      new Types.ObjectId(prestationId),
+    );
+
+    if (!prestation) {
+      throw new RpcException({
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    const disabledPrestation = await this.prestationModel.findByIdAndUpdate(
+      new Types.ObjectId(prestationId),
+      { isActive: false },
+      { new: true },
+    );
+    return disabledPrestation;
+  }
+
+  async enablePrestation(prestationId: string) {
+    const prestation = await this.prestationModel.findById(
+      new Types.ObjectId(prestationId),
+    );
+
+    if (!prestation) {
+      throw new RpcException({
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    const enabledPrestation = await this.prestationModel.findByIdAndUpdate(
+      new Types.ObjectId(prestationId),
+      { isActive: true },
+      { new: true },
+    );
+    return enabledPrestation;
+  }
+
+  async deletePrestation(prestationId: string) {
+    const prestation = await this.prestationModel.findById(
+      new Types.ObjectId(prestationId),
+    );
+
+    if (!prestation) {
+      throw new RpcException({
+        statusCode: 404,
+        error: 'Not Found',
+      });
+    }
+
+    await this.prestationModel.findByIdAndDelete(
+      new Types.ObjectId(prestationId),
+    );
+    return { deleted: true };
   }
 }

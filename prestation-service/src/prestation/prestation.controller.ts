@@ -8,9 +8,9 @@ import { PrestationService } from './prestation.service';
 export class PrestationController {
   constructor(private readonly appService: PrestationService) {}
 
-  @EventPattern('PRESTATION.GET_HELLO')
-  async getHello(): Promise<string> {
-    return await this.appService.getHello();
+  @EventPattern('PRESTATION.GET_ALL')
+  async getAll() {
+    return await this.appService.getAll();
   }
 
   @EventPattern('PRESTATION.CREATE')
@@ -41,5 +41,10 @@ export class PrestationController {
   ) {
     const { id, prestation } = data;
     return await this.appService.updatePrestation(id, prestation);
+  }
+
+  @EventPattern('PRESTATION.DELETE_ONE')
+  async deletePrestation(id: string) {
+    return await this.appService.deletePrestation(id);
   }
 }

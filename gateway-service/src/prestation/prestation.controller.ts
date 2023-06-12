@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -23,8 +24,8 @@ export class PrestationController {
   ) {}
 
   @Get()
-  public getPrestationHello() {
-    return this.prestationService.send('PRESTATION.GET_HELLO', {});
+  public getAllPrestations() {
+    return this.prestationService.send('PRESTATION.GET_ALL', {});
   }
 
   @Get('self')
@@ -51,6 +52,13 @@ export class PrestationController {
       id: prestationId,
       prestation: body,
     });
+  }
+
+  @Delete(':prestationId')
+  public deletePrestation(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.prestationService.send('PRESTATION.DELETE_ONE', prestationId);
   }
 
   @Get('user/:userId')
