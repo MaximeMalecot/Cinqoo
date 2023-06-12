@@ -12,6 +12,6 @@ export class PrestationController {
 
   @Get()
   public getPrestationHello() {
-    return this.prestationService.send('getHello', {});
+    return this.prestationService.send('PRESTATION.GET_HELLO', {});
   }
 }
