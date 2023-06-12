@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
+import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { Prestation } from './schemas/prestation.schema';
 
 @Injectable()
@@ -67,5 +68,23 @@ export class PrestationService {
         owner: false,
         stripeId: false,
       });
+  }
+
+  async getPrestation(prestationId: string) {
+    return await this.prestationModel.findById(
+      new Types.ObjectId(prestationId),
+    );
+  }
+
+  async updatePrestation(
+    prestationId: string,
+    prestation: UpdatePrestationDto,
+  ) {
+    const updatedPrestation = await this.prestationModel.findByIdAndUpdate(
+      new Types.ObjectId(prestationId),
+      prestation,
+      { new: true },
+    );
+    return updatedPrestation;
   }
 }

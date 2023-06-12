@@ -3,6 +3,7 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
 } from 'class-validator';
 
@@ -28,5 +29,6 @@ export class CreatePrestationDto {
   categories?: string[];
 
   @IsNumber()
+  @IsPositive()
   price: number;
 }
