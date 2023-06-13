@@ -60,7 +60,6 @@ export class PaymentService {
         ],
       });
 
-      console.log(stripeCheckoutSession);
       if (!stripeCheckoutSession.id) {
         throw new RpcException({
           message: 'Error while creating payment intent',
@@ -88,43 +87,52 @@ export class PaymentService {
 
   async updateBillStatus(stripeWebhookAnswer: StripeWebhookAnswer) {
     try {
-      const { id, status, amount } = stripeWebhookAnswer;
+      const { data, stripeSig } = stripeWebhookAnswer;
 
-      const bill = await this.billModel.findOne({
-        stripeId: stripeWebhookAnswer.id,
-      });
+      // retrieve the event by verifying the signature using the raw body and secret
+      const rawBuffer = Buffer.from(data);
+      const event = this.stripe.webhooks.constructEvent(
+        rawBuffer,
+        stripeSig,
+        process.env.STRIPE_WH_SECRET,
+      );
 
-      if (!bill) {
-        throw new RpcException({
-          message: 'Bill not found',
-          statusCode: 404,
-        });
-      }
+      // const bill = await this.billModel.findOne({
+      //   stripeId: stripeWebhookAnswer.id,
+      // });
 
-      if (bill.status === 'SUCCESS' || bill.status === 'FAILED') {
-        return { success: true, message: 'Bill already processed' };
-      }
+      // if (!bill) {
+      //   throw new RpcException({
+      //     message: 'Bill not found',
+      //     statusCode: 404,
+      //   });
+      // }
 
-      if (status !== 'SUCCESS') {
-        bill.status = 'FAILED';
-        await bill.save();
-        return { success: true, message: 'Bill status updated to failed' };
-      }
+      // if (bill.status === 'SUCCESS' || bill.status === 'FAILED') {
+      //   return { success: true, message: 'Bill already processed' };
+      // }
 
-      const newOrder = { id: '12' }; // MOCK
-      if (!newOrder) {
-        bill.status = 'FAILED';
-        await bill.save();
-        throw new RpcException({
-          message: 'Error while creating order',
-          statusCode: 500,
-        });
-      }
-      bill.status = 'SUCCESS';
-      await bill.save();
+      // if (status !== 'SUCCESS') {
+      //   bill.status = 'FAILED';
+      //   await bill.save();
+      //   return { success: true, message: 'Bill status updated to failed' };
+      // }
 
-      return { success: true, message: 'Order created' };
+      // const newOrder = { id: '12' }; // MOCK
+      // if (!newOrder) {
+      //   bill.status = 'FAILED';
+      //   await bill.save();
+      //   throw new RpcException({
+      //     message: 'Error while creating order',
+      //     statusCode: 500,
+      //   });
+      // }
+      // bill.status = 'SUCCESS';
+      // await bill.save();
+
+      // return { success: true, message: 'Order created' };
     } catch (e: any) {
+      console.log(e.message);
       if (e instanceof RpcException) {
         throw e;
       }

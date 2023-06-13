@@ -1,12 +1,9 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsObject, IsString } from 'class-validator';
 
 export class StripeWebhookAnswer {
-  @IsString()
-  id: string;
+  @IsObject()
+  data: any;
 
   @IsString()
-  status: 'SUCCESS' | 'FAILED';
-
-  @IsNumber()
-  amount: number;
+  stripeSig: string;
 }

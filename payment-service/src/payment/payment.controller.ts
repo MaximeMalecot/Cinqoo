@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
 import { PaymentService } from './payment.service';
@@ -19,8 +19,8 @@ export class PaymentController {
   }
 
   @EventPattern('PAYMENT.UPDATE_BILL_STATUS')
-  async updateBillStatus(data: StripeWebhookAnswer) {
-    return await this.paymentService.updateBillStatus(data);
+  async updateBillStatus(@Payload() payload: StripeWebhookAnswer) {
+    return await this.paymentService.updateBillStatus(payload);
   }
 
   @EventPattern('PAYMENT.GET_BILLS_OF_USER')

@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Inject, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Inject,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decator';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
-import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
+import { StripeSignatureGuard } from './guards/check-stripe-signature.pipe';
 
 @ApiTags('payment')
 @Controller('payment')
@@ -30,7 +40,21 @@ export class PaymentController {
     return this.paymentService.send('PAYMENT.CREATE_PAYMENT_INTENT', data);
   }
   @Post('/webhook')
-  public updateBillStatus(@Body() data: StripeWebhookAnswer) {
-    return this.paymentService.send('PAYMENT.UPDATE_BILL_STATUS', data);
+  @UseGuards(StripeSignatureGuard)
+  @Public()
+  public updateBillStatus(
+    @Req() req: any,
+    @Headers('Stripe-Signature') stripeSig: string,
+  ) {
+    return this.paymentService.send('PAYMENT.UPDATE_BILL_STATUS', {
+      data: req.rawBody,
+      stripeSig,
+    });
+  }
+
+  @Get('/webhook')
+  @Public()
+  public get(@Body() data: any) {
+    return 'salut';
   }
 }
