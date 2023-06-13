@@ -37,6 +37,9 @@ export class Bill {
   @Prop({ type: String, required: false })
   stripePaymentIntentId?: string;
 
+  @Prop({ type: String, required: false })
+  stripeRefundId?: string;
+
   @Prop({ type: Date, required: false, default: Date.now })
   createdAt: Date;
 }

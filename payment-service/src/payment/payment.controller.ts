@@ -27,4 +27,9 @@ export class PaymentController {
   async getBillsOfUser(userId: string) {
     return await this.paymentService.getBillsOfUser(userId);
   }
+
+  @EventPattern('PAYMENT.REFUND_BILL')
+  async refundBill(billId: string) {
+    return await this.paymentService.refundBill(billId);
+  }
 }

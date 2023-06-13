@@ -4,6 +4,7 @@ import {
   Get,
   Headers,
   Inject,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -39,7 +40,7 @@ export class PaymentController {
     const data = { ...body, userId: req.user._id };
     return this.paymentService.send('PAYMENT.CREATE_PAYMENT_INTENT', data);
   }
-  @Post('/webhook')
+  @Post('webhook')
   @UseGuards(StripeSignatureGuard)
   @Public()
   public stripeWebhookHandler(
@@ -52,9 +53,15 @@ export class PaymentController {
     });
   }
 
-  @Get('/webhook')
+  @Post("refund/:id")
+  public refundBill(@Req() req: any, @Param('id') id: string) {
+    return this.paymentService.send('PAYMENT.REFUND_BILL', id);
+  }
+
+  @Get('webhook')
   @Public()
   public get(@Body() data: any) {
     return 'salut';
   }
 }
+

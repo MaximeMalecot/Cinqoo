@@ -175,8 +175,6 @@ export class PaymentService {
       }),
     );
 
-    console.log(newOrder);
-
     if (!newOrder) {
       bill.status = 'TO_BE_REFUNDED';
       await bill.save();
@@ -208,6 +206,48 @@ export class PaymentService {
     }
     bill.status = 'FAILED';
     await bill.save();
+  }
+
+  async refundBill(billId: string) {
+    const bill = await this.billModel.findById(new Types.ObjectId(billId));
+
+    if (!bill) {
+      throw new RpcException({
+        message: 'Bill not found',
+        statusCode: 404,
+      });
+    }
+
+    if (!bill.stripePaymentIntentId) {
+      throw new RpcException({
+        message: 'Bill has no payment intent id',
+        statusCode: 404,
+      });
+    }
+
+    if (bill.status == 'REFUNDED') {
+      throw new RpcException({
+        message: 'Bill already refunded',
+        statusCode: 404,
+      });
+    }
+
+    const refund = await this.stripe.refunds.create({
+      payment_intent: bill.stripePaymentIntentId,
+    });
+
+    if (!refund) {
+      throw new RpcException({
+        message: 'Error while creating refund',
+        statusCode: 500,
+      });
+    }
+
+    bill.status = 'REFUNDED';
+    bill.stripeRefundId = refund.id;
+    await bill.save();
+
+    return { success: true, message: 'Bill refunded' };
   }
 
   async getBillsOfUser(userId: string) {
