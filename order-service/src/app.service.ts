@@ -22,6 +22,9 @@ export class AppService {
       billId,
       status: 'IN_PROGRESS',
     });
+
+    // TODO ? Send an email to the applicant and the service provider to confirm the order
+    
     return await order.save();
   }
 

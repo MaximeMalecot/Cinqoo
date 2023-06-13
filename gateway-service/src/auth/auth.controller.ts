@@ -2,16 +2,15 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
   Inject,
   Post,
   ValidationPipe,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { LoginDto } from './dto/login.dto';
-import { Public } from './decorators/public.decator';
+import { Public } from './decorators/public.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller()
 export class AuthController {

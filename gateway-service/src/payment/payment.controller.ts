@@ -11,7 +11,9 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/auth/decorators/public.decator';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ROLE } from 'src/auth/enums/role.enum';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeSignatureGuard } from './guards/check-stripe-signature.pipe';
 
@@ -53,7 +55,8 @@ export class PaymentController {
     });
   }
 
-  @Post("refund/:id")
+  @Post('refund/:id')
+  @Roles(ROLE.ADMIN)
   public refundBill(@Req() req: any, @Param('id') id: string) {
     return this.paymentService.send('PAYMENT.REFUND_BILL', id);
   }
@@ -64,4 +67,3 @@ export class PaymentController {
     return 'salut';
   }
 }
-
