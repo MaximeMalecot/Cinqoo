@@ -15,10 +15,13 @@ export class PaymentService {
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
     @Inject('PRESTATION_SERVICE')
     private readonly prestationService: ClientProxy,
+    @Inject('ORDER_SERVICE')
+    private readonly orderService: ClientProxy,
     @Inject(STRIPE_CLIENT) private stripe: Stripe,
   ) {}
 
   async getHello(): Promise<string> {
+    console.log(this.prestationService);
     const billCount = await this.billModel.countDocuments();
     return `Payment service : there are currently ${billCount} bills in the database`;
   }
@@ -163,7 +166,16 @@ export class PaymentService {
       return { success: true, message: 'Bill already processed' };
     }
 
-    const newOrder = { id: '12' }; // MOCK
+    const newOrder = await await firstValueFrom(
+      this.orderService.send('ORDER.CREATE', {
+        applicant: bill.userId,
+        serviceId: bill.serviceId,
+        billId: bill._id,
+      }),
+    );
+
+    console.log(newOrder);
+
     if (!newOrder) {
       bill.status = 'TO_BE_REFUNDED';
       await bill.save();

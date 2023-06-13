@@ -18,6 +18,13 @@ import { Bill, BillSchema } from './schemas/bill.schema';
           host: SERVICES.PRESTATION,
         },
       },
+      {
+        name: 'ORDER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.ORDER,
+        },
+      },
     ]),
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL),
