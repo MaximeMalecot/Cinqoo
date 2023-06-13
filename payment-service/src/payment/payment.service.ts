@@ -72,6 +72,7 @@ export class PaymentService {
 
       const bill = new this.billModel({
         ...createPaymentIntentDto,
+        amount: serviceExists.price,
         stripeSessionId: stripeCheckoutSession.id,
         userId: new Types.ObjectId(createPaymentIntentDto.userId),
       });
