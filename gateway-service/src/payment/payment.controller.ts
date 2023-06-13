@@ -42,11 +42,11 @@ export class PaymentController {
   @Post('/webhook')
   @UseGuards(StripeSignatureGuard)
   @Public()
-  public updateBillStatus(
+  public stripeWebhookHandler(
     @Req() req: any,
     @Headers('Stripe-Signature') stripeSig: string,
   ) {
-    return this.paymentService.send('PAYMENT.UPDATE_BILL_STATUS', {
+    return this.paymentService.send('PAYMENT.STRIPE_WEBHOOK_HANDLER', {
       data: req.rawBody,
       stripeSig,
     });

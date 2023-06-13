@@ -3,7 +3,12 @@ import { HydratedDocument } from 'mongoose';
 
 export type BillDocument = HydratedDocument<Bill>;
 
-export type BillStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
+export type BillStatus =
+  | 'PENDING'
+  | 'PAID'
+  | 'FAILED'
+  | 'TO_BE_REFUNDED'
+  | 'REFUNDED';
 
 @Schema()
 export class Bill {
@@ -27,10 +32,13 @@ export class Bill {
   currency: string;
 
   @Prop({ type: String, required: true })
-  stripeId: string;
+  stripeSessionId: string;
 
-  @Prop({ type: String, required: true, default: 'card' })
-  paymentMethod: string;
+  @Prop({ type: String, required: false })
+  stripePaymentIntentId?: string;
+
+  @Prop({ type: Date, required: false, default: Date.now })
+  createdAt: Date;
 }
 
 export const BillSchema = SchemaFactory.createForClass(Bill);

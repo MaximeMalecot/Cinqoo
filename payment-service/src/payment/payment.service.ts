@@ -69,7 +69,7 @@ export class PaymentService {
 
       const bill = new this.billModel({
         ...createPaymentIntentDto,
-        stripeId: stripeCheckoutSession.id,
+        stripeSessionId: stripeCheckoutSession.id,
         userId: new Types.ObjectId(createPaymentIntentDto.userId),
       });
       const newBill = await bill.save();
@@ -85,7 +85,7 @@ export class PaymentService {
     }
   }
 
-  async updateBillStatus(stripeWebhookAnswer: StripeWebhookAnswer) {
+  async stripeWhHandler(stripeWebhookAnswer: StripeWebhookAnswer) {
     try {
       const { data, stripeSig } = stripeWebhookAnswer;
 
@@ -97,40 +97,26 @@ export class PaymentService {
         process.env.STRIPE_WH_SECRET,
       );
 
-      // const bill = await this.billModel.findOne({
-      //   stripeId: stripeWebhookAnswer.id,
-      // });
+      switch (event.type) {
+        case 'checkout.session.completed':
+          await this.updatePaymentIntent(event);
+          return { message: 'Payment intent updated' };
 
-      // if (!bill) {
-      //   throw new RpcException({
-      //     message: 'Bill not found',
-      //     statusCode: 404,
-      //   });
-      // }
+        case 'payment_intent.succeeded':
+          await this.confirmPayment(event);
+          return { message: 'Payment confirmed' };
 
-      // if (bill.status === 'SUCCESS' || bill.status === 'FAILED') {
-      //   return { success: true, message: 'Bill already processed' };
-      // }
+        case 'payment_intent.payment_failed':
+        case 'payment_intent.canceled':
+        case 'payment_intent.expired':
+          await this.cancelPayment(event);
+          return { message: 'Payment canceled' };
+      }
 
-      // if (status !== 'SUCCESS') {
-      //   bill.status = 'FAILED';
-      //   await bill.save();
-      //   return { success: true, message: 'Bill status updated to failed' };
-      // }
-
-      // const newOrder = { id: '12' }; // MOCK
-      // if (!newOrder) {
-      //   bill.status = 'FAILED';
-      //   await bill.save();
-      //   throw new RpcException({
-      //     message: 'Error while creating order',
-      //     statusCode: 500,
-      //   });
-      // }
-      // bill.status = 'SUCCESS';
-      // await bill.save();
-
-      // return { success: true, message: 'Order created' };
+      return new RpcException({
+        message: 'Event type not handled',
+        statusCode: 500,
+      });
     } catch (e: any) {
       console.log(e.message);
       if (e instanceof RpcException) {
@@ -141,6 +127,74 @@ export class PaymentService {
         statusCode: 500,
       });
     }
+  }
+
+  private async updatePaymentIntent(event: Stripe.Event) {
+    const paymentIntent = event.data.object['payment_intent'];
+    const bill = await this.billModel.findOne({
+      stripeSessionId: event.data.object['id'],
+    });
+    if (!bill) {
+      throw new RpcException({
+        message: 'Bill not found',
+        statusCode: 404,
+      });
+    }
+    bill.stripePaymentIntentId = paymentIntent;
+    await bill.save();
+    console.log('payment intent', paymentIntent);
+  }
+
+  private async confirmPayment(event: Stripe.Event) {
+    const paymentIntentId = event.data.object['id'];
+
+    const bill = await this.billModel.findOne({
+      stripePaymentIntentId: paymentIntentId,
+    });
+
+    if (!bill) {
+      throw new RpcException({
+        message: 'Bill not found',
+        statusCode: 404,
+      });
+    }
+
+    if (bill.status !== 'PENDING') {
+      return { success: true, message: 'Bill already processed' };
+    }
+
+    const newOrder = { id: '12' }; // MOCK
+    if (!newOrder) {
+      bill.status = 'TO_BE_REFUNDED';
+      await bill.save();
+      throw new RpcException({
+        message: 'Error while creating order',
+        statusCode: 500,
+      });
+    }
+    bill.status = 'PAID';
+    await bill.save();
+  }
+
+  private async cancelPayment(event: Stripe.Event) {
+    const paymentIntentId = event.data.object['id'];
+
+    const bill = await this.billModel.findOne({
+      stripePaymentIntentId: paymentIntentId,
+    });
+
+    if (!bill) {
+      throw new RpcException({
+        message: 'Bill not found',
+        statusCode: 404,
+      });
+    }
+
+    if (bill.status !== 'PENDING') {
+      return { success: true, message: 'Bill already processed' };
+    }
+    bill.status = 'FAILED';
+    await bill.save();
   }
 
   async getBillsOfUser(userId: string) {

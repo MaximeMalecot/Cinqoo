@@ -18,9 +18,9 @@ export class PaymentController {
     return await this.paymentService.createPaymentIntent(data);
   }
 
-  @EventPattern('PAYMENT.UPDATE_BILL_STATUS')
-  async updateBillStatus(@Payload() payload: StripeWebhookAnswer) {
-    return await this.paymentService.updateBillStatus(payload);
+  @EventPattern('PAYMENT.STRIPE_WEBHOOK_HANDLER')
+  async stripeWhHandler(@Payload() payload: StripeWebhookAnswer) {
+    return await this.paymentService.stripeWhHandler(payload);
   }
 
   @EventPattern('PAYMENT.GET_BILLS_OF_USER')
