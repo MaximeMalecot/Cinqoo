@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
-import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
+import Stripe from 'stripe';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { Prestation } from './schemas/prestation.schema';
@@ -11,6 +11,7 @@ import { Prestation } from './schemas/prestation.schema';
 export class PrestationService {
   constructor(
     @InjectModel(Prestation.name) private prestationModel: Model<Prestation>,
+    @Inject('STRIPE_CLIENT') private stripeClient: Stripe,
   ) {}
 
   async getAll() {
@@ -25,10 +26,13 @@ export class PrestationService {
   }
 
   async create(prestation: CreatePrestationDto, user: any) {
-    const stripeId = `stripe_price_${crypto.randomUUID().toString()}`;
+    const product = await this.stripeClient.products.create({
+      name: prestation.name,
+    });
+
     const newPrestation = {
       ...prestation,
-      stripeId,
+      stripeId: product.id,
       owner: new Types.ObjectId(user._id),
     };
     const createdPrestation = new this.prestationModel(newPrestation);
@@ -103,7 +107,7 @@ export class PrestationService {
     if (!prestation) {
       throw new RpcException({
         statusCode: 404,
-        message: 'Not Found',
+        message: 'Prestation not Found',
       });
     }
 
@@ -119,6 +123,9 @@ export class PrestationService {
       prestation,
       { new: true },
     );
+
+    // TODO : if price has changed, update the price in stripe
+
     return updatedPrestation;
   }
 

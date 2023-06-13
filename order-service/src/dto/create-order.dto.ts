@@ -1,9 +1,12 @@
 import { IsString } from 'class-validator';
 
-export class CreatePaymentIntentDto {
+export class CreateOrderDto {
   @IsString()
-  userId: string;
+  applicant: string;
 
   @IsString()
   serviceId: string;
+
+  @IsString()
+  billId: string;
 }
