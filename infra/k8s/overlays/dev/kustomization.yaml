@@ -3,13 +3,18 @@ kind: Kustomization
 
 namespace: cinqoo
 
+resources:
+  - ../../base
+
 configMapGenerator:
   - name: variables
-    files:
+    files: 
       - .env
+    options:
+      disableNameSuffixHash: true
 secretGenerator:
   - name: secrets
-    files:
+    envs:
       - .env.secrets
-resources:
-  - ./services
+    options:
+      disableNameSuffixHash: true
