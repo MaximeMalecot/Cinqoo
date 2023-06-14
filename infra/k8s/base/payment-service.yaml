@@ -17,9 +17,15 @@ spec:
       containers:
         - name: payment-service
           image: europe-west9-docker.pkg.dev/cinqoo/challenge/payment-service:latest
+          imagePullPolicy: Always
           env:
             - name: PORT
               value: "3000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: PAYMENT_DATABASE_URL
           ports:
             - containerPort: 3000
           resources:

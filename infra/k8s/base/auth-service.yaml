@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: europe-west9-docker.pkg.dev/cinqoo/challenge/auth-service:latest
+          image: europe-west9-docker.pkg.dev/cinqoo/challenge/auth-service:0.0.1
+          imagePullPolicy: Always
           env:
             - name: PORT
               value: "3000"

@@ -6,10 +6,6 @@ namespace: cinqoo
 resources:
   - ../../base
 
-# commonLabels:
-#   app: cinqoo
-#   env: dev
-
 configMapGenerator:
   - name: variables
     env: .env
@@ -20,14 +16,13 @@ secretGenerator:
     env: .env.secrets
     options:
       disableNameSuffixHash: true
-
-# patches:
-#   - target:
-#       kind: HorizontalPodAutoscaler
-#     patch: |-
-#       - op: replace
-#         path: /spec/maxReplicas
-#         value: 2
-#       - op: replace
-#         path: /spec/metrics/0/resource/target/averageUtilization
-#         value: 80
+patches:
+  - target:
+      kind: HorizontalPodAutoscaler
+    patch: |-
+      - op: replace
+        path: /spec/maxReplicas
+        value: 2
+      - op: replace
+        path: /spec/metrics/0/resource/target/averageUtilization
+        value: 80

@@ -17,9 +17,15 @@ spec:
       containers:
         - name: user-service
           image: europe-west9-docker.pkg.dev/cinqoo/challenge/user-service:latest
+          imagePullPolicy: Always
           env:
             - name: PORT
               value: "3000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: USER_DATABASE_URL
           ports:
             - containerPort: 3000
           resources:
