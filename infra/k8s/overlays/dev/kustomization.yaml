@@ -8,13 +8,11 @@ resources:
 
 configMapGenerator:
   - name: variables
-    files: 
-      - .env
+    env: .env
     options:
       disableNameSuffixHash: true
 secretGenerator:
   - name: secrets
-    envs:
-      - .env.secrets
+    env: .env.secrets
     options:
       disableNameSuffixHash: true
