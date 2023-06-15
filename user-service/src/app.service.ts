@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schema/user.schema';
+import * as bcrypt from 'bcrypt';
+import { compareSync, hash } from 'bcrypt';
 import { Model } from 'mongoose';
-import { MongoError, MongoServerError } from 'mongodb';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './schema/user.schema';
 
 @Injectable()
 export class AppService {
@@ -39,6 +40,55 @@ export class AppService {
     try {
       data.password = await bcrypt.hash(data.password, 10);
       const res = new this.userModel(data);
+      return await res.save();
+    } catch (error) {
+      if (error.name === 'MongoServerError' || error.name === 'MongoError') {
+        if (error.code === 11000) {
+          throw new RpcException({
+            message: `${Object.keys(error.keyPattern)[0]} already used`,
+            statusCode: 400,
+          });
+        }
+      }
+      throw new RpcException({ code: 500 });
+    }
+  }
+
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password && !updateUserDto.oldPassword) {
+      throw new RpcException({
+        message: `Old password is required`,
+        statusCode: 400,
+      });
+    }
+    if (updateUserDto.oldPassword) {
+      const user = await this.userModel
+        .findOne({
+          id: id,
+        })
+        .select('+password');
+      if (!user) {
+        throw new RpcException({
+          message: `User with id ${id} not found`,
+          statusCode: 400,
+        });
+      }
+      if (!compareSync(updateUserDto.oldPassword, user.password)) {
+        throw new RpcException({
+          message: `Old password is incorrect`,
+          statusCode: 400,
+        });
+      }
+      delete updateUserDto.oldPassword;
+    }
+    if (updateUserDto.password) {
+      updateUserDto.password = await hash(updateUserDto.password, 10);
+    }
+    try {
+      const res = await this.userModel.update({
+        where: { id: id },
+        data: updateUserDto,
+      });
       return await res.save();
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {

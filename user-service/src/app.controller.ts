@@ -2,6 +2,7 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { OwnerOrAdminGards } from './guards/user.guards';
 
 @Controller()
@@ -31,6 +32,13 @@ export class AppController {
   @EventPattern('createUser')
   async createUser(@Payload() data: CreateUserDto) {
     return this.appService.createUser(data);
+  }
+
+  @EventPattern('updateUser')
+  async updateUser(
+    @Payload() data: { id: string; updateUserdto: UpdateUserDto },
+  ) {
+    return this.appService.updateUser(data.id, data.updateUserdto);
   }
 
   @UseGuards(OwnerOrAdminGards)
