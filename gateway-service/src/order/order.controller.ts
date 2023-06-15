@@ -73,6 +73,40 @@ export class OrderController {
     });
   }
 
+  //the prestation provider can mark the order as done
+  // However, the user can still ask for a revision
+  //and must confirm the order is done so the payment can be done
+
+  @Patch('/request/:orderId/terminate')
+  @UseGuards(IsServiceOwner)
+  async terminateOrder(@Req() req: any, @Param('orderId') orderId: string) {
+    return this.orderService.send('ORDER.TERMINATE_ORDER', {
+      userId: req.user._id,
+      orderId,
+    });
+  }
+
+  @Patch('/request/:orderId/confirm-finalization')
+  @UseGuards(IsOrderOwner)
+  async confirmFinalization(
+    @Req() req: any,
+    @Param('orderId') orderId: string,
+  ) {
+    return this.orderService.send('ORDER.CONFIRM_FINALIZATION', {
+      userId: req.user._id,
+      orderId,
+    });
+  }
+
+  @Patch('/request/:orderId/ask-for-revision')
+  @UseGuards(IsOrderOwner)
+  async startRevision(@Req() req: any, @Param('orderId') orderId: string) {
+    return this.orderService.send('ORDER.START_REVISION', {
+      userId: req.user._id,
+      orderId,
+    });
+  }
+
   //Check if user is admin or owner of the order
   @UseGuards(IsOrderOwner)
   @Get(':orderId')

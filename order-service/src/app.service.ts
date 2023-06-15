@@ -23,10 +23,15 @@ export class AppService {
   async createOrder(data: CreateOrderDto) {
     const { serviceId, applicant, billId } = data;
 
+    const service = await firstValueFrom(
+      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
+    );
+
     const order = new this.orderModel({
       applicant,
       serviceId,
       billId,
+      serviceRevisionNb: service.revisionNb,
       status: 'PENDING',
     });
 
@@ -148,7 +153,10 @@ export class AppService {
     const { userId, orderId } = data;
     const order = await this.orderModel.findById(new Types.ObjectId(orderId));
     if (!order) {
-      throw new Error('Order not found');
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order not found',
+      });
     }
     if (order.status !== 'PENDING') {
       throw new RpcException({
@@ -165,7 +173,10 @@ export class AppService {
     const { userId, orderId } = data;
     const order = await this.orderModel.findById(new Types.ObjectId(orderId));
     if (!order) {
-      throw new Error('Order not found');
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
     }
     if (order.status !== 'PENDING') {
       throw new RpcException({
@@ -176,5 +187,90 @@ export class AppService {
     order.status = OrderStatus.REFUSED;
     await order.save();
     return { message: 'Order refused' };
+  }
+
+  async terminateRequest(data: UpdateRequestDto) {
+    //Check if the order status is IN_PROGRESS
+    const order = await this.orderModel.findById(
+      new Types.ObjectId(data.orderId),
+    );
+    if (!order) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
+    }
+    if (order.status !== OrderStatus.IN_PROGRESS) {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order is not in progress',
+      });
+    }
+    order.status = OrderStatus.TERMINATED;
+    await order.save();
+    return { message: 'Order terminated' };
+  }
+
+  async confirmFinalization(data: UpdateRequestDto) {
+    //check if the order status is TERMINATED
+    const order = await this.orderModel.findById(
+      new Types.ObjectId(data.orderId),
+    );
+    if (!order) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
+    }
+    if (order.status !== OrderStatus.TERMINATED) {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order is not terminated',
+      });
+    }
+    order.status = OrderStatus.DONE;
+    await order.save();
+    return { message: 'Order marked as done' };
+  }
+
+  async startRevision(data: UpdateRequestDto) {
+    //check if the order status is TERMINATED
+    //Check how many revisions are allowed
+    //Check how many revisions have been made
+    try {
+      const order = await this.orderModel.findById(
+        new Types.ObjectId(data.orderId),
+      );
+      if (!order) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Order not found',
+        });
+      }
+      if (order.status !== OrderStatus.TERMINATED) {
+        throw new RpcException({
+          statusCode: 400,
+          message: 'Order is not terminated',
+        });
+      }
+      if (order.serviceRevisionNb == order.currentRevisionNb) {
+        throw new RpcException({
+          statusCode: 400,
+          message: 'Revision limit reached',
+        });
+      }
+      order.currentRevisionNb = order.currentRevisionNb + 1;
+      order.status = OrderStatus.IN_PROGRESS;
+      await order.save();
+      return { message: 'Revision started' };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
   }
 }
