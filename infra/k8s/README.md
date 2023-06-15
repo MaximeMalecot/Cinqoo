@@ -38,3 +38,9 @@ Check env variables of a pod :
 ```
 kubectl exec -it POD.METADATA.NAME -- printenv | egrep "ENV1|ENV2|ENV3"
 ```
+
+## Get endpoint
+
+```
+minikube service gateway-service -n cinqoo --url
+```

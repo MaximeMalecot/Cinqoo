@@ -6,6 +6,11 @@ namespace: cinqoo
 resources:
   - ../../base
 
+namePrefix: dev-
+
+commonLabels:
+  env: dev
+
 configMapGenerator:
   - name: variables
     env: .env
@@ -16,6 +21,7 @@ secretGenerator:
     env: .env.secrets
     options:
       disableNameSuffixHash: true
+
 patches:
   - target:
       kind: HorizontalPodAutoscaler
