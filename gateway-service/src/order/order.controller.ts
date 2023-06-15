@@ -73,6 +73,10 @@ export class OrderController {
     });
   }
 
+  //the prestation provider can mark the order as done
+  // However, the user can still ask for a revision
+  //and must confirm the order is done so the payment can be done
+
   @Patch('/request/:orderId/terminate')
   @UseGuards(IsServiceOwner)
   async terminateOrder(orderId: string) {

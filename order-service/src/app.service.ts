@@ -177,4 +177,22 @@ export class AppService {
     await order.save();
     return { message: 'Order refused' };
   }
+
+  async terminateRequest(data: UpdateRequestDto) {
+    //Check if the order status is IN_PROGRESS
+    return 'Not implemented yet';
+  }
+
+  async confirmFinalization(data: UpdateRequestDto) {
+    //check if the order status is TERMINATED
+
+    return 'Not implemented yet';
+  }
+
+  async startRevision(data: UpdateRequestDto) {
+    //check if the order status is TERMINATED
+    //Check how many revisions are allowed
+    //Check how many revisions have been made
+    return 'Not implemented yet';
+  }
 }

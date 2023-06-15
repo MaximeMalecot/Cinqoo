@@ -60,4 +60,19 @@ export class AppController {
   async refuseRequest(@Payload() data: UpdateRequestDto) {
     return await this.appService.refuseRequest(data);
   }
+
+  @EventPattern('ORDER.TERMINATE_ORDER')
+  async terminateRequest(@Payload() data: UpdateRequestDto) {
+    return await this.appService.terminateRequest(data);
+  }
+
+  @EventPattern('ORDER.CONFIRM_FINALIZATION')
+  async confirmFinalization(@Payload() data: UpdateRequestDto) {
+    return await this.appService.confirmFinalization(data);
+  }
+
+  @EventPattern('ORDER.START_REVISION')
+  async startRevision(@Payload() data: UpdateRequestDto) {
+    return await this.appService.startRevision(data);
+  }
 }
