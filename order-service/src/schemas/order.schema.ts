@@ -7,7 +7,8 @@ export enum OrderStatus {
   PENDING = 'PENDING',
   REFUSED = 'REFUSED',
   IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
+  TERMINATED = 'TERMINATED', //When the service provider marks the order as done
+  DONE = 'DONE', //When the user validates the order is done
   CANCELLED = 'CANCELLED',
 }
 

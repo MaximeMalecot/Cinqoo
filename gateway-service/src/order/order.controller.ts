@@ -73,6 +73,24 @@ export class OrderController {
     });
   }
 
+  @Patch('/request/:orderId/terminate')
+  @UseGuards(IsServiceOwner)
+  async terminateOrder(orderId: string) {
+    return this.orderService.send('ORDER.TERMINATE_ORDER', orderId);
+  }
+
+  @Patch('/request/:orderId/confirm-finalization')
+  @UseGuards(IsOrderOwner)
+  async confirmFinalization(orderId: string) {
+    return this.orderService.send('ORDER.CONFIRM_FINALIZATION', orderId);
+  }
+
+  @Patch('/request/:orderId/ask-for-revision')
+  @UseGuards(IsOrderOwner)
+  async startRevision(orderId: string) {
+    return this.orderService.send('ORDER.START_REVISION', orderId);
+  }
+
   //Check if user is admin or owner of the order
   @UseGuards(IsOrderOwner)
   @Get(':orderId')
