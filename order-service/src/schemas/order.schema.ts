@@ -4,6 +4,8 @@ import { HydratedDocument } from 'mongoose';
 export type OrderDocument = HydratedDocument<Order>;
 
 export enum OrderStatus {
+  PENDING = 'PENDING',
+  REFUSED = 'REFUSED',
   IN_PROGRESS = 'IN_PROGRESS',
   DONE = 'DONE',
   CANCELLED = 'CANCELLED',
