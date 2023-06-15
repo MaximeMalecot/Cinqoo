@@ -1,6 +1,18 @@
-import { Controller, Get, Inject, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ROLE } from 'src/auth/enums/role.enum';
+import { IsOrderOwner } from './guards/is-order-owner.guard';
+import { IsServiceOwner } from './guards/is-service-owner.guard';
 
 @ApiTags('order')
 @Controller('order')
@@ -9,13 +21,62 @@ export class OrderController {
     @Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
   ) {}
 
-  @Get()
-  public getOrderHello() {
-    return this.orderService.send('getHello', {});
+  // Admin specific routes
+
+  @Get('/all')
+  @Roles(ROLE.ADMIN)
+  public getAllOrders() {
+    return this.orderService.send('ORDER.GET_ALL_ORDERS_WITH_PRESTATION', {});
   }
+
+  @Get('/user/:userId')
+  @Roles(ROLE.ADMIN)
+  public getUserOrders(@Param('userId') userId: string) {
+    return this.orderService.send('ORDER.GET_ORDERS_OF_USER', userId);
+  }
+
+  // User and freelancer specific routes
 
   @Get('/self')
   public getSelfOrders(@Req() req: any) {
     return this.orderService.send('ORDER.GET_ORDERS_OF_USER', req.user._id);
+  }
+
+  @Get('/request/pending')
+  public getSelfRequestOrders(@Req() req: any) {
+    return this.orderService.send('ORDER.GET_PENDING_REQUESTS', req.user._id);
+  }
+
+  //Check if user is admin or owner of the service ordered
+  @Patch('/request/:orderId/accept')
+  @UseGuards(IsServiceOwner)
+  public acceptRequestOrder(
+    @Req() req: any,
+    @Param('orderId') orderId: string,
+  ) {
+    return this.orderService.send('ORDER.ACCEPT_REQUEST', {
+      userId: req.user._id,
+      orderId,
+    });
+  }
+
+  //Check if user is admin or owner of the service ordered
+  @Patch('/request/:orderId/refuse')
+  @UseGuards(IsServiceOwner)
+  public refuseRequestOrder(
+    @Req() req: any,
+    @Param('orderId') orderId: string,
+  ) {
+    return this.orderService.send('ORDER.REFUSE_REQUEST', {
+      userId: req.user._id,
+      orderId,
+    });
+  }
+
+  //Check if user is admin or owner of the order
+  @UseGuards(IsOrderOwner)
+  @Get(':orderId')
+  public getOrderById(@Param('orderId') orderId: string) {
+    return this.orderService.send('ORDER.GET_ORDER_WITH_PRESTATION', orderId);
   }
 }
