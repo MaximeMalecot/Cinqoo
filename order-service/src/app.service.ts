@@ -148,7 +148,10 @@ export class AppService {
     const { userId, orderId } = data;
     const order = await this.orderModel.findById(new Types.ObjectId(orderId));
     if (!order) {
-      throw new Error('Order not found');
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order not found',
+      });
     }
     if (order.status !== 'PENDING') {
       throw new RpcException({
@@ -165,7 +168,10 @@ export class AppService {
     const { userId, orderId } = data;
     const order = await this.orderModel.findById(new Types.ObjectId(orderId));
     if (!order) {
-      throw new Error('Order not found');
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
     }
     if (order.status !== 'PENDING') {
       throw new RpcException({
