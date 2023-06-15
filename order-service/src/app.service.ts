@@ -1,14 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { Order, OrderStatus } from './schemas/order.schema';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectModel('Order') private orderModel: Model<Order>) {}
+  constructor(
+    @InjectModel('Order') private orderModel: Model<Order>,
+    @Inject('PRESTATION_SERVICE')
+    private readonly prestationService: ClientProxy,
+  ) {}
 
   async getHello(): Promise<string> {
     const count = await this.orderModel.countDocuments();
@@ -35,19 +40,108 @@ export class AppService {
   }
 
   async getOrder(orderId: string) {
-    return await this.orderModel.findById(new Types.ObjectId(orderId)).exec();
+    const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+    if (!order) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
+    }
+
+    return order;
+  }
+
+  async getOrderWithPrestation(orderId: string) {
+    try {
+      const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+      if (!order) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Order not found',
+        });
+      }
+
+      const prestation = await firstValueFrom(
+        this.prestationService.send('PRESTATION.GET_ONE', order.serviceId),
+      );
+
+      if (!prestation) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Prestation not found',
+        });
+      }
+
+      return { ...order.toObject(), prestation };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
   }
 
   async getAllOrders() {
     return await this.orderModel.find().limit(10);
   }
 
+  async getAllOrdersWithPrestation() {
+    try {
+      const orders = await this.orderModel.find().limit(10);
+      const ordersWithPrestations = await Promise.all(
+        orders.map(async (order) => {
+          const prestation = await firstValueFrom(
+            this.prestationService.send('PRESTATION.GET_ONE', order.serviceId),
+          );
+          return { ...order.toObject(), prestation };
+        }),
+      );
+      return ordersWithPrestations;
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
+  }
+
   // Requests
 
   async getPendingRequests(userId: string) {
-    return await this.orderModel
-      .find({ applicant: userId, status: 'PENDING' })
-      .exec();
+    try {
+      const requests = await this.orderModel.find({
+        applicant: userId,
+        status: OrderStatus.PENDING,
+      });
+
+      const requestsWithPrestations = await Promise.all(
+        requests.map(async (request) => {
+          const prestation = await firstValueFrom(
+            this.prestationService.send(
+              'PRESTATION.GET_ONE',
+              request.serviceId,
+            ),
+          );
+          return { ...request.toObject(), prestation };
+        }),
+      );
+
+      return requestsWithPrestations;
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
   }
 
   async acceptRequest(data: UpdateRequestDto) {

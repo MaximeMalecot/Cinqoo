@@ -22,10 +22,21 @@ export class AppController {
     return await this.appService.getOrder(orderId);
   }
 
+  @EventPattern('ORDER.GET_ORDER_WITH_PRESTATION')
+  async getOrderWithService(orderId: string) {
+    return await this.appService.getOrderWithPrestation(orderId);
+  }
+
   @EventPattern('ORDER.GET_ALL_ORDERS')
   async getAllOrder() {
     console.log('get all orders');
     return await this.appService.getAllOrders();
+  }
+
+  @EventPattern('ORDER.GET_ALL_ORDERS_WITH_PRESTATION')
+  async getAllOrdersWithPrestation() {
+    console.log('get all orders');
+    return await this.appService.getAllOrdersWithPrestation();
   }
 
   @EventPattern('ORDER.GET_ORDERS_OF_USER')

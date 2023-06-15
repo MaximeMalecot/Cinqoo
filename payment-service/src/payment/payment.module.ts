@@ -26,7 +26,6 @@ import { Bill, BillSchema } from './schemas/bill.schema';
         },
       },
     ]),
-    ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     MongooseModule.forFeature([{ name: Bill.name, schema: BillSchema }]),
   ],

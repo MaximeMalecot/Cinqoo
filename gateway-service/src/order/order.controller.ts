@@ -26,7 +26,7 @@ export class OrderController {
   @Get('/all')
   @Roles(ROLE.ADMIN)
   public getAllOrders() {
-    return this.orderService.send('ORDER.GET_ALL_ORDERS', {});
+    return this.orderService.send('ORDER.GET_ALL_ORDERS_WITH_PRESTATION', {});
   }
 
   @Get('/user/:userId')
@@ -77,6 +77,6 @@ export class OrderController {
   @UseGuards(IsOrderOwner)
   @Get(':orderId')
   public getOrderById(@Param('orderId') orderId: string) {
-    return this.orderService.send('ORDER.GET_ORDER', orderId);
+    return this.orderService.send('ORDER.GET_ORDER_WITH_PRESTATION', orderId);
   }
 }
