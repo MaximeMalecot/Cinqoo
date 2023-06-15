@@ -22,6 +22,12 @@ export class Order {
   @Prop({ type: String, required: true })
   serviceId: string;
 
+  @Prop({ type: Number, required: true })
+  serviceRevisionNb: number;
+
+  @Prop({ type: Number, required: true, default: 0 })
+  currentRevisionNb: number;
+
   @Prop({ type: String, required: true })
   status: OrderStatus;
 
