@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
-import { Order } from './schemas/order.schema';
+import { Order, OrderStatus } from './schemas/order.schema';
 
 @Injectable()
 export class AppService {
@@ -51,11 +52,35 @@ export class AppService {
 
   async acceptRequest(data: UpdateRequestDto) {
     const { userId, orderId } = data;
-    return 'not implemented yet';
+    const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+    if (!order) {
+      throw new Error('Order not found');
+    }
+    if (order.status !== 'PENDING') {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order is not pending',
+      });
+    }
+    order.status = OrderStatus.IN_PROGRESS;
+    await order.save();
+    return { message: 'Order accepted' };
   }
 
   async refuseRequest(data: UpdateRequestDto) {
     const { userId, orderId } = data;
-    return 'not implemented yet';
+    const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+    if (!order) {
+      throw new Error('Order not found');
+    }
+    if (order.status !== 'PENDING') {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order is not pending',
+      });
+    }
+    order.status = OrderStatus.REFUSED;
+    await order.save();
+    return { message: 'Order refused' };
   }
 }
