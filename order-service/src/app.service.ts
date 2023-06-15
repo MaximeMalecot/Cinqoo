@@ -186,13 +186,46 @@ export class AppService {
 
   async terminateRequest(data: UpdateRequestDto) {
     //Check if the order status is IN_PROGRESS
-    return 'Not implemented yet';
+    const order = await this.orderModel.findById(
+      new Types.ObjectId(data.orderId),
+    );
+    if (!order) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
+    }
+    if (order.status !== OrderStatus.IN_PROGRESS) {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order is not in progress',
+      });
+    }
+    order.status = OrderStatus.TERMINATED;
+    await order.save();
+    return { message: 'Order terminated' };
   }
 
   async confirmFinalization(data: UpdateRequestDto) {
     //check if the order status is TERMINATED
-
-    return 'Not implemented yet';
+    const order = await this.orderModel.findById(
+      new Types.ObjectId(data.orderId),
+    );
+    if (!order) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
+    }
+    if (order.status !== OrderStatus.TERMINATED) {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Order is not terminated',
+      });
+    }
+    order.status = OrderStatus.DONE;
+    await order.save();
+    return { message: 'Order marked as done' };
   }
 
   async startRevision(data: UpdateRequestDto) {
