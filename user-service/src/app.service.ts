@@ -20,6 +20,20 @@ export class AppService {
     return this.userModel.find().exec();
   }
 
+  async getUserById(id: string) {
+    const user = await this.userModel
+      .findById(new Types.ObjectId(id))
+      .select('+password')
+      .exec();
+    if (!user) {
+      throw new RpcException({
+        message: `User ${id} not found`,
+        statusCode: 404,
+      });
+    }
+    return user;
+  }
+
   async getUserByEmail(email: string) {
     const user = await this.userModel
       .findOne({
@@ -55,19 +69,31 @@ export class AppService {
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userModel.findOne({
-      id: id,
-    });
-    console.log(user);
+    const user = await this.userModel.findById(new Types.ObjectId(id));
     if (!user) {
       throw new RpcException({
         message: `User with id ${id} not found`,
         statusCode: 400,
       });
     }
+    const emailTaken = await this.userModel.findOne({
+      email: updateUserDto.email,
+      _id: { $ne: new Types.ObjectId(id) },
+    });
+    if (emailTaken) {
+      throw new RpcException({
+        message: `Email ${updateUserDto.email} already used`,
+        statusCode: 400,
+      });
+    }
     try {
-      await this.userModel.updateOne({ _id: id }, updateUserDto);
-      return;
+      await this.userModel.updateOne(
+        { _id: new Types.ObjectId(id) },
+        updateUserDto,
+      );
+      return {
+        message: `User with id ${id} updated`,
+      };
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {
         if (error.code === 11000) {
@@ -90,9 +116,7 @@ export class AppService {
     }
     if (updatePwdUserDto.oldPassword) {
       const user = await this.userModel
-        .findOne({
-          id: id,
-        })
+        .findById(new Types.ObjectId(id))
         .select('+password');
       if (!user) {
         throw new RpcException({
@@ -115,8 +139,13 @@ export class AppService {
       );
     }
     try {
-      await this.userModel.updateOne({ _id: id }, updatePwdUserDto);
-      return;
+      await this.userModel.updateOne(
+        { _id: new Types.ObjectId(id) },
+        updatePwdUserDto,
+      );
+      return {
+        message: `Password of User with id ${id} updated`,
+      };
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {
         if (error.code === 11000) {
@@ -128,11 +157,6 @@ export class AppService {
       }
       throw new RpcException({ code: 500 });
     }
-  }
-
-  async getUserById(id: string) {
-    console.log(id);
-    return await this.userModel.findOne({ _id: id });
   }
 
   async removeUser(id: string): Promise<any> {
