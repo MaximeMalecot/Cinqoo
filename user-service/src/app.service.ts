@@ -59,6 +59,7 @@ export class AppService {
     const user = await this.userModel.findOne({
       id: id,
     });
+    console.log(user);
     if (!user) {
       throw new RpcException({
         message: `User with id ${id} not found`,
@@ -66,11 +67,8 @@ export class AppService {
       });
     }
     try {
-      const res = await this.userModel.update({
-        where: { id: id },
-        data: updateUserDto,
-      });
-      return await res.save();
+      await this.userModel.updateOne({ _id: id }, updateUserDto);
+      return;
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {
         if (error.code === 11000) {
@@ -118,11 +116,8 @@ export class AppService {
       );
     }
     try {
-      const res = await this.userModel.update({
-        where: { id: id },
-        data: updatePwdUserDto,
-      });
-      return await res.save();
+      await this.userModel.updateOne({ _id: id }, updatePwdUserDto);
+      return;
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {
         if (error.code === 11000) {
