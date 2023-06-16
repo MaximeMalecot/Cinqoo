@@ -30,7 +30,7 @@ export class IsServiceOwner implements CanActivate {
     );
     if (!prestation)
       throw new NotFoundException({ message: 'Prestation not found' });
-    if (prestation.owner !== user.id) return false;
+    if (prestation.owner !== user._id) return false;
     return true;
   }
 }

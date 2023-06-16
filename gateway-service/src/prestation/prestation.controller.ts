@@ -34,12 +34,17 @@ export class PrestationController {
     return this.prestationService.send('PRESTATION.GET_ALL', {});
   }
 
+  @Get('admin/all')
+  @Roles(ROLE.ADMIN)
+  public getAllPrestationsAdmin() {
+    return this.prestationService.send('PRESTATION.GET_ALL_ADMIN', {});
+  }
+
   @Get('self')
   public getSelf(@Req() req: any) {
-    return this.prestationService.send(
-      'PRESTATION.GET_PRESTATIONS_OF_USER',
-      req.user._id,
-    );
+    return this.prestationService.send('PRESTATION.GET_PRESTATIONS_OF_USER', {
+      userId: req.user._id,
+    });
   }
 
   @Get(':prestationId')
@@ -87,15 +92,14 @@ export class PrestationController {
     return this.prestationService.send('PRESTATION.DELETE_ONE', prestationId);
   }
 
-  //To do: Only return active prestations
   @Get('user/:userId')
   public getUserPrestations(
     @Param('userId', CheckObjectIdPipe) userId: string,
   ) {
-    return this.prestationService.send(
-      'PRESTATION.GET_PRESTATIONS_OF_USER',
+    return this.prestationService.send('PRESTATION.GET_PRESTATIONS_OF_USER', {
       userId,
-    );
+      active: true,
+    });
   }
 
   @Post()
