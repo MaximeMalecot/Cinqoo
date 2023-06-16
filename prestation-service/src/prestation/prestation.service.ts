@@ -25,6 +25,11 @@ export class PrestationService {
     return prestations;
   }
 
+  async getAllAdmin() {
+    const prestations = await this.prestationModel.find().limit(10);
+    return prestations;
+  }
+
   async create(prestation: CreatePrestationDto, user: any) {
     const product = await this.stripeClient.products.create({
       name: prestation.name,
@@ -58,21 +63,20 @@ export class PrestationService {
     };
   }
 
-  async getPrestationsOfUser(userId: string) {
-    const prestations = await this.prestationModel
-      .find({ owner: new Types.ObjectId(userId) })
-      .select({
-        __v: false,
-        owner: false,
-        stripeId: false,
-      });
+  async getPrestationsOfUser(userId: string, active: boolean) {
+    const filter = {
+      owner: new Types.ObjectId(userId),
+    };
 
-    if (!prestations) {
-      throw new RpcException({
-        statusCode: 404,
-        message: 'Not Found',
-      });
+    if (active !== null && active !== undefined) {
+      filter['isActive'] = active;
     }
+
+    const prestations = await this.prestationModel.find(filter).select({
+      __v: false,
+      owner: false,
+      stripeId: false,
+    });
 
     return prestations;
   }
@@ -123,8 +127,6 @@ export class PrestationService {
       prestation,
       { new: true },
     );
-
-    // TODO : if price has changed, update the price in stripe
 
     return updatedPrestation;
   }

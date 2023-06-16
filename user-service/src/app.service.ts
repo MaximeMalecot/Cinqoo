@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { compareSync } from 'bcrypt';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
@@ -101,7 +100,7 @@ export class AppService {
           statusCode: 400,
         });
       }
-      if (!compareSync(updatePwdUserDto.oldPassword, user.password)) {
+      if (!bcrypt.compareSync(updatePwdUserDto.oldPassword, user.password)) {
         throw new RpcException({
           message: `Old password is incorrect`,
           statusCode: 400,
@@ -137,6 +136,14 @@ export class AppService {
   }
 
   async removeUser(id: string): Promise<any> {
-    return await this.userModel.deleteOne({ _id: id });
+    const user = await this.userModel.findOne({ _id: new Types.ObjectId(id) });
+    if (!user) {
+      throw new RpcException({
+        message: `User not found`,
+        statusCode: 404,
+      });
+    }
+
+    return await this.userModel.deleteOne({ _id: new Types.ObjectId(id) });
   }
 }

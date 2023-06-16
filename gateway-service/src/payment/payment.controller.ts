@@ -60,10 +60,4 @@ export class PaymentController {
   public refundBill(@Req() req: any, @Param('id') id: string) {
     return this.paymentService.send('PAYMENT.REFUND_BILL', id);
   }
-
-  @Get('webhook')
-  @Public()
-  public get(@Body() data: any) {
-    return 'salut';
-  }
 }

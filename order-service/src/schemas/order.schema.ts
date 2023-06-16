@@ -4,8 +4,11 @@ import { HydratedDocument } from 'mongoose';
 export type OrderDocument = HydratedDocument<Order>;
 
 export enum OrderStatus {
+  PENDING = 'PENDING',
+  REFUSED = 'REFUSED',
   IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
+  TERMINATED = 'TERMINATED', //When the service provider marks the order as done
+  DONE = 'DONE', //When the user validates the order is done
   CANCELLED = 'CANCELLED',
 }
 
@@ -18,6 +21,12 @@ export class Order {
 
   @Prop({ type: String, required: true })
   serviceId: string;
+
+  @Prop({ type: Number, required: true })
+  serviceRevisionNb: number;
+
+  @Prop({ type: Number, required: true, default: 0 })
+  currentRevisionNb: number;
 
   @Prop({ type: String, required: true })
   status: OrderStatus;
