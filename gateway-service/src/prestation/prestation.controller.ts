@@ -8,12 +8,16 @@ import {
   Patch,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
+import { IsServiceAccessible } from './guards/is-service-accessible.guard';
+import { IsServiceOwner } from './guards/is-service-owner.guard';
 
 @ApiTags('prestation')
 @Controller('prestation')
@@ -37,6 +41,8 @@ export class PrestationController {
   }
 
   @Get(':prestationId')
+  @Public()
+  @UseGuards(IsServiceAccessible)
   public getPrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
@@ -44,6 +50,7 @@ export class PrestationController {
   }
 
   @Patch(':prestationId')
+  @UseGuards(IsServiceOwner)
   public updatePrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
     @Body() body: UpdatePrestationDto,
