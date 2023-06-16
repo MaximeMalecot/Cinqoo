@@ -8,12 +8,15 @@ import {
   Param,
   Patch,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
+import { IsAccountOwnerGuard } from './guards/is-account-owner.guard';
 
 @ApiTags('user')
 @Controller('user')
@@ -42,6 +45,7 @@ export class UserController {
   }
 
   @Get(':userId')
+  @Public()
   public getUserById(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('getUserById', {
       id: userId,
@@ -50,6 +54,7 @@ export class UserController {
 
   @HttpCode(200)
   @Patch(':userId')
+  @UseGuards(IsAccountOwnerGuard)
   public async updateUser(
     @Param('userId', CheckObjectIdPipe) userId: string,
     @Body() body: UpdateUserDto,
@@ -62,6 +67,7 @@ export class UserController {
 
   @HttpCode(200)
   @Patch('/pwd/:userId')
+  @UseGuards(IsAccountOwnerGuard)
   public async updatePwdUser(
     @Param('userId', CheckObjectIdPipe) userId: string,
     @Body() body: UpdatePwdUserDto,
@@ -73,6 +79,7 @@ export class UserController {
   }
 
   @HttpCode(204)
+  @UseGuards(IsAccountOwnerGuard)
   @Delete(':userId')
   public async deleteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('deleteUser', userId);
