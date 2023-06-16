@@ -6,6 +6,7 @@ import { compareSync, hash } from 'bcrypt';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 import { User } from './schema/user.schema';
 
 @Injectable()
@@ -55,13 +56,42 @@ export class AppService {
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
-    if (updateUserDto.password && !updateUserDto.oldPassword) {
+    const user = await this.userModel.findOne({
+      id: id,
+    });
+    if (!user) {
+      throw new RpcException({
+        message: `User with id ${id} not found`,
+        statusCode: 400,
+      });
+    }
+    try {
+      const res = await this.userModel.update({
+        where: { id: id },
+        data: updateUserDto,
+      });
+      return await res.save();
+    } catch (error) {
+      if (error.name === 'MongoServerError' || error.name === 'MongoError') {
+        if (error.code === 11000) {
+          throw new RpcException({
+            message: `${Object.keys(error.keyPattern)[0]} already used`,
+            statusCode: 400,
+          });
+        }
+      }
+      throw new RpcException({ code: 500 });
+    }
+  }
+
+  async updatePwdUser(id: string, updatePwdUserDto: UpdatePwdUserDto) {
+    if (updatePwdUserDto.password && !updatePwdUserDto.oldPassword) {
       throw new RpcException({
         message: `Old password is required`,
         statusCode: 400,
       });
     }
-    if (updateUserDto.oldPassword) {
+    if (updatePwdUserDto.oldPassword) {
       const user = await this.userModel
         .findOne({
           id: id,
@@ -73,21 +103,21 @@ export class AppService {
           statusCode: 400,
         });
       }
-      if (!compareSync(updateUserDto.oldPassword, user.password)) {
+      if (!compareSync(updatePwdUserDto.oldPassword, user.password)) {
         throw new RpcException({
           message: `Old password is incorrect`,
           statusCode: 400,
         });
       }
-      delete updateUserDto.oldPassword;
+      delete updatePwdUserDto.oldPassword;
     }
-    if (updateUserDto.password) {
-      updateUserDto.password = await hash(updateUserDto.password, 10);
+    if (updatePwdUserDto.password) {
+      updatePwdUserDto.password = await hash(updatePwdUserDto.password, 10);
     }
     try {
       const res = await this.userModel.update({
         where: { id: id },
-        data: updateUserDto,
+        data: updatePwdUserDto,
       });
       return await res.save();
     } catch (error) {
