@@ -13,6 +13,8 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
@@ -42,7 +44,7 @@ export class PrestationController {
 
   @Get(':prestationId')
   @Public()
-  @UseGuards(IsServiceAccessible)
+  @UseGuards(IsServiceAccessible) // If the prestation is not active, only the owner or an admin can access it with a valid token
   public getPrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
@@ -62,6 +64,7 @@ export class PrestationController {
   }
 
   @Patch('enable/:prestationId')
+  @UseGuards(IsServiceOwner)
   public enablePrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
@@ -69,6 +72,7 @@ export class PrestationController {
   }
 
   @Patch('disable/:prestationId')
+  @UseGuards(IsServiceOwner)
   public disablePrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
@@ -76,12 +80,14 @@ export class PrestationController {
   }
 
   @Delete(':prestationId')
+  @UseGuards(IsServiceOwner)
   public deletePrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
     return this.prestationService.send('PRESTATION.DELETE_ONE', prestationId);
   }
 
+  //To do: Only return active prestations
   @Get('user/:userId')
   public getUserPrestations(
     @Param('userId', CheckObjectIdPipe) userId: string,
@@ -93,6 +99,7 @@ export class PrestationController {
   }
 
   @Post()
+  @Roles(ROLE.FREELANCER)
   public createPrestation(@Body() body: CreatePrestationDto, @Req() req: any) {
     return this.prestationService.send('PRESTATION.CREATE', {
       user: req.user,
