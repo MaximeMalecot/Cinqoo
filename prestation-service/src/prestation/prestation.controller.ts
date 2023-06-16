@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreatePrestationRequestDto } from './dto/create-prestation-request.dto';
+import { GetUserPrestationsDto } from './dto/get-user-prestations.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { PrestationService } from './prestation.service';
 
@@ -13,6 +14,11 @@ export class PrestationController {
     return await this.appService.getAll();
   }
 
+  @EventPattern('PRESTATION.GET_ALL_ADMIN')
+  async getAllAdmin() {
+    return await this.appService.getAllAdmin();
+  }
+
   @EventPattern('PRESTATION.CREATE')
   async create(@Payload() data: CreatePrestationRequestDto) {
     const { user, prestation } = data;
@@ -20,9 +26,9 @@ export class PrestationController {
   }
 
   @EventPattern('PRESTATION.GET_PRESTATIONS_OF_USER')
-  async getPrestationsOfUser(userId: string) {
-    console.log('userId', userId);
-    return await this.appService.getPrestationsOfUser(userId);
+  async getPrestationsOfUser(@Payload() data: GetUserPrestationsDto) {
+    const { userId, active } = data;
+    return await this.appService.getPrestationsOfUser(userId, active);
   }
 
   @EventPattern('PRESTATION.GET_ACTIVE_PRESTATIONS_OF_USER')
