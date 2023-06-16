@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
+import { Model, Types } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schema/user.schema';
-import { Model } from 'mongoose';
-import { MongoError, MongoServerError } from 'mongodb';
 
 @Injectable()
 export class AppService {
@@ -59,6 +58,14 @@ export class AppService {
   }
 
   async removeUser(id: string): Promise<any> {
-    return await this.userModel.deleteOne({ _id: id });
+    const user = await this.userModel.findOne({ _id: new Types.ObjectId(id) });
+    if (!user) {
+      throw new RpcException({
+        message: `User not found`,
+        statusCode: 404,
+      });
+    }
+
+    return await this.userModel.deleteOne({ _id: new Types.ObjectId(id) });
   }
 }

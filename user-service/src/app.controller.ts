@@ -1,8 +1,7 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { OwnerOrAdminGards } from './guards/user.guards';
 
 @Controller()
 export class AppController {
@@ -33,9 +32,8 @@ export class AppController {
     return this.appService.createUser(data);
   }
 
-  @UseGuards(OwnerOrAdminGards)
   @EventPattern('deleteUser')
-  async removeUser(@Payload() data: { id: string }) {
-    return this.appService.removeUser(data.id);
+  async removeUser(userId: string) {
+    return this.appService.removeUser(userId);
   }
 }
