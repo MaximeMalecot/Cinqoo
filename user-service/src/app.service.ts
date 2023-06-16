@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { compareSync, hash } from 'bcrypt';
+import { compareSync } from 'bcrypt';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -112,7 +112,10 @@ export class AppService {
       delete updatePwdUserDto.oldPassword;
     }
     if (updatePwdUserDto.password) {
-      updatePwdUserDto.password = await hash(updatePwdUserDto.password, 10);
+      updatePwdUserDto.password = await bcrypt.hash(
+        updatePwdUserDto.password,
+        10,
+      );
     }
     try {
       const res = await this.userModel.update({
