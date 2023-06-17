@@ -65,6 +65,12 @@ const oidcProvider = new gcp.iam.WorkloadIdentityPoolProvider(
     },
   }
 );
+// Add GKE roles to service account
+new gcp.projects.IAMBinding("gkeMember", {
+  project: project ?? "cinqoo",
+  members: [pulumi.interpolate`serviceAccount:${serviceAccount.email}`],
+  role: "roles/container.admin",
+});
 
 // Allow repository to impersonate the service account
 
