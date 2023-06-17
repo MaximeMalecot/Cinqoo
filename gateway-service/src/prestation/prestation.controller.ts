@@ -106,7 +106,7 @@ export class PrestationController {
   @Roles(ROLE.FREELANCER)
   public createPrestation(@Body() body: CreatePrestationDto, @Req() req: any) {
     return this.prestationService.send('PRESTATION.CREATE', {
-      user: req.user,
+      user: req.user._id,
       prestation: body,
     });
   }

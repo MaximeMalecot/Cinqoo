@@ -3,10 +3,9 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
-import { STRIPE_CLIENT } from 'src/stripe/constants';
-import Stripe from 'stripe';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
-import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
+import { UpdatePaymentIntentDto } from './dto/update-payment-intent.dto';
+import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { Bill } from './schemas/bill.schema';
 
 @Injectable()
@@ -17,7 +16,8 @@ export class PaymentService {
     private readonly prestationService: ClientProxy,
     @Inject('ORDER_SERVICE')
     private readonly orderService: ClientProxy,
-    @Inject(STRIPE_CLIENT) private stripe: Stripe,
+    @Inject('STRIPE_SERVICE')
+    private readonly stripeService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -44,24 +44,22 @@ export class PaymentService {
       }
 
       //creating stripe price
-      const price = await this.stripe.prices.create({
-        currency: 'eur',
-        unit_amount: serviceExists.price * 100,
-        product: serviceExists.stripeId,
-      });
+      const price = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_PRICE', {
+          amount: serviceExists.price,
+          productId: serviceExists.stripeId,
+        }),
+      );
 
+      console.log(price);
       //creating stripe checkout session with created price
-      const stripeCheckoutSession = await this.stripe.checkout.sessions.create({
-        success_url: 'http://localhost:3000/success',
-        cancel_url: 'http://localhost:3000/cancel',
-        mode: 'payment',
-        line_items: [
-          {
-            price: price.id,
-            quantity: 1,
-          },
-        ],
-      });
+      const stripeCheckoutSession = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {
+          priceId: price.id,
+          successUrl: 'http://localhost:3000/success',
+          cancelUrl: 'http://localhost:3000/cancel',
+        }),
+      );
 
       if (!stripeCheckoutSession.id) {
         throw new RpcException({
@@ -89,54 +87,65 @@ export class PaymentService {
     }
   }
 
-  async stripeWhHandler(stripeWebhookAnswer: StripeWebhookAnswer) {
-    try {
-      const { data, stripeSig } = stripeWebhookAnswer;
+  async refundBill(billId: string) {
+    const bill = await this.billModel.findById(new Types.ObjectId(billId));
 
-      // retrieve the event by verifying the signature using the raw body and secret
-      const rawBuffer = Buffer.from(data);
-      const event = this.stripe.webhooks.constructEvent(
-        rawBuffer,
-        stripeSig,
-        process.env.STRIPE_WH_SECRET,
-      );
-
-      switch (event.type) {
-        case 'checkout.session.completed':
-          await this.updatePaymentIntent(event);
-          return { message: 'Payment intent updated' };
-
-        case 'payment_intent.succeeded':
-          await this.confirmPayment(event);
-          return { message: 'Payment confirmed' };
-
-        case 'payment_intent.payment_failed':
-        case 'payment_intent.canceled':
-        case 'payment_intent.expired':
-          await this.cancelPayment(event);
-          return { message: 'Payment canceled' };
-      }
-
-      return new RpcException({
-        message: 'Event type not handled',
-        statusCode: 500,
-      });
-    } catch (e: any) {
-      console.log(e.message);
-      if (e instanceof RpcException) {
-        throw e;
-      }
+    if (!bill) {
       throw new RpcException({
-        message: 'Error while updating bill status',
+        message: 'Bill not found',
+        statusCode: 404,
+      });
+    }
+
+    if (!bill.stripePaymentIntentId) {
+      throw new RpcException({
+        message: 'Bill has no payment intent id',
+        statusCode: 404,
+      });
+    }
+
+    if (bill.status == 'REFUNDED') {
+      throw new RpcException({
+        message: 'Bill already refunded',
+        statusCode: 404,
+      });
+    }
+
+    const refund = await firstValueFrom(
+      this.stripeService.send('STRIPE.REFUND_PAYMENT_INTENT', {
+        paymentIntentId: bill.stripePaymentIntentId,
+      }),
+    );
+
+    if (!refund) {
+      throw new RpcException({
+        message: 'Error while creating refund',
         statusCode: 500,
       });
     }
+
+    bill.status = 'REFUNDED';
+    bill.stripeRefundId = refund.id;
+    await bill.save();
+
+    return { success: true, message: 'Bill refunded' };
   }
 
-  private async updatePaymentIntent(event: Stripe.Event) {
-    const paymentIntent = event.data.object['payment_intent'];
+  async getBillsOfUser(userId: string) {
+    const bills = await this.billModel
+      .find({ userId: new Types.ObjectId(userId) })
+      .select({
+        __v: false,
+      });
+    return bills;
+  }
+
+  // Stripe Webhook callbaks
+
+  public async updatePaymentIntent(data: UpdatePaymentIntentDto) {
+    const { paymentIntentId, sessionId } = data;
     const bill = await this.billModel.findOne({
-      stripeSessionId: event.data.object['id'],
+      stripeSessionId: sessionId,
     });
     if (!bill) {
       throw new RpcException({
@@ -144,13 +153,13 @@ export class PaymentService {
         statusCode: 404,
       });
     }
-    bill.stripePaymentIntentId = paymentIntent;
+    bill.stripePaymentIntentId = paymentIntentId;
     await bill.save();
-    console.log('payment intent', paymentIntent);
+    return { success: true, message: 'Payment intent updated' };
   }
 
-  private async confirmPayment(event: Stripe.Event) {
-    const paymentIntentId = event.data.object['id'];
+  public async confirmPayment(data: UpdatePaymentStatusDto) {
+    const { paymentIntentId } = data;
 
     const bill = await this.billModel.findOne({
       stripePaymentIntentId: paymentIntentId,
@@ -185,10 +194,12 @@ export class PaymentService {
     }
     bill.status = 'PAID';
     await bill.save();
+
+    return { success: true, message: 'Bill processed' };
   }
 
-  private async cancelPayment(event: Stripe.Event) {
-    const paymentIntentId = event.data.object['id'];
+  public async cancelPayment(data: UpdatePaymentStatusDto) {
+    const { paymentIntentId } = data;
 
     const bill = await this.billModel.findOne({
       stripePaymentIntentId: paymentIntentId,
@@ -206,56 +217,7 @@ export class PaymentService {
     }
     bill.status = 'FAILED';
     await bill.save();
-  }
 
-  async refundBill(billId: string) {
-    const bill = await this.billModel.findById(new Types.ObjectId(billId));
-
-    if (!bill) {
-      throw new RpcException({
-        message: 'Bill not found',
-        statusCode: 404,
-      });
-    }
-
-    if (!bill.stripePaymentIntentId) {
-      throw new RpcException({
-        message: 'Bill has no payment intent id',
-        statusCode: 404,
-      });
-    }
-
-    if (bill.status == 'REFUNDED') {
-      throw new RpcException({
-        message: 'Bill already refunded',
-        statusCode: 404,
-      });
-    }
-
-    const refund = await this.stripe.refunds.create({
-      payment_intent: bill.stripePaymentIntentId,
-    });
-
-    if (!refund) {
-      throw new RpcException({
-        message: 'Error while creating refund',
-        statusCode: 500,
-      });
-    }
-
-    bill.status = 'REFUNDED';
-    bill.stripeRefundId = refund.id;
-    await bill.save();
-
-    return { success: true, message: 'Bill refunded' };
-  }
-
-  async getBillsOfUser(userId: string) {
-    const bills = await this.billModel
-      .find({ userId: new Types.ObjectId(userId) })
-      .select({
-        __v: false,
-      });
-    return bills;
+    return { success: true, message: 'Bill canceled' };
   }
 }
