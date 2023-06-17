@@ -24,7 +24,7 @@ class AuthService {
         return await res.json();
     }
 
-    async register(email: string, password: string) {
+    async register(email: string, password: string, username: string) {
         const res = await fetch(`${API_ENDPOINT}/register`, {
             method: "POST",
             headers: {
@@ -33,6 +33,7 @@ class AuthService {
             body: JSON.stringify({
                 email,
                 password,
+                username,
             }),
         });
 

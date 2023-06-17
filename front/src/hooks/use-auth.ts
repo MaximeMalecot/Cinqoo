@@ -30,9 +30,12 @@ const useAuth = () => {
     const isConnected = useMemo(() => !!token && !!userData, [token, userData]);
     const navigate = useNavigate();
 
-    const register = useCallback(async (mail: string, password: string) => {
-        return await authService.register(mail, password);
-    }, []);
+    const register = useCallback(
+        async (mail: string, password: string, username: string) => {
+            return await authService.register(mail, password, username);
+        },
+        []
+    );
 
     const login = useCallback(async (mail: string, password: string) => {
         const res = await authService.login(mail, password);

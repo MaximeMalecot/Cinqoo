@@ -7,7 +7,11 @@ interface Props {
 }
 
 type AuthContextType = {
-    register: (mail: string, password: string) => Promise<boolean>;
+    register: (
+        mail: string,
+        password: string,
+        username: string
+    ) => Promise<boolean>;
     login: (mail: string, password: string) => Promise<boolean>;
     logout: () => void;
     isConnected: boolean;
