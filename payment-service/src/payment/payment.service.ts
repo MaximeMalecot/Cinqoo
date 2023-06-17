@@ -111,12 +111,8 @@ export class PaymentService {
       });
     }
 
-    // const refund = await this.stripe.refunds.create({
-    //   payment_intent: bill.stripePaymentIntentId,
-    // });
-
     const refund = await firstValueFrom(
-      this.stripeService.send('STRIPE.CREATE_REFUND', {
+      this.stripeService.send('STRIPE.REFUND_PAYMENT_INTENT', {
         paymentIntentId: bill.stripePaymentIntentId,
       }),
     );
