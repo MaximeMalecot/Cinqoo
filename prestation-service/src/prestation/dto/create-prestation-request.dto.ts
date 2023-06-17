@@ -1,9 +1,9 @@
-import { IsObject } from 'class-validator';
+import { IsObject, IsString } from 'class-validator';
 import { CreatePrestationDto } from './create-prestation.dto';
 
 export class CreatePrestationRequestDto {
-  @IsObject()
-  user: any;
+  @IsString()
+  user: string;
 
   @IsObject()
   prestation: CreatePrestationDto;

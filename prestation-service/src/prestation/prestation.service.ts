@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import Stripe from 'stripe';
+import { firstValueFrom } from 'rxjs';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { Prestation } from './schemas/prestation.schema';
@@ -11,7 +11,7 @@ import { Prestation } from './schemas/prestation.schema';
 export class PrestationService {
   constructor(
     @InjectModel(Prestation.name) private prestationModel: Model<Prestation>,
-    @Inject('STRIPE_CLIENT') private stripeClient: Stripe,
+    @Inject('STRIPE_SERVICE') private stripeService: ClientProxy,
   ) {}
 
   async getAll() {
@@ -30,15 +30,17 @@ export class PrestationService {
     return prestations;
   }
 
-  async create(prestation: CreatePrestationDto, user: any) {
-    const product = await this.stripeClient.products.create({
-      name: prestation.name,
-    });
+  async create(prestation: CreatePrestationDto, userId: string) {
+    const product = await firstValueFrom(
+      this.stripeService.send('STRIPE.CREATE_PRODUCT', {
+        name: prestation.name,
+      }),
+    );
 
     const newPrestation = {
       ...prestation,
       stripeId: product.id,
-      owner: new Types.ObjectId(user._id),
+      owner: new Types.ObjectId(userId),
     };
     const createdPrestation = new this.prestationModel(newPrestation);
     const savedPrestation = await createdPrestation.save();

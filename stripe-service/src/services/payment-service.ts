@@ -1,12 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Stripe from 'stripe';
-import { STRIPE_CLIENT } from '../stripe/constants';
-import { CreatePriceDto } from '../dto/create-price.dto';
-import { CreateCheckoutSessionDto } from '../dto/create-checkout-session.dto';
-import { HandleWebhookDto } from '../dto/handle-webhook.dto';
 import { RpcException } from '@nestjs/microservices';
-import { RefundPaymentIntentDto } from '../dto/refund-payment-intent.dto';
+import Stripe from 'stripe';
+import { CreateCheckoutSessionDto } from '../dto/create-checkout-session.dto';
+import { CreatePriceDto } from '../dto/create-price.dto';
 import { CreateProductDto } from '../dto/create-product.dto';
+import { RefundPaymentIntentDto } from '../dto/refund-payment-intent.dto';
+import { STRIPE_CLIENT } from '../stripe/constants';
 
 @Injectable()
 export class PaymentService {
@@ -25,12 +24,23 @@ export class PaymentService {
   }
 
   async createProduct(data: CreateProductDto) {
-    const { name } = data;
+    try {
+      const { name } = data;
 
-    const product = await this.stripe.products.create({
-      name: name,
-    });
-    return product;
+      const product = await this.stripe.products.create({
+        name: name,
+      });
+
+      return product;
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        message: 'Error while creating product',
+        statusCode: 500,
+      });
+    }
   }
 
   async createCheckoutSession(data: CreateCheckoutSessionDto) {

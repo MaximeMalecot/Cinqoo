@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { RpcException, Transport } from '@nestjs/microservices';
-import { PORTS } from './constants';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { RpcException, Transport } from '@nestjs/microservices';
+import { AppModule } from './app.module';
+import { PORTS } from './constants';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
@@ -12,6 +12,7 @@ async function bootstrap() {
       port: PORTS.STRIPE,
     },
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -134,8 +134,6 @@ services:
             - ./stripe-service:/home/node
             - /home/node/node_modules
         env_file: .env
-        depends_on:
-            - mongo-db
 
     order-service:
         hostname: "${ORDER_SERVICE}"
