@@ -1,16 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import Stripe from 'stripe';
-import { STRIPE_CLIENT } from '../stripe/constants';
-import { CreatePriceDto } from '../dto/create-price.dto';
-import { CreateCheckoutSessionDto } from '../dto/create-checkout-session.dto';
 import { HandleWebhookDto } from '../dto/handle-webhook.dto';
-import { RpcException } from '@nestjs/microservices';
-import { RefundPaymentIntentDto } from '../dto/refund-payment-intent.dto';
-import { CreateProductDto } from '../dto/create-product.dto';
+import { STRIPE_CLIENT } from '../stripe/constants';
 
 @Injectable()
 export class WebhookService {
-  constructor(@Inject(STRIPE_CLIENT) private readonly stripe: Stripe) {}
+  constructor(
+    @Inject(STRIPE_CLIENT) private readonly stripe: Stripe,
+    @Inject('PAYMENT_SERVICE') private readonly paymentService: ClientProxy,
+  ) {}
 
   async handleWebhook(data: HandleWebhookDto) {
     try {
@@ -24,6 +24,16 @@ export class WebhookService {
       );
 
       switch (event.type) {
+        case 'checkout.session.completed':
+          return await this.updatePaymentIntent(event);
+
+        case 'payment_intent.succeeded':
+          return await this.confirmPayment(event);
+
+        case 'payment_intent.payment_failed':
+        case 'payment_intent.canceled':
+        case 'payment_intent.expired':
+          return await this.cancelPayment(event);
       }
 
       return new RpcException({
@@ -40,5 +50,37 @@ export class WebhookService {
         statusCode: 500,
       });
     }
+  }
+
+  private async updatePaymentIntent(event: Stripe.Event) {
+    const sessionId = event.data.object['id'];
+    const paymentIntentId = event.data.object['payment_intent'];
+
+    return await firstValueFrom(
+      this.paymentService.send('PAYMENT.UPDATE_PAYMENT_INTENT', {
+        sessionId,
+        paymentIntentId,
+      }),
+    );
+  }
+
+  private async confirmPayment(event: Stripe.Event) {
+    const paymentIntentId = event.data.object['id'];
+
+    return await firstValueFrom(
+      this.paymentService.send('PAYMENT.CONFIRM_PAYMENT', {
+        paymentIntentId,
+      }),
+    );
+  }
+
+  private async cancelPayment(event: Stripe.Event) {
+    const paymentIntentId = event.data.object['id'];
+
+    return await firstValueFrom(
+      this.paymentService.send('PAYMENT.CANCEL_PAYMENT', {
+        paymentIntentId,
+      }),
+    );
   }
 }

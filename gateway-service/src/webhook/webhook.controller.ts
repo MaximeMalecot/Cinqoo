@@ -26,7 +26,7 @@ export class WebhookController {
     @Headers('Stripe-Signature') stripeSig: string,
   ) {
     return this.stripeService.send('STRIPE.HANDLE_WEBHOOK', {
-      data: req.rawBody,
+      req: req.rawBody,
       stripeSig,
     });
   }
