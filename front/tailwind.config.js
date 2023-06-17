@@ -13,6 +13,7 @@ export default {
                     secondary: "#74767E",
                     "primary-content": "#FFFFFF",
                     "secondary-content": "#FFFFFF",
+                    "dark-green": "#009F55",
                 },
             },
         ],

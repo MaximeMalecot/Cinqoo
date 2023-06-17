@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
 
-export default function Header() {
+export default function HomeHeader() {
     return (
-        <header
-            className={`navbar relative bg-base-100 border border-b2 border-base-200`}
-        >
-            <div className={`container mx-auto `}>
+        <header className={`navbar fixed top-0 bg-transparent`}>
+            <div className={`container mx-auto text-white`}>
                 <div className="flex-1">
                     <Link to="/" className="capitalize text-2xl font-bold">
                         cinqoo
