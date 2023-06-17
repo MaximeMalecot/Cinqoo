@@ -3,7 +3,6 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
-import { STRIPE_CLIENT } from 'src/stripe/constants';
 import Stripe from 'stripe';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { StripeWebhookAnswer } from './dto/stripe-webhook-answer.dto';
@@ -17,7 +16,8 @@ export class PaymentService {
     private readonly prestationService: ClientProxy,
     @Inject('ORDER_SERVICE')
     private readonly orderService: ClientProxy,
-    @Inject(STRIPE_CLIENT) private stripe: Stripe,
+    @Inject('STRIPE_SERVICE')
+    private readonly stripeService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -44,24 +44,21 @@ export class PaymentService {
       }
 
       //creating stripe price
-      const price = await this.stripe.prices.create({
-        currency: 'eur',
-        unit_amount: serviceExists.price * 100,
-        product: serviceExists.stripeId,
-      });
+      const price = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_PRICE', {
+          amount: serviceExists.price,
+          productId: serviceExists.stripeId,
+        }),
+      );
 
       //creating stripe checkout session with created price
-      const stripeCheckoutSession = await this.stripe.checkout.sessions.create({
-        success_url: 'http://localhost:3000/success',
-        cancel_url: 'http://localhost:3000/cancel',
-        mode: 'payment',
-        line_items: [
-          {
-            price: price.id,
-            quantity: 1,
-          },
-        ],
-      });
+      const stripeCheckoutSession = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {
+          priceId: price.id,
+          successUrl: 'http://localhost:3000/success',
+          cancelUrl: 'http://localhost:3000/cancel',
+        }),
+      );
 
       if (!stripeCheckoutSession.id) {
         throw new RpcException({
@@ -95,32 +92,33 @@ export class PaymentService {
 
       // retrieve the event by verifying the signature using the raw body and secret
       const rawBuffer = Buffer.from(data);
-      const event = this.stripe.webhooks.constructEvent(
-        rawBuffer,
-        stripeSig,
-        process.env.STRIPE_WH_SECRET,
-      );
+      // const event = this.stripe.webhooks.constructEvent(
+      //   rawBuffer,
+      //   stripeSig,
+      //   process.env.STRIPE_WH_SECRET,
+      // );
 
-      switch (event.type) {
-        case 'checkout.session.completed':
-          await this.updatePaymentIntent(event);
-          return { message: 'Payment intent updated' };
+      // switch (event.type) {
+      //   case 'checkout.session.completed':
+      //     await this.updatePaymentIntent(event);
+      //     return { message: 'Payment intent updated' };
 
-        case 'payment_intent.succeeded':
-          await this.confirmPayment(event);
-          return { message: 'Payment confirmed' };
+      //   case 'payment_intent.succeeded':
+      //     await this.confirmPayment(event);
+      //     return { message: 'Payment confirmed' };
 
-        case 'payment_intent.payment_failed':
-        case 'payment_intent.canceled':
-        case 'payment_intent.expired':
-          await this.cancelPayment(event);
-          return { message: 'Payment canceled' };
-      }
+      //   case 'payment_intent.payment_failed':
+      //   case 'payment_intent.canceled':
+      //   case 'payment_intent.expired':
+      //     await this.cancelPayment(event);
+      //     return { message: 'Payment canceled' };
+      // }
 
-      return new RpcException({
-        message: 'Event type not handled',
-        statusCode: 500,
-      });
+      // return new RpcException({
+      //   message: 'Event type not handled',
+      //   statusCode: 500,
+      // });
+      return { message: 'Event type not handled' };
     } catch (e: any) {
       console.log(e.message);
       if (e instanceof RpcException) {
@@ -232,9 +230,15 @@ export class PaymentService {
       });
     }
 
-    const refund = await this.stripe.refunds.create({
-      payment_intent: bill.stripePaymentIntentId,
-    });
+    // const refund = await this.stripe.refunds.create({
+    //   payment_intent: bill.stripePaymentIntentId,
+    // });
+
+    const refund = await firstValueFrom(
+      this.stripeService.send('STRIPE.CREATE_REFUND', {
+        paymentIntentId: bill.stripePaymentIntentId,
+      }),
+    );
 
     if (!refund) {
       throw new RpcException({
