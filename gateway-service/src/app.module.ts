@@ -10,6 +10,7 @@ import { PrestationModule } from './prestation/prestation.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';
 import { UserModule } from './user/user.module';
+import { WebhookModule } from './webhook/webhook.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { UserModule } from './user/user.module';
     ReportModule,
     OrderModule,
     DeliverableModule,
-    FavoriteModule
+    FavoriteModule,
+    WebhookModule
   ],
   controllers: [AppController],
 })
