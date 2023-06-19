@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-service
+  namespace: cinqoo
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gateway-service
+    networking.gke.io/managed-certificates: gateway-service
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.allow-http: "false"
+
+spec:
+  defaultBackend:
+    service:
+      name: gateway-service
+      port:
+        number: 3000

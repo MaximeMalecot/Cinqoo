@@ -1,5 +1,4 @@
-name: Review-ms build and push docker image
-
+name: Review Push
 on:
     workflow_dispatch:
     push:

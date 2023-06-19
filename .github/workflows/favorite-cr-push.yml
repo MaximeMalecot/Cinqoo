@@ -1,4 +1,4 @@
-name: Favorite-ms build and push docker image
+name: Favorite Push
 
 on:
     workflow_dispatch:

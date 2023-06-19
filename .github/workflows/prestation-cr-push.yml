@@ -1,4 +1,4 @@
-name: Prestation-ms build and push docker image
+name: Prestation Push
 
 on:
     workflow_dispatch:

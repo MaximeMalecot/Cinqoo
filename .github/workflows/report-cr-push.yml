@@ -1,4 +1,4 @@
-name: Report-ms build and push docker image
+name: Report Push
 
 on:
     workflow_dispatch:
