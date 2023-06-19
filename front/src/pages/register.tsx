@@ -69,6 +69,26 @@ export default function Register() {
                             )}
                             Sign up
                         </button>
+                        <p className="text-sm text-slate-500">
+                            By joining, you agree to the Cinqoo{" "}
+                            <Link
+                                to="/terms_of_service"
+                                target="_blank"
+                                className="underline"
+                            >
+                                Terms of Service
+                            </Link>{" "}
+                            and to occasionally receive emails from us. Please
+                            read our{" "}
+                            <Link
+                                to="/terms_of_service"
+                                target="_blank"
+                                className="underline"
+                            >
+                                Privacy Policy
+                            </Link>{" "}
+                            to learn how we use your personal data.
+                        </p>
                     </form>
                     <div className="divider m-0 py-0" />
                     <div className="p-5 py-0 flex gap-2 justify-center">

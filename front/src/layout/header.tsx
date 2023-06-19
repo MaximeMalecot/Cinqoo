@@ -7,12 +7,15 @@ export default function Header() {
         >
             <div className={`container mx-auto `}>
                 <div className="flex-1">
-                    <Link to="/" className="capitalize text-2xl font-bold">
+                    <Link
+                        to="/"
+                        className="capitalize text-2xl font-bold hover:opacity-75"
+                    >
                         cinqoo
                     </Link>
                 </div>
                 <div className="flex-none hidden md:block">
-                    <ul className="menu menu-horizontal px-1">
+                    <ul className="menu menu-horizontal px-1 flex items-center gap-2">
                         <li>
                             <Link className="text-xl" to="/discover">
                                 Discover
@@ -29,7 +32,10 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link className="text-xl" to="/register">
+                            <Link
+                                to="/register"
+                                className="text-xl bg-transparent border border-primary text-primary hover:bg-primary hover:text-white hover:border-transparent"
+                            >
                                 Register
                             </Link>
                         </li>

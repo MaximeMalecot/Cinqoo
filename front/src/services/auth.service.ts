@@ -13,7 +13,7 @@ class AuthService {
             }),
         });
 
-        if (res.status !== 200) {
+        if (res.status !== 201) {
             const jsonRes = await res.json();
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
