@@ -2,7 +2,7 @@ import { RpcException } from '@nestjs/microservices';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { Connection, Model, connect } from 'mongoose';
+import { Connection, Model, Types, connect } from 'mongoose';
 import { PaymentService } from './payment.service';
 import { Bill, BillSchema } from './schemas/bill.schema';
 import {
@@ -74,8 +74,6 @@ describe('AppService', () => {
       );
     });
 
-    it('Should not work: no stripeCheckoutId generated', async () => {});
-
     it('Should work', async () => {
       const r = await service.createPaymentIntent({
         userId: TMP_USER_ID,
@@ -134,25 +132,119 @@ describe('AppService', () => {
     it('Should work', async () => {});
   });
 
-  describe('webhook handler', () => {
-    // beforeEach(async () => {
-    //   const newBill = await billModel.create({
-    //     _id: '507f1f77bcf86cd799439011',
-    //     userId: '507f1f77bcf86cd799439012',
-    //     serviceId: 'serviceId',
-    //     amount: 100,
-    //     status: 'succeeded',
-    //     paymentIntentId: 'pi_1Iyj2n2eZvKYlo2C0Q2Z2Z2Z',
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //   });
-    //   await newBill.save();
-    // });
+  describe('Webhook handlers', () => {
+    const BILL_ID = '507f1f77bcf86cd799439011';
+    const PAYMENT_INTENT_ID = 'paymentIntentId';
+    const SESSION_ID = 'sessionId';
 
-    describe('updatePaymentIntent', () => {});
+    describe('updatePaymentIntent', () => {
+      it('Should not work: bill not found', async () => {
+        const r = service.updatePaymentIntent({
+          paymentIntentId: PAYMENT_INTENT_ID,
+          sessionId: SESSION_ID,
+        });
+        expect(r).rejects.toEqual(
+          new RpcException({
+            message: 'Bill not found',
+            statusCode: 404,
+          }),
+        );
+      });
 
-    describe('confirmPayment', () => {});
+      it('Should work', async () => {
+        const newBill = await billModel.create({
+          _id: BILL_ID,
+          userId: '507f1f77bcf86cd799439012',
+          serviceId: 'serviceId',
+          stripeSessionId: SESSION_ID,
+          amount: 100,
+        });
+        await newBill.save();
+        const r = service.updatePaymentIntent({
+          sessionId: SESSION_ID,
+          paymentIntentId: PAYMENT_INTENT_ID,
+        });
+        await expect(r).resolves.toEqual({
+          success: true,
+          message: 'Payment intent updated',
+        });
+        const bill = await billModel.findById(new Types.ObjectId(BILL_ID));
+        await expect(bill).toHaveProperty(
+          'stripePaymentIntentId',
+          PAYMENT_INTENT_ID,
+        );
+      });
+    });
 
-    describe('cancelPayment', () => {});
+    describe('Updating Bill', () => {
+      beforeEach(async () => {
+        const newBill = await billModel.create({
+          _id: BILL_ID,
+          userId: '507f1f77bcf86cd799439012',
+          serviceId: 'serviceId',
+          amount: 100,
+          status: 'PENDING',
+          stripePaymentIntentId: PAYMENT_INTENT_ID,
+          stripeSessionId: SESSION_ID,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+        await newBill.save();
+      });
+
+      describe('confirmPayment', () => {
+        it('Should not work: bill is not pending', async () => {
+          await billModel.findByIdAndUpdate(BILL_ID, {
+            status: 'PAID',
+          });
+          const r = service.confirmPayment({
+            paymentIntentId: PAYMENT_INTENT_ID,
+          });
+          await expect(r).resolves.toEqual({
+            success: true,
+            message: 'Bill already processed',
+          });
+        });
+
+        it('Should work', async () => {
+          const r = service.confirmPayment({
+            paymentIntentId: PAYMENT_INTENT_ID,
+          });
+          await expect(r).resolves.toEqual({
+            success: true,
+            message: 'Bill processed',
+          });
+          const bill = await billModel.findById(BILL_ID);
+          expect(bill).toHaveProperty('status', 'PAID');
+        });
+      });
+
+      describe('cancelPayment', () => {
+        it('Should not work: bill is not pending', async () => {
+          await billModel.findByIdAndUpdate(BILL_ID, {
+            status: 'PAID',
+          });
+          const r = service.confirmPayment({
+            paymentIntentId: PAYMENT_INTENT_ID,
+          });
+          await expect(r).resolves.toEqual({
+            success: true,
+            message: 'Bill already processed',
+          });
+        });
+
+        it('Should work', async () => {
+          const r = service.cancelPayment({
+            paymentIntentId: PAYMENT_INTENT_ID,
+          });
+          await expect(r).resolves.toEqual({
+            success: true,
+            message: 'Bill canceled',
+          });
+          const bill = await billModel.findById(BILL_ID);
+          expect(bill).toHaveProperty('status', 'FAILED');
+        });
+      });
+    });
   });
 });
