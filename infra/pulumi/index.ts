@@ -102,30 +102,21 @@ const subnet = new gcp.compute.Subnetwork("subnet", {
   network: network.id,
 });
 
-const cluster = new gcp.container.Cluster("cinqoo-gke-cluster", {
-  project: project,
-  location: gcpLocation,
-  network: network.selfLink,
-  subnetwork: subnet.selfLink,
-  enableKubernetesAlpha: false,
-  initialNodeCount: 1, // Any value, this will not be used as it's an Autopilot cluster
-  clusterAutoscaling: {
-    enabled: true,
-    autoscalingProfile: "BALANCED",
-    resourceLimits: [
-      {
-        maximum: 2,
-        minimum: 1,
-        resourceType: "cpu",
-      },
-      {
-        maximum: 4,
-        minimum: 1,
-        resourceType: "memory",
-      },
-    ],
+const cluster = new gcp.container.Cluster(
+  "cinqoo-gke-cluster",
+  {
+    enableAutopilot: true,
+    location: gcpLocation,
+    name: "cinqoo-gke-cluster",
+    ipAllocationPolicy: {},
+    releaseChannel: {
+      channel: "STABLE",
+    },
   },
-});
+  {
+    ignoreChanges: ["verticalPodAutoscaling"], // beacuse we are using autopilot verticalPodAutoscaling is handle by the GCP
+  }
+);
 
 // MongoDB Atlas Cluster publicly reachable
 
@@ -193,5 +184,6 @@ export const GKE_CLUSTER_NAME = cluster.name;
 export const GKE_CLUSTER_LOCATION = cluster.location;
 export const GKE_ENDPOINT = cluster.endpoint;
 
-export const MONGODB_CLUSTER_CONNECTIONSTRING =
-  mongodbAtlasCluster.connectionStrings[0].standardSrv;
+export const MONGDB_USER = DB_USER;
+export const MONGDB_PASSWORD = DB_PWD;
+export const MONGODB_URI = mongodbAtlasCluster.srvAddress;
