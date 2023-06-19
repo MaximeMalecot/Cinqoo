@@ -6,6 +6,7 @@ namespace: cinqoo
 resources:
   - ../../base
   - ingress.yaml
+  - cert.yaml
 
 configMapGenerator:
   - name: variables
@@ -23,6 +24,14 @@ patches:
         path: /metadata/annotations
         value:
           cloud.google.com/neg: '{"ingress": true}'
+    target:
+      kind: Service
+      name: gateway-service
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          cloud.google.com/app-protocols: '{"my-https-port":"HTTPS","my-http-port":"HTTP"}'
     target:
       kind: Service
       name: gateway-service

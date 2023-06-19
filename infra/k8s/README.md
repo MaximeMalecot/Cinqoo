@@ -44,3 +44,7 @@ kubectl exec -it POD.METADATA.NAME -- printenv | egrep "ENV1|ENV2|ENV3"
 ```
 minikube service gateway-service -n cinqoo --url
 ```
+
+## Deployments
+
+Wait 20 minutes for routing and SSL certificates to apply

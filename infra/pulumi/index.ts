@@ -176,14 +176,31 @@ new gcp.compute.NetworkPeering("gcpPeering", {
   peerNetwork: pulumi.interpolate`https://www.googleapis.com/compute/v1/projects/${atlasNetworkPeer.atlasGcpProjectId}/global/networks/${atlasNetworkPeer.atlasVpcName}`,
 });
 
-const gatewayService = new gcp.compute.GlobalAddress("gateway-service", {
+const dns = new gcp.dns.ManagedZone("cinqoo-dns", {
+  project: project,
+  name: "cinqoo",
+  dnsName: "cinqoo.fr.",
+});
+
+const gatewayStaticIp = new gcp.compute.GlobalAddress("gateway-service", {
   name: "gateway-service",
+  project: project,
+});
+
+const aRecord = new gcp.dns.RecordSet("gateway-a-record", {
+  project: project,
+  managedZone: dns.name,
+  name: "api.cinqoo.fr.",
+  type: "A",
+  ttl: 300,
+  rrdatas: [gatewayStaticIp.address],
 });
 
 export const PROJECT_ID = project;
 export const SERVICE_ACCOUNT = serviceAccount.email;
 export const PROVIDER_ID = oidcProvider.name;
-export const gatewayServiceAddress = gatewayService.address;
+export const GATEWAY_IP = gatewayStaticIp.address;
+export const DNS = dns.dnsName;
 
 export const GKE_CLUSTER_NAME = cluster.name;
 export const GKE_CLUSTER_LOCATION = cluster.location;

@@ -41,7 +41,14 @@ spec:
   selector:
     app: gateway-service
   ports:
-    - port: 3000
+    - name: default
+      port: 3000
+      targetPort: 3000
+    - name: my-https-port
+      port: 443
+      targetPort: 3000
+    - name: my-http-port
+      port: 80
       targetPort: 3000
 ---
 apiVersion: autoscaling/v2
