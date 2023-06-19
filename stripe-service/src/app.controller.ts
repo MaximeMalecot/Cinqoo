@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { EventPattern, Payload, RpcException } from '@nestjs/microservices';
 import { CreateCheckoutSessionDto } from './dto/create-checkout-session.dto';
 import { CreatePriceDto } from './dto/create-price.dto';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -47,4 +47,24 @@ export class AppController {
   }
 
   // Accounts
+
+  @EventPattern('STRIPE.CREATE_ACCOUNT')
+  async createAccount() {
+    return this.accountService.createAccount();
+  }
+
+  @EventPattern('STRIPE.CREATE_ACCOUNT_LINK')
+  async createAccountLink(@Payload() accountId: string) {
+    try {
+      const accountLink = await this.accountService.createAccountLink(
+        accountId,
+      );
+      return accountLink.url;
+    } catch (e: any) {
+      throw new RpcException({
+        message: 'Error while creating account link',
+        statusCode: 500,
+      });
+    }
+  }
 }

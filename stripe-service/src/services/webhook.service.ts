@@ -10,6 +10,7 @@ export class WebhookService {
   constructor(
     @Inject(STRIPE_CLIENT) private readonly stripe: Stripe,
     @Inject('PAYMENT_SERVICE') private readonly paymentService: ClientProxy,
+    @Inject('USER_SERVICE') private readonly userService: ClientProxy,
   ) {}
 
   async handleWebhook(data: HandleWebhookDto) {
@@ -34,6 +35,10 @@ export class WebhookService {
         case 'payment_intent.canceled':
         case 'payment_intent.expired':
           return await this.cancelPayment(event);
+
+        case 'account.updated':
+        case 'capability.updated':
+          return await this.updateAccount(event);
       }
 
       return new RpcException({
@@ -80,6 +85,19 @@ export class WebhookService {
     return await firstValueFrom(
       this.paymentService.send('PAYMENT.CANCEL_PAYMENT', {
         paymentIntentId,
+      }),
+    );
+  }
+
+  private async updateAccount(event: Stripe.Event) {
+    const account = event.data.object as Stripe.Account;
+    const capabilities = account.capabilities as String;
+    console.log(account, capabilities);
+
+    return await firstValueFrom(
+      this.userService.send('USER.PROMOTE_OR_DEMOTE', {
+        stripeAccountId: account.id,
+        capabilities,
       }),
     );
   }
