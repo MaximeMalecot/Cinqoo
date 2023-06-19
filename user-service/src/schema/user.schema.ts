@@ -84,6 +84,11 @@ export class User {
     ref: 'profile',
   })
   freelancerProfile?: string;
+
+  @Prop({
+    type: String,
+  })
+  stripeAccountId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

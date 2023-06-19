@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
@@ -10,7 +11,10 @@ import { User } from './schema/user.schema';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    @Inject('STRIPE_SERVICE') private readonly stripeService: ClientProxy,
+  ) {}
 
   getHello() {
     return this.getUsers();
@@ -53,6 +57,10 @@ export class AppService {
   async createUser(data: CreateUserDto) {
     try {
       data.password = await bcrypt.hash(data.password, 10);
+      const stripeAccountId = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_ACCOUNT', {}),
+      );
+      data['stripeAccountId'] = stripeAccountId.id;
       const res = new this.userModel(data);
       return await res.save();
     } catch (error) {
