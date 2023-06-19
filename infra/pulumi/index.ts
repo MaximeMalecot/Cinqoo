@@ -185,9 +185,13 @@ new gcp.compute.NetworkPeering("gcpPeering", {
   peerNetwork: pulumi.interpolate`https://www.googleapis.com/compute/v1/projects/${atlasNetworkPeer.atlasGcpProjectId}/global/networks/${atlasNetworkPeer.atlasVpcName}`,
 });
 
-export const GKE_CLUSTER_NAME = cluster.name;
-export const GKE_ENDPOINT = cluster.endpoint;
-export const MONGODB_CLUSTER_NAME = mongodbAtlasCluster.name;
+export const PROJECT_ID = project;
 export const SERVICE_ACCOUNT = serviceAccount.email;
 export const PROVIDER_ID = oidcProvider.name;
-export const PROJECT_ID = project;
+
+export const GKE_CLUSTER_NAME = cluster.name;
+export const GKE_CLUSTER_LOCATION = cluster.location;
+export const GKE_ENDPOINT = cluster.endpoint;
+
+export const MONGODB_CLUSTER_CONNECTIONSTRING =
+  mongodbAtlasCluster.connectionStrings[0].standardSrv;
