@@ -37,14 +37,12 @@ metadata:
   labels:
     app: gateway-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: gateway-service
   ports:
-    - nodePort: 30876
-      port: 3000
+    - port: 3000
       targetPort: 3000
-      protocol: TCP
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

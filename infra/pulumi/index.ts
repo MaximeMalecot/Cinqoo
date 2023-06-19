@@ -176,9 +176,14 @@ new gcp.compute.NetworkPeering("gcpPeering", {
   peerNetwork: pulumi.interpolate`https://www.googleapis.com/compute/v1/projects/${atlasNetworkPeer.atlasGcpProjectId}/global/networks/${atlasNetworkPeer.atlasVpcName}`,
 });
 
+const gatewayService = new gcp.compute.GlobalAddress("gateway-service", {
+  name: "gateway-service",
+});
+
 export const PROJECT_ID = project;
 export const SERVICE_ACCOUNT = serviceAccount.email;
 export const PROVIDER_ID = oidcProvider.name;
+export const gatewayServiceAddress = gatewayService.address;
 
 export const GKE_CLUSTER_NAME = cluster.name;
 export const GKE_CLUSTER_LOCATION = cluster.location;

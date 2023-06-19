@@ -5,7 +5,8 @@ namespace: cinqoo
 
 resources:
   - ../../base
-  
+  - ingress.yaml
+
 configMapGenerator:
   - name: variables
     env: .env
@@ -16,3 +17,12 @@ secretGenerator:
     env: .env.secrets
     options:
       disableNameSuffixHash: true
+patches:
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          cloud.google.com/neg: '{"ingress": true}'
+    target:
+      kind: Service
+      name: gateway-service
