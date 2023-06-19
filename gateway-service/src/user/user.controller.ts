@@ -3,18 +3,20 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  Inject,
-  Post,
-  Req,
-  ValidationPipe,
-  Param,
-  ParseUUIDPipe,
   HttpCode,
+  Inject,
+  Param,
+  Patch,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { firstValueFrom } from 'rxjs';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
+import { IsAccountOwnerGuard } from './guards/is-account-owner.guard';
 
 @ApiTags('user')
 @Controller('user')
@@ -35,12 +37,51 @@ export class UserController {
     return this.userService.send('getUsers', {});
   }
 
+  @Get('self')
+  public getUserSelf(@Req() req) {
+    return this.userService.send('getUserById', {
+      id: req.user._id,
+    });
+  }
+
+  @Get(':userId')
+  @Public()
+  public getUserById(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.userService.send('getUserById', {
+      id: userId,
+    });
+  }
+
+  @HttpCode(200)
+  @Patch(':userId')
+  @UseGuards(IsAccountOwnerGuard)
+  public async updateUser(
+    @Param('userId', CheckObjectIdPipe) userId: string,
+    @Body() body: UpdateUserDto,
+  ) {
+    return this.userService.send('updateUser', {
+      userId,
+      updateUserDto: body,
+    });
+  }
+
+  @HttpCode(200)
+  @Patch('/pwd/:userId')
+  @UseGuards(IsAccountOwnerGuard)
+  public async updatePwdUser(
+    @Param('userId', CheckObjectIdPipe) userId: string,
+    @Body() body: UpdatePwdUserDto,
+  ) {
+    return this.userService.send('updatePwdUser', {
+      userId,
+      updatePwdUser: body,
+    });
+  }
+
   @HttpCode(204)
-  @Delete(':id')
-  public async deleteUser(@Param('id', ParseUUIDPipe) id: string, @Req() req) {
-    await firstValueFrom(
-      this.userService.send('deleteUser', { id, sub: req.user }),
-    );
-    return null;
+  @UseGuards(IsAccountOwnerGuard)
+  @Delete(':userId')
+  public async deleteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.userService.send('deleteUser', userId);
   }
 }
