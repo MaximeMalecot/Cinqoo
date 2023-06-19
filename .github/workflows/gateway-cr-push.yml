@@ -1,4 +1,4 @@
-name: API-gateway build and push docker image
+name: Gateway Push
 
 on:
   workflow_dispatch:

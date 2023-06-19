@@ -1,4 +1,4 @@
-name: Auth-ms build and push docker image
+name: Auth Push
 
 on:
   workflow_dispatch:

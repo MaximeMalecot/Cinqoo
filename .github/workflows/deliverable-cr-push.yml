@@ -1,4 +1,4 @@
-name: Deliverable-ms build and push docker image
+name: Deliverable Push
 
 on:
   workflow_dispatch:

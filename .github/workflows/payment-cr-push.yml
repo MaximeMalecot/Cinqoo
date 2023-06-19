@@ -1,4 +1,4 @@
-name: Payment-ms build and push docker image
+name: Payment Push
 
 on:
   workflow_dispatch:
