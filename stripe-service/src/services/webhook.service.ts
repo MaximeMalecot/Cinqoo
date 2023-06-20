@@ -13,7 +13,9 @@ export class WebhookService {
     @Inject('USER_SERVICE') private readonly userService: ClientProxy,
   ) {}
 
-  async handleWebhook(data: HandleWebhookDto) {
+  // Unique Api endpoint for testing purposes
+
+  async handleWebhookDev(data: HandleWebhookDto) {
     try {
       const { req, stripeSig } = data;
 
@@ -36,6 +38,76 @@ export class WebhookService {
         case 'payment_intent.expired':
           return await this.cancelPayment(event);
 
+        case 'capability.updated':
+          return await this.updateCapability(event);
+      }
+
+      return new RpcException({
+        message: 'Event type not handled',
+        statusCode: 500,
+      });
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        message: 'Error while handling stripe event',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async handleWebhookPayment(data: HandleWebhookDto) {
+    try {
+      const { req, stripeSig } = data;
+
+      const rawBuffer = Buffer.from(req);
+      const event = this.stripe.webhooks.constructEvent(
+        rawBuffer,
+        stripeSig,
+        process.env.STRIPE_WH_PAYMENT_SECRET,
+      );
+
+      switch (event.type) {
+        case 'checkout.session.completed':
+          return await this.updatePaymentIntent(event);
+
+        case 'payment_intent.succeeded':
+          return await this.confirmPayment(event);
+
+        case 'payment_intent.payment_failed':
+        case 'payment_intent.canceled':
+        case 'payment_intent.expired':
+          return await this.cancelPayment(event);
+      }
+
+      return new RpcException({
+        message: 'Event type not handled',
+        statusCode: 500,
+      });
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        message: 'Error while handling stripe event',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async handleWebhookAccount(data: HandleWebhookDto) {
+    try {
+      const { req, stripeSig } = data;
+
+      const rawBuffer = Buffer.from(req);
+      const event = this.stripe.webhooks.constructEvent(
+        rawBuffer,
+        stripeSig,
+        process.env.STRIPE_WH_ACCOUNT_SECRET,
+      );
+
+      switch (event.type) {
         case 'capability.updated':
           return await this.updateCapability(event);
       }
