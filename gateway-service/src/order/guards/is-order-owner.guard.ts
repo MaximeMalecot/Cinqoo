@@ -27,7 +27,7 @@ export class IsOrderOwner implements CanActivate {
       this.orderService.send('ORDER.GET_ORDER', orderId),
     );
     if (!order) throw new NotFoundException({ message: 'Order not found' });
-    if (order.applicant !== user.id) return false;
+    if (order.applicant !== user._id) return false;
     return true;
   }
 }

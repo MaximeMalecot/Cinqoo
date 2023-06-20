@@ -59,6 +59,8 @@ services:
             context: ./user-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -69,6 +71,8 @@ services:
             context: ./prestation-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -79,6 +83,8 @@ services:
             context: ./review-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -89,6 +95,8 @@ services:
             context: ./report-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -99,6 +107,8 @@ services:
             context: ./payment-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -119,6 +129,8 @@ services:
             context: ./order-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -129,6 +141,8 @@ services:
             context: ./deliverable-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -139,6 +153,8 @@ services:
             context: ./favorite-service
             target: dev
         command: npm run start:dev
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
