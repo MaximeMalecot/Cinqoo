@@ -2,16 +2,24 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   Inject,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
@@ -20,7 +28,6 @@ import { CreatePrestationDto } from './dto/create-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { IsServiceAccessible } from './guards/is-service-accessible.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
-
 @ApiTags('prestation')
 @Controller('prestation')
 export class PrestationController {
@@ -104,10 +111,38 @@ export class PrestationController {
 
   @Post()
   @Roles(ROLE.FREELANCER)
-  public createPrestation(@Body() body: CreatePrestationDto, @Req() req: any) {
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './files/prestation',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = uniqueSuffix + ext;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
+  public createPrestation(
+    @Req() req: any,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
+    @Body() body,
+  ) {
+    body = body as CreatePrestationDto;
     return this.prestationService.send('PRESTATION.CREATE', {
       user: req.user._id,
       prestation: body,
+      image: `${req.protocol}://${req.get('Host')}/${image.path}`,
     });
   }
 }
