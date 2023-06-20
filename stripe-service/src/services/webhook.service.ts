@@ -23,7 +23,7 @@ export class WebhookService {
       const event = this.stripe.webhooks.constructEvent(
         rawBuffer,
         stripeSig,
-        process.env.STRIPE_WH_SECRET,
+        process.env.STRIPE_WH_ACCOUNT_SECRET,
       );
 
       switch (event.type) {

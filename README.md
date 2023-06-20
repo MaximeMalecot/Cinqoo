@@ -40,10 +40,11 @@ stripe listen --forward-to localhost:3000/webhook/stripe
 your/path/to/stripe/executable listen --forward-to localhost:3000/webhook/stripe
 ```
 
-The CLI should give you your webhook signing secret starting with "whsec\_". Copy this key and put it in the root .env file as it is:
+The CLI should give you your webhook signing secret starting with "whsec\_". Copy this key and put it in the root .env file as it is (it's the same one for both ACCOUNT & PAYMENT secret keys):
 
 ```bash
-STRIPE_WH_SECRET=<your_webhook_key>
+STRIPE_WH_ACCOUNT_SECRET=<your_webhook_key>
+STRIPE_WH_PAYMENT_SECRET=<your_webhook_key>
 ```
 
 ## Starting the project
