@@ -80,12 +80,6 @@ export class User {
   updatedAt: Date;
 
   @Prop({
-    type: Types.ObjectId,
-    ref: 'profile',
-  })
-  freelancerProfile?: string;
-
-  @Prop({
     type: String,
   })
   stripeAccountId?: string;

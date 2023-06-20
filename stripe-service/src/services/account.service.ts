@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import Stripe from 'stripe';
 import { STRIPE_CLIENT } from '../stripe/constants';
 
@@ -13,11 +14,19 @@ export class AccountService {
   }
 
   async createAccountLink(accountId: string) {
-    return await this.stripe.accountLinks.create({
-      account: accountId,
-      refresh_url: 'https://example.com/reauth',
-      return_url: 'https://example.com/return',
-      type: 'account_onboarding',
-    });
+    try {
+      const accountLink = await this.stripe.accountLinks.create({
+        account: accountId,
+        refresh_url: 'https://example.com/reauth',
+        return_url: 'https://example.com/return',
+        type: 'account_onboarding',
+      });
+      return accountLink;
+    } catch (e: any) {
+      throw new RpcException({
+        message: 'Error while creating account link',
+        statusCode: 500,
+      });
+    }
   }
 }

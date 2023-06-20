@@ -57,6 +57,7 @@ export class WebhookService {
     }
   }
 
+  // Payment
   private async updatePaymentIntent(event: Stripe.Event) {
     const sessionId = event.data.object['id'];
     const paymentIntentId = event.data.object['payment_intent'];
@@ -89,6 +90,7 @@ export class WebhookService {
     );
   }
 
+  // Account
   private async updateAccount(event: Stripe.Event) {
     const account = event.data.object as Stripe.Account;
     const capabilities = account.capabilities as String;

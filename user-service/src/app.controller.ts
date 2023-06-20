@@ -52,4 +52,20 @@ export class AppController {
   async removeUser(userId: string) {
     return this.appService.removeUser(userId);
   }
+
+  @EventPattern('USER.PROMOTE_OR_DEMOTE')
+  async promoteOrDemoteUserWithStripe(
+    @Payload() data: { stripeAccountId: string; capabilities: string },
+  ) {
+    return this.appService.promoteOrDemoteUserWithStripe(
+      data.stripeAccountId,
+      data.capabilities,
+    );
+  }
+
+  @EventPattern('USER.BECOME_FREELANCER')
+  async becomeFreelancer(userId: string) {
+    console.log(userId);
+    return this.appService.becomeFreelancer(userId);
+  }
 }
