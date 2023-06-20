@@ -41,11 +41,20 @@ export class AppController {
 
   // Webhooks
 
-  @EventPattern('STRIPE.HANDLE_WEBHOOK')
-  async handleWebhook(@Payload() data: HandleWebhookDto) {
-    return this.webhookService.handleWebhook(data);
+  @EventPattern('STRIPE.HANDLE_WEBHOOK_DEV')
+  async handleWebhookDev(@Payload() data: HandleWebhookDto) {
+    return this.webhookService.handleWebhookDev(data);
   }
 
+  @EventPattern('STRIPE.HANDLE_WEBHOOK_PAYMENT')
+  async handleWebhookPayment(@Payload() data: HandleWebhookDto) {
+    return this.webhookService.handleWebhookPayment(data);
+  }
+
+  @EventPattern('STRIPE.HANDLE_WEBHOOK_ACCOUNT')
+  async handleWebhookAccount(@Payload() data: HandleWebhookDto) {
+    return this.webhookService.handleWebhookAccount(data);
+  }
   // Accounts
 
   @EventPattern('STRIPE.CREATE_ACCOUNT')
