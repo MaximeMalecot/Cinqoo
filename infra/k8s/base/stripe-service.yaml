@@ -1,31 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: order-service
+    name: stripe-service
     namespace: cinqoo
     labels:
-        app: order-service
+        app: stripe-service
 spec:
     selector:
         matchLabels:
-            app: order-service
+            app: stripe-service
     template:
         metadata:
             labels:
-                app: order-service
+                app: stripe-service
         spec:
             containers:
-                - name: order-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/order-service:0.1.0
+                - name: stripe-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/stripe-service:0.1.0
                   imagePullPolicy: Always
                   env:
                       - name: PORT
                         value: "3000"
-                      - name: DATABASE_URL
+                      - name: STRIPE_SECRET_KEY
                         valueFrom:
                             secretKeyRef:
                                 name: secrets
-                                key: ORDER_DATABASE_URL
+                                key: STRIPE_SECRET_KEY
+                      - name: STRIPE_WH_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: STRIPE_WH_SECRET
                   ports:
                       - containerPort: 3000
                   resources:
@@ -37,14 +42,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: order-service
+    name: stripe-service
     namespace: cinqoo
     labels:
-        app: order-service
+        app: stripe-service
 spec:
     type: ClusterIP
     selector:
-        app: order-service
+        app: stripe-service
     ports:
         - port: 3000
           targetPort: 3000
@@ -52,14 +57,14 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-    name: order-service
+    name: stripe-service
 spec:
     scaleTargetRef:
         apiVersion: apps/v1
         kind: Deployment
-        name: order-service
+        name: stripe-service
     minReplicas: 1
-    maxReplicas: 2
+    maxReplicas: 5
     metrics:
         - type: Resource
           resource:
