@@ -73,7 +73,7 @@ export class AppService {
     if (!user) {
       throw new RpcException({
         message: `User with id ${id} not found`,
-        statusCode: 400,
+        statusCode: 404,
       });
     }
     const emailTaken = await this.userModel.findOne({
