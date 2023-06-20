@@ -1,69 +1,69 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: favorite-service
-  namespace: cinqoo
-  labels:
-    app: favorite-service
-spec:
-  selector:
-    matchLabels:
-      app: favorite-service
-  template:
-    metadata:
-      labels:
+    name: favorite-service
+    namespace: cinqoo
+    labels:
         app: favorite-service
-    spec:
-      containers:
-        - name: favorite-service
-          image: europe-west9-docker.pkg.dev/cinqoo/challenge/favorite-service:latest
-          imagePullPolicy: Always
-          env:
-            - name: PORT
-              value: "3000"
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: secrets
-                  key: FAVORITE_DATABASE_URL
-          ports:
-            - containerPort: 3000
-          resources:
-            limits:
-              cpu: 500m
-            requests:
-              cpu: 200m
+spec:
+    selector:
+        matchLabels:
+            app: favorite-service
+    template:
+        metadata:
+            labels:
+                app: favorite-service
+        spec:
+            containers:
+                - name: favorite-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/favorite-service:0.1.0
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: FAVORITE_DATABASE_URL
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: favorite-service
-  namespace: cinqoo
-  labels:
-    app: favorite-service
+    name: favorite-service
+    namespace: cinqoo
+    labels:
+        app: favorite-service
 spec:
-  type: ClusterIP
-  selector:
-    app: favorite-service
-  ports:
-    - port: 3000
-      targetPort: 3000
+    type: ClusterIP
+    selector:
+        app: favorite-service
+    ports:
+        - port: 3000
+          targetPort: 3000
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: favorite-service
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
     name: favorite-service
-  minReplicas: 1
-  maxReplicas: 2
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 60
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: favorite-service
+    minReplicas: 1
+    maxReplicas: 2
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 60

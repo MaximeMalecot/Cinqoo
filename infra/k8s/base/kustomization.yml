@@ -3,21 +3,22 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: cinqoo
 
 resources:
-  - auth-service.yaml
-  - deliverable-service.yaml
-  - favorite-service.yaml
-  - gateway-service.yaml
-  - order-service.yaml
-  - payment-service.yaml
-  - prestation-service.yaml
-  - report-service.yaml
-  - review-service.yaml
-  - user-service.yaml
+    - auth-service.yaml
+    - deliverable-service.yaml
+    - favorite-service.yaml
+    - gateway-service.yaml
+    - order-service.yaml
+    - payment-service.yaml
+    - prestation-service.yaml
+    - report-service.yaml
+    - review-service.yaml
+    - stripe-service.yaml
+    - user-service.yaml
 
 patches:
-  - target:
-      kind: Deployment
-    path: shared-env.yml
-  - target:
-      kind: Deployment
-    path: shared-secrets.yml
+    - target:
+          kind: Deployment
+      path: shared-env.yml
+    - target:
+          kind: Deployment
+      path: shared-secrets.yml
