@@ -26,11 +26,16 @@ spec:
                             secretKeyRef:
                                 name: secrets
                                 key: STRIPE_SECRET_KEY
-                      - name: STRIPE_WH_SECRET
+                      - name: STRIPE_WH_PAYMENT_SECRET
                         valueFrom:
                             secretKeyRef:
                                 name: secrets
-                                key: STRIPE_WH_SECRET
+                                key: STRIPE_WH_PAYMENT_SECRET
+                      - name: STRIPE_WH_ACCOUNT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: STRIPE_WH_ACCOUNT_SECRET
                   ports:
                       - containerPort: 3000
                   resources:
