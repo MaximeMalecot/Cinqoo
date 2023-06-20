@@ -55,17 +55,16 @@ export class AppController {
 
   @EventPattern('USER.PROMOTE_OR_DEMOTE')
   async promoteOrDemoteUserWithStripe(
-    @Payload() data: { stripeAccountId: string; capabilities: string },
+    @Payload() data: { stripeAccountId: string; promote: boolean },
   ) {
     return this.appService.promoteOrDemoteUserWithStripe(
       data.stripeAccountId,
-      data.capabilities,
+      data.promote,
     );
   }
 
   @EventPattern('USER.BECOME_FREELANCER')
   async becomeFreelancer(userId: string) {
-    console.log(userId);
     return this.appService.becomeFreelancer(userId);
   }
 }

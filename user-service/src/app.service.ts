@@ -185,43 +185,47 @@ export class AppService {
 
   async promoteOrDemoteUserWithStripe(
     stripeAccountId: string,
-    capapbilities: string,
+    promote: boolean,
   ) {
-    const user = await this.userModel.findOne({
-      stripeAccountId: stripeAccountId,
-    });
-    if (!user) {
+    try {
+      const user = await this.userModel.findOne({
+        stripeAccountId: stripeAccountId,
+      });
+
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+
+      if (promote == false) {
+        if (user.roles.includes(Role.FREELANCER)) {
+          user.roles = user.roles.filter((role) => role !== Role.FREELANCER);
+          await user.save();
+          return { message: 'User demoted' };
+        }
+      } else {
+        if (!user.roles.includes(Role.FREELANCER)) {
+          user.roles.push(Role.FREELANCER);
+          await user.save();
+          let freelancerProfile = await this.freelancerProfileModel.findOne({
+            user: new Types.ObjectId(user._id),
+          });
+          if (!freelancerProfile) {
+            freelancerProfile = new this.freelancerProfileModel({
+              user: user._id,
+            });
+            await freelancerProfile.save();
+          }
+        }
+      }
+    } catch (e: any) {
       throw new RpcException({
-        message: `User not found`,
-        statusCode: 404,
+        message: e.message,
+        statusCode: 400,
       });
     }
-    if (capapbilities === 'inactive') {
-      user.roles = user.roles.filter((role) => role !== Role.FREELANCER);
-      await user.save();
-      return { message: 'User demoted' };
-    }
-
-    if (capapbilities === 'active') {
-      user.roles.push(Role.FREELANCER);
-      await user.save();
-      try {
-        let freelancerProfile = await this.freelancerProfileModel.findOne({
-          user: new Types.ObjectId(user._id),
-        });
-        if (!freelancerProfile) {
-          freelancerProfile = new this.freelancerProfileModel({
-            user: user._id,
-          });
-          await freelancerProfile.save();
-        }
-      } catch (e: any) {
-        console.log(e);
-      }
-      return { message: 'User promoted' };
-    }
-
-    return { message: 'Unhandled capabilities status' };
   }
 
   async becomeFreelancer(id: string) {

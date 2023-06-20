@@ -36,9 +36,8 @@ export class WebhookService {
         case 'payment_intent.expired':
           return await this.cancelPayment(event);
 
-        case 'account.updated':
         case 'capability.updated':
-          return await this.updateAccount(event);
+          return await this.updateCapability(event);
       }
 
       return new RpcException({
@@ -46,12 +45,11 @@ export class WebhookService {
         statusCode: 500,
       });
     } catch (e: any) {
-      console.log(e.message);
       if (e instanceof RpcException) {
         throw e;
       }
       throw new RpcException({
-        message: 'Error while updating bill status',
+        message: 'Error while handling stripe event',
         statusCode: 500,
       });
     }
@@ -91,15 +89,14 @@ export class WebhookService {
   }
 
   // Account
-  private async updateAccount(event: Stripe.Event) {
-    const account = event.data.object as Stripe.Account;
-    const capabilities = account.capabilities as String;
-    console.log(account, capabilities);
+  private async updateCapability(event: any) {
+    const { account } = event;
+    const { status } = event.data.object;
 
     return await firstValueFrom(
       this.userService.send('USER.PROMOTE_OR_DEMOTE', {
-        stripeAccountId: account.id,
-        capabilities,
+        stripeAccountId: account,
+        promote: status === 'active',
       }),
     );
   }
