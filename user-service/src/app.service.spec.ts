@@ -1,6 +1,7 @@
 import { RpcException } from '@nestjs/microservices';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as bcrypt from 'bcrypt';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, Model, Types, connect } from 'mongoose';
 import { AppService } from './app.service';
@@ -184,10 +185,88 @@ describe('AppService', () => {
 
   describe('updateUserPassword', () => {
     beforeEach(async () => {
-      await service.createUser({
-        username: 'testnon',
-        email: 'test@testnon.fr',
-        password: 'test',
+      const existingUser = await userModel.create({
+        _id: new Types.ObjectId('507f1f77bcf86cd799439011'),
+        username: 'test',
+        email: 'test@test.fr',
+        password: await bcrypt.hash('test', 10),
+        Roles: [Role.USER],
+      });
+      await existingUser.save();
+    });
+
+    it('Should not work: user with this id not found', async () => {
+      const user = service.updatePwdUser('507f1f77bcf86cd799439014', {
+        oldPassword: 'test',
+        password: 'testnon',
+      });
+      await expect(user).rejects.toEqual(
+        new RpcException({
+          message: 'User with id 507f1f77bcf86cd799439014 not found',
+          statusCode: 404,
+        }),
+      );
+    });
+
+    it('Should not work: Old password is required', async () => {
+      const user = service.updatePwdUser('507f1f77bcf86cd799439011', {
+        oldPassword: '',
+        password: 'testnon',
+      });
+      await expect(user).rejects.toEqual(
+        new RpcException({
+          message: 'Old password is required',
+          statusCode: 404,
+        }),
+      );
+    });
+    it('Should not work: Old password is incorrect', async () => {
+      const user = service.updatePwdUser('507f1f77bcf86cd799439011', {
+        oldPassword: 'ksdjskdj',
+        password: 'testnon',
+      });
+      await expect(user).rejects.toEqual(
+        new RpcException({
+          message: 'Old password is incorrect',
+          statusCode: 404,
+        }),
+      );
+    });
+    it('Should work: update password', async () => {
+      const user = service.updatePwdUser('507f1f77bcf86cd799439011', {
+        oldPassword: 'test',
+        password: 'testnon',
+      });
+      await expect(user).resolves.toEqual({
+        message: `Password of User with id 507f1f77bcf86cd799439011 updated`,
+      });
+    });
+  });
+  describe('deleteUser', () => {
+    beforeEach(async () => {
+      const existingUser = await userModel.create({
+        _id: new Types.ObjectId('507f1f77bcf86cd799439011'),
+        username: 'test',
+        email: 'test@test.fr',
+        password: await bcrypt.hash('test', 10),
+        Roles: [Role.USER],
+      });
+      await existingUser.save();
+    });
+    it('Should not work: user with this id not found', async () => {
+      const user = service.removeUser('507f1f77bcf86cd799439014');
+      await expect(user).rejects.toEqual(
+        new RpcException({
+          message: 'User not found',
+          statusCode: 404,
+        }),
+      );
+    });
+    it('Should work: delete user', async () => {
+      const user = service.removeUser('507f1f77bcf86cd799439011');
+      await expect(user).resolves.toEqual({
+        acknowledged: true,
+        deletedCount: 1,
       });
     });
   });
