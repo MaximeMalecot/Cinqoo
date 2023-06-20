@@ -1,0 +1,216 @@
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: AUTH_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: AUTH_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: AUTH_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: AUTH_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: DELIVERABLE_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: DELIVERABLE_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: DELIVERABLE_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: DELIVERABLE_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: FAVORITE_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: FAVORITE_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: FAVORITE_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: FAVORITE_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: FRONT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: FRONT
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: FRONT_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: FRONT_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: GATEWAY_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: GATEWAY_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: GATEWAY_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: GATEWAY_PORT
+
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: ORDER_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: ORDER_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: ORDER_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: ORDER_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: PAYMENT_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: PAYMENT_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: PAYMENT_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: PAYMENT_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: PRESTATION_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: PRESTATION_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: PRESTATION_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: PRESTATION_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: REPORT_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: REPORT_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: REPORT_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: REPORT_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: REVIEW_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: REVIEW_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: REVIEW_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: REVIEW_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: USER_SERVICE
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: USER_SERVICE
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: USER_PORT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: USER_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: NODE_OPTIONS
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: NODE_OPTIONS
+  
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+    name: VITE_API_ENDPOINT
+    valueFrom:
+      configMapKeyRef:
+        name: variables
+        key: VITE_API_ENDPOINT

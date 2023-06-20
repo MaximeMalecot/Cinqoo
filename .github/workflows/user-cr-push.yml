@@ -1,4 +1,4 @@
-name: User-ms build and push docker image
+name: User Push
 
 on:
     workflow_dispatch:

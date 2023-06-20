@@ -1,29 +1,41 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
 export type OrderDocument = HydratedDocument<Order>;
 
 export enum OrderStatus {
-    IN_PROGRESS = 'IN_PROGRESS',
-    DONE = 'DONE',
-    CANCELLED = 'CANCELLED'
+  PENDING = 'PENDING',
+  REFUSED = 'REFUSED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  TERMINATED = 'TERMINATED', //When the service provider marks the order as done
+  DONE = 'DONE', //When the user validates the order is done
+  CANCELLED = 'CANCELLED',
 }
 
 @Schema()
 export class Order {
-    id: string;
+  id: string;
 
-    @Prop({ type: String, required: true })
-    applicant: string;
-    
-    @Prop({ type: String, required: true })
-    serviceId: string;
+  @Prop({ type: String, required: true })
+  applicant: string;
 
-    @Prop({ type: String, required: true })
-    status: OrderStatus;
+  @Prop({ type: String, required: true })
+  serviceId: string;
 
-    @Prop({ type: String, required: true })
-    billId: string;
+  @Prop({ type: Number, required: true })
+  serviceRevisionNb: number;
+
+  @Prop({ type: Number, required: true, default: 0 })
+  currentRevisionNb: number;
+
+  @Prop({ type: String, required: true })
+  status: OrderStatus;
+
+  @Prop({ type: String, required: true })
+  billId: string;
+
+  @Prop({ type: Date, required: true, default: Date.now() })
+  date: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: payment-service
+    namespace: cinqoo
+    labels:
+        app: payment-service
+spec:
+    selector:
+        matchLabels:
+            app: payment-service
+    template:
+        metadata:
+            labels:
+                app: payment-service
+        spec:
+            containers:
+                - name: payment-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/payment-service:0.1.0
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: PAYMENT_DATABASE_URL
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: payment-service
+    namespace: cinqoo
+    labels:
+        app: payment-service
+spec:
+    type: ClusterIP
+    selector:
+        app: payment-service
+    ports:
+        - port: 3000
+          targetPort: 3000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+    name: payment-service
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: payment-service
+    minReplicas: 1
+    maxReplicas: 2
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 60

@@ -1,4 +1,4 @@
-name: front build and push docker image
+name: Front Push
 
 on:
     workflow_dispatch:

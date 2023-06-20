@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  namespace: cinqoo
+  name: gateway-service
+spec:
+  domains:
+    - api.cinqoo.fr

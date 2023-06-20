@@ -9,6 +9,7 @@ export const SERVICES = {
   REPORT: process.env.REPORT_SERVICE ?? 'report-service',
   REVIEW: process.env.REVIEW_SERVICE ?? 'review-service',
   USER: process.env.USER_SERVICE ?? 'user-service',
+  STRIPE: process.env.STRIPE_SERVICE ?? 'stripe-service',
 };
 
 export const PORTS = {
@@ -22,4 +23,5 @@ export const PORTS = {
   REPORT: parseInt(process.env.REPORT_PORT) ?? 3000,
   REVIEW: parseInt(process.env.REVIEW_PORT) ?? 3000,
   USER: parseInt(process.env.USER_PORT) ?? 3000,
+  STRIPE: parseInt(process.env.STRIPE_PORT) ?? 3000,
 };

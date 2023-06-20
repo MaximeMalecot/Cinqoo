@@ -3,13 +3,54 @@
 ## Prerequisites:
 
 To start the project, you need Docker with (at least) 9gb of memory allocated, otherwise, the containers won't be able to start properly.
+Also, you need a Stripe account since we are using it to handle payments and promotion to Freelancer.
 
-## Getting started
+## Get your Stripe secret key
 
-Run the following command:
+The project is using Stripe to handle payments, therefore, you might need an actual Stripe secret key to create products and be able to perform most user flows. To do this, you just have to go to the [Stripe test developer page](https://dashboard.stripe.com/test/apikeys) and generate a secret key.
+
+Create the .env file like that :
+
+```bash
+cp .env.example .env
+```
+
+Once you have it, copy this key and put it in the root .env file as it is:
+
+```bash
+STRIPE_SECRET_KEY=<your_stripe_secret_key>
+```
+
+## Listening Stripe events locally
+
+To use the Stripe webhooks without hosting the application, you might need to install the Stripe CLI
+https://stripe.com/docs/stripe-cli
+
+Once the settings are done, use the following command in your shell
+
+**Linux/MacOS:**
+
+```bash
+stripe listen --forward-to localhost:3000/webhook/stripe
+```
+
+**Windows:**
+
+```bash
+your/path/to/stripe/executable listen --forward-to localhost:3000/webhook/stripe
+```
+
+The CLI should give you your webhook signing secret starting with "whsec\_". Copy this key and put it in the root .env file as it is:
+
+```bash
+STRIPE_WH_SECRET=<your_webhook_key>
+```
+
+## Starting the project
+
+To start the project, run the following command:
 
 ```
-cp .env.example .env
 docker compose up --build -d
 ```
 
