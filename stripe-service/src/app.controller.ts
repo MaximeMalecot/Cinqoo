@@ -47,4 +47,14 @@ export class AppController {
   }
 
   // Accounts
+
+  @EventPattern('STRIPE.CREATE_ACCOUNT')
+  async createAccount() {
+    return this.accountService.createAccount();
+  }
+
+  @EventPattern('STRIPE.CREATE_ACCOUNT_LINK')
+  async createAccountLink(accountId: string) {
+    return await this.accountService.createAccountLink(accountId);
+  }
 }

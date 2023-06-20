@@ -13,11 +13,6 @@ export class FreelancerProfile {
   description?: string;
 
   @Prop({
-    type: String,
-  })
-  stripeId?: string;
-
-  @Prop({
     type: Types.ObjectId,
     ref: 'profile',
   })

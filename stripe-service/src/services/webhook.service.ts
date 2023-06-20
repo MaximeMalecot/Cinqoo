@@ -10,6 +10,7 @@ export class WebhookService {
   constructor(
     @Inject(STRIPE_CLIENT) private readonly stripe: Stripe,
     @Inject('PAYMENT_SERVICE') private readonly paymentService: ClientProxy,
+    @Inject('USER_SERVICE') private readonly userService: ClientProxy,
   ) {}
 
   async handleWebhook(data: HandleWebhookDto) {
@@ -34,6 +35,9 @@ export class WebhookService {
         case 'payment_intent.canceled':
         case 'payment_intent.expired':
           return await this.cancelPayment(event);
+
+        case 'capability.updated':
+          return await this.updateCapability(event);
       }
 
       return new RpcException({
@@ -41,17 +45,17 @@ export class WebhookService {
         statusCode: 500,
       });
     } catch (e: any) {
-      console.log(e.message);
       if (e instanceof RpcException) {
         throw e;
       }
       throw new RpcException({
-        message: 'Error while updating bill status',
+        message: 'Error while handling stripe event',
         statusCode: 500,
       });
     }
   }
 
+  // Payment
   private async updatePaymentIntent(event: Stripe.Event) {
     const sessionId = event.data.object['id'];
     const paymentIntentId = event.data.object['payment_intent'];
@@ -80,6 +84,19 @@ export class WebhookService {
     return await firstValueFrom(
       this.paymentService.send('PAYMENT.CANCEL_PAYMENT', {
         paymentIntentId,
+      }),
+    );
+  }
+
+  // Account
+  private async updateCapability(event: any) {
+    const { account } = event;
+    const { status } = event.data.object;
+
+    return await firstValueFrom(
+      this.userService.send('USER.PROMOTE_OR_DEMOTE', {
+        stripeAccountId: account,
+        promote: status === 'active',
       }),
     );
   }

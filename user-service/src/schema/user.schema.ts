@@ -80,10 +80,9 @@ export class User {
   updatedAt: Date;
 
   @Prop({
-    type: Types.ObjectId,
-    ref: 'profile',
+    type: String,
   })
-  freelancerProfile?: string;
+  stripeAccountId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

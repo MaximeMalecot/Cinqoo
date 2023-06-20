@@ -84,4 +84,9 @@ export class UserController {
   public async deleteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('deleteUser', userId);
   }
+
+  @Get('self/become-freelancer')
+  public becomeFreelancer(@Req() req: any) {
+    return this.userService.send('USER.BECOME_FREELANCER', req.user._id);
+  }
 }

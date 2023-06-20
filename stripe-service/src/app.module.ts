@@ -22,6 +22,13 @@ import { StripeModule } from './stripe/stripe.module';
           host: SERVICES.PAYMENT,
         },
       },
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.USER,
+        },
+      },
     ]),
   ],
   controllers: [AppController],
