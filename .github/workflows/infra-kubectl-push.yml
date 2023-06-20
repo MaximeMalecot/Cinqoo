@@ -1,4 +1,4 @@
-name: Push k8s infra
+name: Push GKE
 
 on:
     workflow_dispatch:

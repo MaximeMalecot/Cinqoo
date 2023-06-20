@@ -1,4 +1,4 @@
-name: Stripe-ms build and push docker image
+name: Stripe Push
 
 on:
     workflow_dispatch:
