@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
@@ -24,7 +27,17 @@ import { WebhookModule } from './webhook/webhook.module';
     OrderModule,
     DeliverableModule,
     FavoriteModule,
-    WebhookModule
+    WebhookModule,
+    MulterModule.register({
+      dest: './files',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'files'),
+      serveRoot: '/files',
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
   ],
   controllers: [AppController],
 })
