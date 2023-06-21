@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 
@@ -71,5 +72,19 @@ export class AppController {
   @EventPattern('USER.GET_FREELANCER_PROFILE')
   async getFreelancerProfile(userId: string) {
     return this.appService.getFreelancerProfile(userId);
+  }
+
+  @EventPattern('USER.UPDATE_FREELANCER_PROFILE')
+  async updateFreelancerProfile(
+    @Payload()
+    data: {
+      id: string;
+      freelancerProfileDto: UpdateFreelancerDto;
+    },
+  ) {
+    return this.appService.updateFreelancerProfile(
+      data.id,
+      data.freelancerProfileDto,
+    );
   }
 }

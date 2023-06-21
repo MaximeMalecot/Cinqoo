@@ -17,6 +17,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 import { IsAccountOwnerGuard } from './guards/is-account-owner.guard';
@@ -110,5 +111,17 @@ export class UserController {
   @Post('self/become-freelancer')
   public becomeFreelancer(@Req() req: any) {
     return this.userService.send('USER.BECOME_FREELANCER', req.user._id);
+  }
+
+  @Patch('freelancer/self')
+  @Roles(ROLE.FREELANCER)
+  public updateSelfFreelancerProfile(
+    @Req() req: any,
+    @Body() body: UpdateFreelancerDto,
+  ) {
+    return this.userService.send('USER.UPDATE_FREELANCER_PROFILE', {
+      user: req.user._id,
+      freelancerProfileDto: body,
+    });
   }
 }

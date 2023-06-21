@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 import { Role } from './enums/role.enum';
@@ -261,6 +262,7 @@ export class AppService {
         {
           __v: 0,
           createdAt: 0,
+          user: 0,
         },
       );
 
@@ -281,6 +283,34 @@ export class AppService {
       });
 
       return { ...user.toObject(), freelancerProfile: profile.toObject() };
+    } catch (e: any) {
+      return new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async updateFreelancerProfile(id: string, data: UpdateFreelancerDto) {
+    try {
+      const profile = await this.freelancerProfileModel.findOneAndUpdate(
+        {
+          user: new Types.ObjectId(id),
+        },
+        data,
+        {
+          new: true,
+        },
+      );
+
+      if (!profile) {
+        throw new RpcException({
+          message: `Freelancer profile not found`,
+          statusCode: 404,
+        });
+      }
+
+      return { message: 'Freelancer profile updated' };
     } catch (e: any) {
       return new RpcException({
         message: e.message,
