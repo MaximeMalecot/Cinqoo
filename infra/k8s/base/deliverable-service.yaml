@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: deliverable-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/deliverable-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/deliverable-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT

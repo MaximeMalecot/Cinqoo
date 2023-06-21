@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: order-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/order-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/order-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT

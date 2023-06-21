@@ -52,6 +52,87 @@ jobs:
                   sed -i 's/<whpsk>/${{ secrets.STRIPE_WH_PAYMENT_SECRET }}/g' .env.secrets
                   sed -i 's/<whask>/${{ secrets.STRIPE_WH_ACCOUNT_SECRET }}/g' .env.secrets
 
+            - name: auth-version
+              id: auth-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: auth-service
+
+            - name: deliverable-version
+              id: deliverable-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: deliverable-service
+
+            - name: favorite-version
+              id: favorite-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: favorite-service
+
+            - name: gateway-version
+              id: gateway-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: gateway-service
+
+            - name: order-version
+              id: order-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: order-service
+
+            - name: payment-version
+              id: payment-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: payment-service
+
+            - name: prestation-version
+              id: prestation-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: prestation-service
+
+            - name: report-version
+              id: report-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: report-service
+
+            - name: review-version
+              id: review-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: review-service
+
+            - name: stripe-version
+              id: stripe-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: stripe-service
+
+            - name: user-version
+              id: user-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: user-service
+
+            - name: Set up version
+              working-directory: ./infra/k8s/base
+              run: |-
+                  sed -i 's/latest/${{ steps.auth-version.outputs.current-version}}/g' auth-service.yaml
+                  sed -i 's/latest/${{ steps.deliverable-version.outputs.current-version}}/g' deliverable-service.yaml
+                  sed -i 's/latest/${{ steps.favorite-version.outputs.current-version}}/g' favorite-service.yaml
+                  sed -i 's/latest/${{ steps.gateway-version.outputs.current-version}}/g' gateway-service.yaml
+                  sed -i 's/latest/${{ steps.order-version.outputs.current-version}}/g' order-service.yaml
+                  sed -i 's/latest/${{ steps.payment-version.outputs.current-version}}/g' payment-service.yaml
+                  sed -i 's/latest/${{ steps.prestation-version.outputs.current-version}}/g' prestation-service.yaml
+                  sed -i 's/latest/${{ steps.report-version.outputs.current-version}}/g' report-service.yaml
+                  sed -i 's/latest/${{ steps.review-version.outputs.current-version}}/g' review-service.yaml
+                  sed -i 's/latest/${{ steps.stripe-version.outputs.current-version}}/g' stripe-service.yaml
+                  sed -i 's/latest/${{ steps.user-version.outputs.current-version}}/g' user-service.yaml
+
             - name: Deploy
               working-directory: ./infra/k8s/overlays/prod
               run: |-

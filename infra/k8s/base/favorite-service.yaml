@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: favorite-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/favorite-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/favorite-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT
@@ -59,7 +59,7 @@ spec:
         kind: Deployment
         name: favorite-service
     minReplicas: 1
-    maxReplicas: 2
+    maxReplicas: 3
     metrics:
         - type: Resource
           resource:
