@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { DoneRequestDto } from './dto/done-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { Order, OrderStatus } from './schemas/order.schema';
 
@@ -272,5 +273,16 @@ export class AppService {
         message: 'Internal server error',
       });
     }
+  }
+
+  async hasDone(data: DoneRequestDto) {
+    const order = await this.orderModel.findOne({
+      ...data,
+      status: OrderStatus.DONE,
+    });
+    if (!order) {
+      return false;
+    }
+    return true;
   }
 }

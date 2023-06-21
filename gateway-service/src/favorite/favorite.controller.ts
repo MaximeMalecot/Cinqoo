@@ -10,7 +10,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
-import { PrestationExistsGuard } from './guards/favorite.guard';
+import { PrestationExistsGuard } from './guards/prestation-exists.guard';
 
 @ApiTags('favorite')
 @Controller('favorite')
@@ -22,7 +22,7 @@ export class FavoriteController {
 
   @Get()
   public getFavoriteHello(@Req() req) {
-    return this.favoriteService.send('getSelfFavorites', {
+    return this.favoriteService.send('FAVORITE.GET_SELF', {
       userId: req.user._id,
     });
   }
@@ -33,7 +33,7 @@ export class FavoriteController {
     @Req() req,
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
-    return this.favoriteService.send('addOrDeleteFavorite', {
+    return this.favoriteService.send('FAVORITE.PUT', {
       prestationId,
       userId: req.user._id,
     });
