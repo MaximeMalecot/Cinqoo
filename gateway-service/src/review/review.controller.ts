@@ -1,6 +1,20 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { CreateReviewDto } from './dto/create-review.dto';
+import { HasDoneOrderGuard } from './guards/has-done-order.guard';
+import { PrestationExistsGuard } from './guards/prestation-exists.guard';
+import { ReviewDontExistsGuard } from './guards/review-dont-exists.guard';
 
 @ApiTags('review')
 @Controller('review')
@@ -9,8 +23,29 @@ export class ReviewController {
     @Inject('REVIEW_SERVICE') private readonly reviewService: ClientProxy,
   ) {}
 
-  @Get()
-  public getReviewHello() {
-    return this.reviewService.send('getHello', {});
+  @UseGuards(PrestationExistsGuard)
+  @Get(':prestationId')
+  public getReviewForPrestation(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.reviewService.send('REVIEW.GET_PRESTATION', {
+      prestationId,
+    });
+  }
+
+  @UseGuards(PrestationExistsGuard)
+  @UseGuards(HasDoneOrderGuard)
+  @UseGuards(ReviewDontExistsGuard)
+  @Post(':prestationId')
+  public createReview(
+    @Req() req,
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+    @Body() data: CreateReviewDto,
+  ) {
+    return this.reviewService.send('REVIEW.CREATE', {
+      ...data,
+      prestationId,
+      userId: req.user._id,
+    });
   }
 }

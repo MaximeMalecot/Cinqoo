@@ -11,16 +11,16 @@ import {
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('addOrDeleteFavorite')
+  @EventPattern('FAVORITE.GET_SELF')
+  async getSelfFavorites(@Payload() data: GetFavoritesDto) {
+    return await this.appService.getSelfFavorites(data.userId);
+  }
+
+  @EventPattern('FAVORITE.PUT')
   async addOrDeleteFavorite(
     @Payload() data: FavoriteRequestDto,
   ): Promise<FavoriteResultDto> {
     console.log(data);
     return await this.appService.addOrDeleteFavorite(data);
-  }
-
-  @EventPattern('getSelfFavorites')
-  async getSelfFavorites(@Payload() data: GetFavoritesDto) {
-    return await this.appService.getSelfFavorites(data.userId);
   }
 }
