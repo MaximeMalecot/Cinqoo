@@ -30,6 +30,22 @@ import { ReviewController } from './review.controller';
           port: PORTS.ORDER,
         },
       },
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.AUTH,
+          port: PORTS.AUTH,
+        },
+      },
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.USER,
+          port: PORTS.USER,
+        },
+      },
     ]),
   ],
   controllers: [ReviewController],

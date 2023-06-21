@@ -37,4 +37,24 @@ export class AppService {
     });
     return review ? true : false;
   }
+
+  async getAverageOnPrestation(prestationId: string) {
+    const reviews = await this.reviewModel.aggregate([
+      {
+        $match: {
+          prestationId: prestationId,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          average: {
+            $avg: '$mark',
+          },
+        },
+      },
+    ]);
+
+    return reviews[0].average;
+  }
 }

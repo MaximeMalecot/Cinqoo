@@ -27,4 +27,9 @@ export class AppController {
   async exists(@Payload() data: ReviewExistsDto) {
     return await this.appService.exists(data);
   }
+
+  @EventPattern('REVIEW.GET_AVERAGE_ON_PRESTATION')
+  async getAverageOnPrestation(@Payload('prestationId') prestationId: string) {
+    return await this.appService.getAverageOnPrestation(prestationId);
+  }
 }

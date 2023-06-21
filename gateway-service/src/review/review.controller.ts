@@ -23,6 +23,17 @@ export class ReviewController {
   ) {}
 
   @UseGuards(PrestationExistsGuard)
+  @Get(':prestationId/average')
+  public getAverageForPrestation(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    console.log('ahbatard');
+    return this.reviewService.send('REVIEW.GET_AVERAGE_ON_PRESTATION', {
+      prestationId,
+    });
+  }
+
+  @UseGuards(PrestationExistsGuard)
   @Get(':prestationId')
   public getReviewForPrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
