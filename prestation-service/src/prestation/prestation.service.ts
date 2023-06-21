@@ -36,7 +36,7 @@ export class PrestationService {
     return prestations;
   }
 
-  async create(prestation: CreatePrestationDto, userId: string) {
+  async create(prestation: CreatePrestationDto, userId: string, file: string) {
     const product = await firstValueFrom(
       this.stripeService.send('STRIPE.CREATE_PRODUCT', {
         name: prestation.name,
@@ -44,7 +44,7 @@ export class PrestationService {
     );
 
     const localCategories = [];
-    if (prestation.categories.length > 0) {
+    if (prestation.categories && prestation.categories.length > 0) {
       const rawCategories = Array.from(new Set(prestation.categories));
       await Promise.all(
         rawCategories.map(async (category: string) => {
@@ -61,6 +61,7 @@ export class PrestationService {
       categories: localCategories,
       stripeId: product.id,
       owner: new Types.ObjectId(userId),
+      image: file,
     };
     const createdPrestation = new this.prestationModel(newPrestation);
     const savedPrestation = await createdPrestation.save();
@@ -156,6 +157,7 @@ export class PrestationService {
   async updatePrestation(
     prestationId: string,
     prestation: UpdatePrestationDto,
+    file: string,
   ) {
     const localCategories = [];
     if (prestation.categories.length > 0) {
@@ -172,7 +174,14 @@ export class PrestationService {
 
     const updatedPrestation = await this.prestationModel.findByIdAndUpdate(
       new Types.ObjectId(prestationId),
-      { ...prestation, categories: localCategories },
+      {
+        name: prestation.name,
+        description: prestation.description,
+        price: prestation.price,
+        delay: prestation.delay,
+        image: file,
+        categories: localCategories,
+      },
       { new: true },
     );
 

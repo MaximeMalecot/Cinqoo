@@ -19,7 +19,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
-  app.use(helmet());
+  app.use(helmet({ crossOriginResourcePolicy: false }));
   await app.listen(3000);
 }
 bootstrap();
