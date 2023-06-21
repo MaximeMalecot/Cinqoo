@@ -124,10 +124,17 @@ export class PrestationService {
   async updatePrestation(
     prestationId: string,
     prestation: UpdatePrestationDto,
+    file: string,
   ) {
     const updatedPrestation = await this.prestationModel.findByIdAndUpdate(
       new Types.ObjectId(prestationId),
-      prestation,
+      {
+        name: prestation.name,
+        description: prestation.description,
+        price: prestation.price,
+        delay: prestation.delay,
+        image: file,
+      },
       { new: true },
     );
 

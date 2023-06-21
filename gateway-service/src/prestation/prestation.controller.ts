@@ -65,13 +65,39 @@ export class PrestationController {
 
   @Patch(':prestationId')
   @UseGuards(IsServiceOwner)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './files/prestation',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = uniqueSuffix + ext;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
   public updatePrestation(
+    @Req() req: any,
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
-    @Body() body: UpdatePrestationDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
+    @Body() body,
   ) {
+    body as UpdatePrestationDto;
     return this.prestationService.send('PRESTATION.UPDATE_ONE', {
       id: prestationId,
       prestation: body,
+      image: `${req.protocol}://${req.get('Host')}/${image.path}`,
     });
   }
 

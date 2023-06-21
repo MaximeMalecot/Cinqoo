@@ -43,10 +43,15 @@ export class PrestationController {
 
   @EventPattern('PRESTATION.UPDATE_ONE')
   async updatePrestation(
-    @Payload() data: { id: string; prestation: UpdatePrestationDto },
+    @Payload()
+    data: {
+      id: string;
+      prestation: UpdatePrestationDto;
+      image: any;
+    },
   ) {
-    const { id, prestation } = data;
-    return await this.appService.updatePrestation(id, prestation);
+    const { id, prestation, image } = data;
+    return await this.appService.updatePrestation(id, prestation, image);
   }
 
   @EventPattern('PRESTATION.ENABLE_ONE')
