@@ -22,7 +22,7 @@ export class CategoryService {
     return categories;
   }
 
-  async getAllPrestations(id: number) {
+  async getAllPrestations(id: string) {
     const prestations = await this.categoryModel
       .findById(new Types.ObjectId(id))
       .populate('prestations', {
@@ -32,7 +32,7 @@ export class CategoryService {
     return prestations;
   }
 
-  async getOne(id: number) {
+  async getOne(id: string) {
     const category = await this.categoryModel.findById(new Types.ObjectId(id));
     return category;
   }

@@ -103,7 +103,7 @@ export class PrestationController {
   }
 
   @Post()
-  @Roles(ROLE.FREELANCER)
+  @Roles(ROLE.FREELANCER, ROLE.ADMIN)
   public createPrestation(@Body() body: CreatePrestationDto, @Req() req: any) {
     return this.prestationService.send('PRESTATION.CREATE', {
       user: req.user._id,

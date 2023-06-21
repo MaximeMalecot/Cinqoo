@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { CategoryService } from 'src/category/category.service';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { Prestation } from './schemas/prestation.schema';
@@ -12,6 +13,7 @@ export class PrestationService {
   constructor(
     @InjectModel(Prestation.name) private prestationModel: Model<Prestation>,
     @Inject('STRIPE_SERVICE') private stripeService: ClientProxy,
+    private categoryService: CategoryService,
   ) {}
 
   async getAll() {
@@ -37,8 +39,22 @@ export class PrestationService {
       }),
     );
 
+    const localCategories = [];
+    if (prestation.categories.length > 0) {
+      const rawCategories = Array.from(new Set(prestation.categories));
+      await Promise.all(
+        rawCategories.map(async (category: string) => {
+          const exists = await this.categoryService.getOne(category);
+          if (exists) {
+            localCategories.push(exists._id);
+          }
+        }),
+      );
+    }
+
     const newPrestation = {
       ...prestation,
+      categories: localCategories,
       stripeId: product.id,
       owner: new Types.ObjectId(userId),
     };
@@ -52,7 +68,8 @@ export class PrestationService {
       description,
       price,
       delay,
-      _id: id,
+      _id,
+      categories,
     } = savedPrestation;
     return {
       image,
@@ -61,7 +78,8 @@ export class PrestationService {
       description,
       price,
       delay,
-      id,
+      _id,
+      categories,
     };
   }
 

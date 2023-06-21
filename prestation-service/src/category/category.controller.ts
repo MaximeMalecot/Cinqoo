@@ -19,7 +19,7 @@ export class CategoryController {
   }
 
   @EventPattern('CATEGORY.GET_ONE')
-  async getOne(id: number) {
+  async getOne(id: string) {
     return await this.appService.getOne(id);
   }
 
