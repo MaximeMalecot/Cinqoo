@@ -19,6 +19,7 @@ export class PrestationService {
   async getAll() {
     const prestations = await this.prestationModel
       .find({ isActive: true })
+      .populate('categories')
       .select({
         __v: false,
         stripeId: false,
@@ -28,7 +29,10 @@ export class PrestationService {
   }
 
   async getAllAdmin() {
-    const prestations = await this.prestationModel.find().limit(10);
+    const prestations = await this.prestationModel
+      .find()
+      .populate('categories')
+      .limit(10);
     return prestations;
   }
 
@@ -92,11 +96,14 @@ export class PrestationService {
       filter['isActive'] = active;
     }
 
-    const prestations = await this.prestationModel.find(filter).select({
-      __v: false,
-      owner: false,
-      stripeId: false,
-    });
+    const prestations = await this.prestationModel
+      .find(filter)
+      .select({
+        __v: false,
+        owner: false,
+        stripeId: false,
+      })
+      .populate('categories');
 
     return prestations;
   }
@@ -107,6 +114,7 @@ export class PrestationService {
         owner: new Types.ObjectId(userId),
         isActive: true,
       })
+      .populate('categories')
       .select({
         __v: false,
         owner: false,
@@ -124,27 +132,47 @@ export class PrestationService {
   }
 
   async getPrestation(prestationId: string) {
-    const prestation = await this.prestationModel.findById(
-      new Types.ObjectId(prestationId),
-    );
+    try {
+      const prestation = await this.prestationModel
+        .findById(new Types.ObjectId(prestationId))
+        .populate('categories');
 
-    if (!prestation) {
+      if (!prestation) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Prestation not Found',
+        });
+      }
+
+      return prestation.toObject();
+    } catch (e: any) {
       throw new RpcException({
         statusCode: 404,
-        message: 'Prestation not Found',
+        message: e.message,
       });
     }
-
-    return prestation.toObject();
   }
 
   async updatePrestation(
     prestationId: string,
     prestation: UpdatePrestationDto,
   ) {
+    const localCategories = [];
+    if (prestation.categories.length > 0) {
+      const rawCategories = Array.from(new Set(prestation.categories));
+      await Promise.all(
+        rawCategories.map(async (category: string) => {
+          const exists = await this.categoryService.getOne(category);
+          if (exists) {
+            localCategories.push(exists._id);
+          }
+        }),
+      );
+    }
+
     const updatedPrestation = await this.prestationModel.findByIdAndUpdate(
       new Types.ObjectId(prestationId),
-      prestation,
+      { ...prestation, categories: localCategories },
       { new: true },
     );
 

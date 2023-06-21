@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { Category } from 'src/category/schemas/category.schema';
 
 export type PrestationDocument = HydratedDocument<Prestation>;
 
@@ -63,7 +64,7 @@ export class Prestation {
   owner: string;
 
   @Prop({
-    type: [{ type: Types.ObjectId, ref: 'categories' }],
+    type: [{ type: Types.ObjectId, ref: Category.name }],
     default: [],
   })
   categories: string[];
