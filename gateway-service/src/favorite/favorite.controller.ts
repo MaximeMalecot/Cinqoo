@@ -1,7 +1,16 @@
-import { Controller, Get, Inject, Param, Put, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { PrestationExistsGuard } from './guards/favorite.guard';
 
 @ApiTags('favorite')
 @Controller('favorite')
@@ -18,6 +27,7 @@ export class FavoriteController {
     });
   }
 
+  @UseGuards(PrestationExistsGuard)
   @Put(':prestationId')
   public addOrDeleteFavorite(
     @Req() req,
