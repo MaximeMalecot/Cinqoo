@@ -121,24 +121,26 @@ export class AppService {
 
   async getPendingRequests(userId: string) {
     try {
-      const requests = await this.orderModel.find({
-        applicant: userId,
-        status: OrderStatus.PENDING,
-      });
-
-      const requestsWithPrestations = await Promise.all(
-        requests.map(async (request) => {
-          const prestation = await firstValueFrom(
-            this.prestationService.send(
-              'PRESTATION.GET_ONE',
-              request.serviceId,
-            ),
-          );
-          return { ...request.toObject(), prestation };
-        }),
+      const prestations = await firstValueFrom(
+        this.prestationService.send(
+          'PRESTATION.GET_ACTIVE_PRESTATIONS_OF_USER',
+          userId,
+        ),
       );
 
-      return requestsWithPrestations;
+      const requests = [];
+
+      for (const prestation of prestations) {
+        const request = await this.orderModel.findOne({
+          serviceId: prestation._id,
+          status: OrderStatus.PENDING,
+        });
+        if (request) {
+          requests.push({ ...request.toObject(), prestation });
+        }
+      }
+
+      return requests;
     } catch (e: any) {
       if (e instanceof RpcException) {
         throw e;

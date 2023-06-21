@@ -106,9 +106,9 @@ services:
             context: ./review-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./review-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./review-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
         env_file: .env
@@ -151,9 +151,9 @@ services:
             context: ./order-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./order-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./order-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
         env_file: .env
