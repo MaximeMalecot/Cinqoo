@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
-import { Deliverable } from './schemas/deliverable.schema';
 import { Model } from 'mongoose';
+import { PublishDto } from './dto/publish.dto';
+import { Deliverable } from './schemas/deliverable.schema';
 
 @Injectable()
 export class AppService {
@@ -10,8 +12,26 @@ export class AppService {
     private readonly deliverableModel: Model<Deliverable>,
   ) {}
 
-  async getHello(): Promise<string> {
-    const count = await this.deliverableModel.countDocuments();
-    return `Deliverable service : there are currently ${count} deliverables in the database`;
+  async getAllDeliverablesForAnOrder(orderId: string) {
+    const deliverables = await this.deliverableModel.find({ orderId: orderId });
+    return deliverables;
+  }
+
+  async publishDeliverable(orderId: string, data: PublishDto) {
+    try {
+      const deliverable = new this.deliverableModel({
+        orderId: orderId,
+        link: data.link,
+        name: data.name,
+      });
+
+      await deliverable.save();
+      return deliverable;
+    } catch (err: any) {
+      throw new RpcException({
+        statusCode: 404,
+        message: err.message,
+      });
+    }
   }
 }
