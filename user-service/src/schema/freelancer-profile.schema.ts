@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { User } from './user.schema';
 
 export type FreelancerProfileDocument = HydratedDocument<FreelancerProfile>;
 
@@ -14,7 +15,7 @@ export class FreelancerProfile {
 
   @Prop({
     type: Types.ObjectId,
-    ref: 'profile',
+    ref: User.name,
   })
   user: string;
 

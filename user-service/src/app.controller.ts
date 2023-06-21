@@ -67,4 +67,9 @@ export class AppController {
   async becomeFreelancer(userId: string) {
     return this.appService.becomeFreelancer(userId);
   }
+
+  @EventPattern('USER.GET_FREELANCER_PROFILE')
+  async getFreelancerProfile(userId: string) {
+    return this.appService.getFreelancerProfile(userId);
+  }
 }

@@ -44,8 +44,18 @@ export class UserController {
     });
   }
 
-  @Get(':userId')
+  @Get('freelancer/:userId')
   @Public()
+  public getFreelancerProfile(
+    @Param('userId', CheckObjectIdPipe) userId: string,
+  ) {
+    return this.userService.send('USER.GET_FREELANCER_PROFILE', {
+      id: userId,
+    });
+  }
+
+  @Get(':userId')
+  @UseGuards(IsAccountOwnerGuard)
   public getUserById(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('getUserById', {
       id: userId,

@@ -214,7 +214,7 @@ export class AppService {
           });
           if (!freelancerProfile) {
             freelancerProfile = new this.freelancerProfileModel({
-              user: user._id,
+              user: new Types.ObjectId(user._id),
             });
             await freelancerProfile.save();
           }
@@ -249,5 +249,34 @@ export class AppService {
       ),
     );
     return { url: accountLink.url };
+  }
+
+  async getFreelancerProfile(id: string) {
+    try {
+      const profile = await this.freelancerProfileModel.findOne({
+        user: new Types.ObjectId(id),
+      });
+
+      if (!profile) {
+        throw new RpcException({
+          message: `Freelancer profile not found`,
+          statusCode: 404,
+        });
+      }
+
+      const user = await this.userModel.findById(new Types.ObjectId(id), {
+        password: 0,
+        stripeAccountId: 0,
+        address: 0,
+        zip: 0,
+      });
+
+      return { ...user, freelancerProfile: profile };
+    } catch (e: any) {
+      return new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
   }
 }
