@@ -30,13 +30,11 @@ export class AppController {
 
   @EventPattern('ORDER.GET_ALL_ORDERS')
   async getAllOrder() {
-    console.log('get all orders');
     return await this.appService.getAllOrders();
   }
 
   @EventPattern('ORDER.GET_ALL_ORDERS_WITH_PRESTATION')
   async getAllOrdersWithPrestation() {
-    console.log('get all orders');
     return await this.appService.getAllOrdersWithPrestation();
   }
 

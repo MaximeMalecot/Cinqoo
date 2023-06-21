@@ -5,6 +5,7 @@ import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { CategoryService } from 'src/category/category.service';
 import { CreatePrestationDto } from './dto/create-prestation.dto';
+import { SearchPrestationsDto } from './dto/search-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { Prestation } from './schemas/prestation.schema';
 
@@ -34,6 +35,39 @@ export class PrestationService {
       .populate('categories')
       .limit(10);
     return prestations;
+  }
+
+  async searchPrestations(data: SearchPrestationsDto) {
+    const { query, price_min, price_max, categories } = data;
+
+    const filters = {
+      isActive: true,
+    };
+
+    if (query) {
+      filters['name'] = { $regex: '.*' + query + '.*', $options: 'i' };
+    }
+
+    if (price_min) {
+      filters['price'] = {
+        $gte: price_min,
+      };
+    }
+
+    if (price_max) {
+      filters['price'] = {
+        ...filters['price'],
+        $lte: price_max,
+      };
+    }
+
+    if (categories) {
+      filters['categories'] = {
+        $all: categories.map((c) => new Types.ObjectId(c)),
+      };
+    }
+
+    return await this.prestationModel.find(filters).populate('categories');
   }
 
   async create(prestation: CreatePrestationDto, userId: string, file: string) {

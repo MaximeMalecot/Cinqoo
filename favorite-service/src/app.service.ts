@@ -24,7 +24,6 @@ export class AppService {
   async addOrDeleteFavorite(
     dto: FavoriteRequestDto,
   ): Promise<FavoriteResultDto> {
-    console.log(dto);
     let favorite = await this.favoriteModel.findOne({
       prestationId: dto.prestationId,
       userId: dto.userId,
