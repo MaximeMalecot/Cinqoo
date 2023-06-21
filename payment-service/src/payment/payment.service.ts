@@ -21,7 +21,6 @@ export class PaymentService {
   ) {}
 
   async getHello(): Promise<string> {
-    console.log(this.prestationService);
     const billCount = await this.billModel.countDocuments();
     return `Payment service : there are currently ${billCount} bills in the database`;
   }

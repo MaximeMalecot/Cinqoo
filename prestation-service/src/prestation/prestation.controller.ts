@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreatePrestationRequestDto } from './dto/create-prestation-request.dto';
 import { GetUserPrestationsDto } from './dto/get-user-prestations.dto';
+import { SearchPrestationsDto } from './dto/search-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { PrestationService } from './prestation.service';
 
@@ -67,5 +68,13 @@ export class PrestationController {
   @EventPattern('PRESTATION.DELETE_ONE')
   async deletePrestation(id: string) {
     return await this.appService.deletePrestation(id);
+  }
+
+  @EventPattern('PRESTATION.SEARCH')
+  async searchPrestations(
+    @Payload()
+    data: SearchPrestationsDto,
+  ) {
+    return await this.appService.searchPrestations(data);
   }
 }

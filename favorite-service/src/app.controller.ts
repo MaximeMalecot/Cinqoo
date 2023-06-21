@@ -20,7 +20,6 @@ export class AppController {
   async addOrDeleteFavorite(
     @Payload() data: FavoriteRequestDto,
   ): Promise<FavoriteResultDto> {
-    console.log(data);
     return await this.appService.addOrDeleteFavorite(data);
   }
 }

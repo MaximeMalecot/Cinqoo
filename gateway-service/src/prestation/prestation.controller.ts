@@ -10,6 +10,7 @@ import {
   ParseFilePipe,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -24,9 +25,11 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { SearchPrestationsDto } from './dto/search-prestations.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { IsServiceAccessible } from './guards/is-service-accessible.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
+
 @ApiTags('prestation')
 @Controller('prestation')
 export class PrestationController {
@@ -44,6 +47,12 @@ export class PrestationController {
   @Roles(ROLE.ADMIN)
   public getAllPrestationsAdmin() {
     return this.prestationService.send('PRESTATION.GET_ALL_ADMIN', {});
+  }
+
+  @Get('search')
+  @Public()
+  public searchPrestations(@Query() query: SearchPrestationsDto) {
+    return this.prestationService.send('PRESTATION.SEARCH', query);
   }
 
   @Get('self')
