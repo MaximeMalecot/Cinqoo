@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: stripe-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/stripe-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/stripe-service:0.1.1
                   imagePullPolicy: Always
                   env:
                       - name: PORT
@@ -26,11 +26,16 @@ spec:
                             secretKeyRef:
                                 name: secrets
                                 key: STRIPE_SECRET_KEY
-                      - name: STRIPE_WH_SECRET
+                      - name: STRIPE_WH_PAYMENT_SECRET
                         valueFrom:
                             secretKeyRef:
                                 name: secrets
-                                key: STRIPE_WH_SECRET
+                                key: STRIPE_WH_PAYMENT_SECRET
+                      - name: STRIPE_WH_ACCOUNT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: STRIPE_WH_ACCOUNT_SECRET
                   ports:
                       - containerPort: 3000
                   resources:

@@ -31,6 +31,9 @@ services:
             context: ./gateway-service
             target: dev
         command: npm run start:dev
+        volumes:
+            - ./gateway-service:/home/node
+            - /home/node/node_modules
         env_file: .env
         ports:
             - "3000:3000"
@@ -51,6 +54,20 @@ services:
             context: ./auth-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./auth-service:/home/node
+        #     - /home/node/node_modules
+        env_file: .env
+
+    stripe-service:
+        hostname: "${STRIPE_SERVICE}"
+        build:
+            context: ./stripe-service
+            target: dev
+        command: npm run start:dev
+        # volumes:
+        #     - ./stripe-service:/home/node
+        #     - /home/node/node_modules
         env_file: .env
 
     user-service:
@@ -59,6 +76,9 @@ services:
             context: ./user-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./user-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
         env_file: .env
@@ -71,6 +91,9 @@ services:
             context: ./prestation-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./prestation-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
         env_file: .env
@@ -83,6 +106,9 @@ services:
             context: ./review-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./review-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
         env_file: .env
@@ -95,6 +121,9 @@ services:
             context: ./report-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./report-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
@@ -107,18 +136,11 @@ services:
             context: ./payment-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./payment-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
-        env_file: .env
-        depends_on:
-            - mongo-db
-
-    stripe-service:
-        hostname: "${STRIPE_SERVICE}"
-        build:
-            context: ./stripe-service
-            target: dev
-        command: npm run start:dev
         env_file: .env
         depends_on:
             - mongo-db
@@ -129,6 +151,9 @@ services:
             context: ./order-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./order-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
         env_file: .env
@@ -141,6 +166,9 @@ services:
             context: ./deliverable-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./deliverable-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
         env_file: .env
@@ -153,6 +181,9 @@ services:
             context: ./favorite-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./favorite-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
         env_file: .env
@@ -160,11 +191,14 @@ services:
             - mongo-db
 
     front:
-        hostname: "${FRONT_SERVICE}"
+        hostname: "${FRONT}"
         build:
             context: ./front
             target: dev
         command: npm run dev
+        # volumes:
+        #     - ./front:/usr/src/app
+        #     - /usr/src/app/node_modules
         env_file: .env
         ports:
             - "8080:8080"
