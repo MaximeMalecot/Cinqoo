@@ -7,12 +7,15 @@ import {
   Inject,
   Param,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
@@ -51,6 +54,15 @@ export class UserController {
   ) {
     return this.userService.send('USER.GET_FREELANCER_PROFILE', {
       id: userId,
+    });
+  }
+
+  @Patch('freelancer/self')
+  @Roles(ROLE.FREELANCER)
+  public updateFreelancerProfile(@Req() req, @Body() body) {
+    return this.userService.send('USER.UPDATE_FREELANCER_PROFILE', {
+      id: req.user._id,
+      freelancerProfileDto: body,
     });
   }
 
@@ -95,7 +107,7 @@ export class UserController {
     return this.userService.send('deleteUser', userId);
   }
 
-  @Get('self/become-freelancer')
+  @Post('self/become-freelancer')
   public becomeFreelancer(@Req() req: any) {
     return this.userService.send('USER.BECOME_FREELANCER', req.user._id);
   }

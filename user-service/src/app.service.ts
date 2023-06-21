@@ -253,9 +253,16 @@ export class AppService {
 
   async getFreelancerProfile(id: string) {
     try {
-      const profile = await this.freelancerProfileModel.findOne({
-        user: new Types.ObjectId(id),
-      });
+      console.log(id);
+      const profile = await this.freelancerProfileModel.findOne(
+        {
+          user: new Types.ObjectId(id),
+        },
+        {
+          __v: 0,
+          createdAt: 0,
+        },
+      );
 
       if (!profile) {
         throw new RpcException({
@@ -269,9 +276,11 @@ export class AppService {
         stripeAccountId: 0,
         address: 0,
         zip: 0,
+        __v: 0,
+        createdAt: 0,
       });
 
-      return { ...user, freelancerProfile: profile };
+      return { ...user.toObject(), freelancerProfile: profile.toObject() };
     } catch (e: any) {
       return new RpcException({
         message: e.message,
