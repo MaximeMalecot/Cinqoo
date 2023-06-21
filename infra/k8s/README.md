@@ -14,7 +14,7 @@ kubectl apply -f _namespace.yaml
 We have 3 different overlays, dev, staging and prod.
 
 -   Dev is a simple example to test out our application. We downscale the autoscaler to avoid high cost for testing. We also don't use auto-signed certificates. It is mostly used for testing in local with minikube
--   Staging is using the same ressources has the same ressources as production build, but doesn't have certificates. It'll allow you to test out the production without HTTPS.
+-   Staging is using the same ressources as production build, but doesn't have certificates. It'll allow you to test out the production but without HTTPS.
 -   Prod is the full infrastructure with auto-signed certificate, loadbalancer handled in GCP and high autoscaling capability.
 
 Each environment has it's own variables and secret, you'll need to set them before any action. For dev's overlas you can just run the next command in local
