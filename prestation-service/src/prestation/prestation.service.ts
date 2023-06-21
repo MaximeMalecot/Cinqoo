@@ -30,7 +30,7 @@ export class PrestationService {
     return prestations;
   }
 
-  async create(prestation: CreatePrestationDto, userId: string) {
+  async create(prestation: CreatePrestationDto, userId: string, file: string) {
     const product = await firstValueFrom(
       this.stripeService.send('STRIPE.CREATE_PRODUCT', {
         name: prestation.name,
@@ -41,6 +41,7 @@ export class PrestationService {
       ...prestation,
       stripeId: product.id,
       owner: new Types.ObjectId(userId),
+      image: file,
     };
     const createdPrestation = new this.prestationModel(newPrestation);
     const savedPrestation = await createdPrestation.save();

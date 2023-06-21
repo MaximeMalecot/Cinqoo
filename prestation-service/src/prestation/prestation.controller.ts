@@ -21,8 +21,8 @@ export class PrestationController {
 
   @EventPattern('PRESTATION.CREATE')
   async create(@Payload() data: CreatePrestationRequestDto) {
-    const { user, prestation } = data;
-    return await this.appService.create(prestation, user);
+    const { user, prestation, image } = data;
+    return await this.appService.create(prestation, user, image);
   }
 
   @EventPattern('PRESTATION.GET_PRESTATIONS_OF_USER')
