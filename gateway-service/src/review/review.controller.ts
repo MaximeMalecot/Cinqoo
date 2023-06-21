@@ -14,7 +14,6 @@ import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { HasDoneOrderGuard } from './guards/has-done-order.guard';
 import { PrestationExistsGuard } from './guards/prestation-exists.guard';
-import { ReviewDontExistsGuard } from './guards/review-dont-exists.guard';
 
 @ApiTags('review')
 @Controller('review')
@@ -35,7 +34,6 @@ export class ReviewController {
 
   @UseGuards(PrestationExistsGuard)
   @UseGuards(HasDoneOrderGuard)
-  @UseGuards(ReviewDontExistsGuard)
   @Post(':prestationId')
   public createReview(
     @Req() req,

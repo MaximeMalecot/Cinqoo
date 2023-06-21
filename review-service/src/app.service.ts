@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewExistsDto } from './dto/review-exists.dto';
-import { ReviewRequestDto } from './dto/review-request.dto';
 import { Review, ReviewDocument } from './schema/review.schema';
 
 @Injectable()
@@ -13,7 +14,16 @@ export class AppService {
     return await this.reviewModel.find({ prestationId: prestationId }).exec();
   }
 
-  async createReview(data: ReviewRequestDto) {
+  async createReview(data: CreateReviewDto) {
+    const reviewExists = await this.exists({
+      prestationId: data.prestationId,
+      userId: data.userId,
+    });
+    if (reviewExists)
+      throw new RpcException({
+        statusCode: 403,
+        message: 'You have already reviewed this prestation',
+      });
     const review = new this.reviewModel({
       ...data,
     });
