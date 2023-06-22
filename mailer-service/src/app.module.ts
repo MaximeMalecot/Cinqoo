@@ -3,7 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PORTS, SERVICES } from './constants';
+import { FROM, PORTS, SERVICES, TRANSPORTER } from './constants';
+import { SendMailModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { PORTS, SERVICES } from './constants';
         },
       },
     ]),
+    SendMailModule.forRoot({
+      transporter: TRANSPORTER,
+      from: FROM,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
