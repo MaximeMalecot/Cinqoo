@@ -7,6 +7,7 @@ resources:
     - deliverable-service.yaml
     - favorite-service.yaml
     - gateway-service.yaml
+    - mailer-service.yaml
     - order-service.yaml
     - payment-service.yaml
     - prestation-service.yaml

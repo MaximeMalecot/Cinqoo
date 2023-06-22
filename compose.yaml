@@ -47,6 +47,7 @@ services:
             - deliverable-service
             - order-service
             - favorite-service
+            - mailer-service
 
     auth-service:
         hostname: "${AUTH_SERVICE}"
@@ -189,6 +190,17 @@ services:
         env_file: .env
         depends_on:
             - mongo-db
+
+    mailer-service:
+        hostname: "${MAILER_SERVICE}"
+        build:
+            context: ./mailer-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./mailer-service:/home/node
+            - /home/node/node_modules
+        env_file: .env
 
     front:
         hostname: "${FRONT}"
