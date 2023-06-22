@@ -1,6 +1,6 @@
-import { ReportType } from 'src/enums/report.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { ReportType } from 'src/report/enums/report.enum';
 
 export type ReportReasonDocument = HydratedDocument<ReportReason>;
 

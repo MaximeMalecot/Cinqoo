@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ReportReason } from './report-reason/schema/report-reason.schema';
-import { Report } from './report/schema/report.schema';
+import { ReportReason } from '../report-reason/schema/report-reason.schema';
+import { Report } from '../report/schema/report.schema';
 
 @Injectable()
 export class AppService {
