@@ -51,6 +51,11 @@ jobs:
                   sed -i 's/<stsk>/${{ secrets.STRIPE_SECRET_KEY }}/g' .env.secrets
                   sed -i 's/<whpsk>/${{ secrets.STRIPE_WH_PAYMENT_SECRET }}/g' .env.secrets
                   sed -i 's/<whask>/${{ secrets.STRIPE_WH_ACCOUNT_SECRET }}/g' .env.secrets
+                  sed -i 's/<smtphost>/${{ secrets.SMTP_HOST }}/g' .env.secrets
+                  sed -i 's/<smtpport>/${{ secrets.SMTP_PORT }}/g' .env.secrets
+                  sed -i 's/<smtpuser>/${{ secrets.SMTP_USER }}/g' .env.secrets
+                  sed -i 's/<smtppwd>/${{ secrets.SMTP_PWD }}/g' .env.secrets
+                  sed -i 's/<smtpfrom>/${{ secrets.SMTP_FROM }}/g' .env.secrets
 
             - name: auth-version
               id: auth-version
@@ -75,6 +80,12 @@ jobs:
               uses: martinbeentjes/npm-get-version-action@v1.3.1
               with:
                   path: gateway-service
+
+            - name: mailer-version
+              id: mailer-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: mailer-service
 
             - name: order-version
               id: order-version
@@ -125,6 +136,7 @@ jobs:
                   sed -i 's/latest/${{ steps.deliverable-version.outputs.current-version}}/g' deliverable-service.yaml
                   sed -i 's/latest/${{ steps.favorite-version.outputs.current-version}}/g' favorite-service.yaml
                   sed -i 's/latest/${{ steps.gateway-version.outputs.current-version}}/g' gateway-service.yaml
+                  sed -i 's/latest/${{ steps.mailer-version.outputs.current-version}}/g' mailer-service.yaml
                   sed -i 's/latest/${{ steps.order-version.outputs.current-version}}/g' order-service.yaml
                   sed -i 's/latest/${{ steps.payment-version.outputs.current-version}}/g' payment-service.yaml
                   sed -i 's/latest/${{ steps.prestation-version.outputs.current-version}}/g' prestation-service.yaml
