@@ -9,10 +9,24 @@ import { MAIL_CLIENT } from './mailer/constants';
 
 @Injectable()
 export class AppService {
+  informativeTemplate: string;
+  redirectTemplate: string;
+
   constructor(
     @Inject('USER_SERVICE') private readonly userService: ClientProxy,
     @Inject(MAIL_CLIENT) private readonly sendMailClient: Function,
-  ) {}
+  ) {
+    const informativeTemplate = fs.readFileSync(
+      'src/templates/informative.hbs',
+      'utf8',
+    );
+    const redirectTemplate = fs.readFileSync(
+      'src/templates/redirect.hbs',
+      'utf8',
+    );
+    this.informativeTemplate = informativeTemplate;
+    this.redirectTemplate = redirectTemplate;
+  }
 
   getHello(): string {
     return 'Hello World!';
@@ -22,15 +36,12 @@ export class AppService {
     try {
       const { email: to } = await this.getUser(data.targetId);
 
-      const template = await fs.readFileSync(
-        'src/templates/informative.hbs',
-        'utf8',
-      );
-      const compiledTemplate = Handlebars.compile(template);
+      const compiledTemplate = Handlebars.compile(this.informativeTemplate);
       const html = compiledTemplate({
         recipient: to,
         subject: data.subject,
         text: data.text,
+        now: new Date().toLocaleDateString(),
       });
 
       const res = await this.sendMailClient({
@@ -58,17 +69,14 @@ export class AppService {
     try {
       const { email: to } = await this.getUser(data.targetId);
 
-      const template = await fs.readFileSync(
-        'src/templates/redirect.hbs',
-        'utf8',
-      );
-      const compiledTemplate = Handlebars.compile(template);
+      const compiledTemplate = Handlebars.compile(this.redirectTemplate);
       const html = compiledTemplate({
         recipient: to,
         subject: data.subject,
         text: data.text,
         redirectUrl: data.redirectUrl,
-        label: data.label,
+        label: data.label.toUpperCase(),
+        now: new Date().toLocaleDateString(),
       });
 
       const res = await this.sendMailClient({
