@@ -24,7 +24,7 @@ import { WebhookModule } from './webhook/webhook.module';
     OrderModule,
     DeliverableModule,
     FavoriteModule,
-    WebhookModule
+    WebhookModule,
   ],
   controllers: [AppController],
 })
