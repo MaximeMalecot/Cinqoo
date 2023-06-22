@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { DeliverableModule } from './deliverable/deliverable.module';
 import { FavoriteModule } from './favorite/favorite.module';
+import { MailerModule } from './mailer/mailer.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrestationModule } from './prestation/prestation.module';
@@ -24,6 +25,7 @@ import { WebhookModule } from './webhook/webhook.module';
     ReviewModule,
     PaymentModule,
     ReportModule,
+    MailerModule,
     OrderModule,
     DeliverableModule,
     FavoriteModule,

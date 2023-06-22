@@ -190,16 +190,16 @@ services:
         depends_on:
             - mongo-db
 
-    # mailer-service:
-    #     hostname: "${MAILER_SERVICE}"
-    #     build:
-    #         context: ./mailer-service
-    #         target: dev
-    #     command: npm run start:dev
-    #     volumes:
-    #         - ./mailer-service:/home/node
-    #         - /home/node/node_modules
-    #     env_file: .env
+    mailer-service:
+        hostname: "${MAILER_SERVICE}"
+        build:
+            context: ./mailer-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./mailer-service:/home/node
+            - /home/node/node_modules
+        env_file: .env
 
     front:
         hostname: "${FRONT}"
