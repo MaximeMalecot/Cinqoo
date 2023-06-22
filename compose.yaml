@@ -47,6 +47,7 @@ services:
             - deliverable-service
             - order-service
             - favorite-service
+            - mailer-service
 
     auth-service:
         hostname: "${AUTH_SERVICE}"

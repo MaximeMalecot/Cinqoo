@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { SendMailDto } from './dto/send-mail.dto';
 
 @Controller()
 export class AppController {
@@ -9,5 +10,10 @@ export class AppController {
   @EventPattern('MAILER.HELLO')
   getHello() {
     return this.appService.getHello();
+  }
+
+  @EventPattern('MAILER.SEND')
+  async sendMail(@Payload() data: SendMailDto) {
+    return this.appService.sendMail(data);
   }
 }
