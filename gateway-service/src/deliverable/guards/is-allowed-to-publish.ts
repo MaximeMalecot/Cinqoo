@@ -30,6 +30,8 @@ export class IsAllowedToPublish implements CanActivate {
       this.orderService.send('ORDER.GET_ORDER_WITH_PRESTATION', orderId),
     );
     if (!order) throw new NotFoundException({ message: 'Order not found' });
+    if (order.status !== 'IN_PROGRESS')
+      throw new UnauthorizedException({ message: 'Order is not in progress' });
     if (order.prestation.owner === user._id) return true;
     return false;
   }
