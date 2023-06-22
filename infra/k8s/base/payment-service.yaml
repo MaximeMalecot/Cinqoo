@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: payment-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/payment-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/payment-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT

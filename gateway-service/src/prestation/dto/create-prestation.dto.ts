@@ -1,5 +1,4 @@
 import {
-  IsArray,
   IsInt,
   IsNumber,
   IsOptional,
@@ -24,9 +23,9 @@ export class CreatePrestationDto {
   @IsString()
   image: string; // Provisoire
 
-  @IsArray()
+  @IsString()
   @IsOptional()
-  categories?: string[];
+  categories?: any;
 
   @IsNumber()
   @IsPositive()

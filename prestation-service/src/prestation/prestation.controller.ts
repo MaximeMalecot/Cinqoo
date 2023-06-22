@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreatePrestationRequestDto } from './dto/create-prestation-request.dto';
 import { GetUserPrestationsDto } from './dto/get-user-prestations.dto';
+import { SearchPrestationsDto } from './dto/search-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { PrestationService } from './prestation.service';
 
@@ -21,8 +22,8 @@ export class PrestationController {
 
   @EventPattern('PRESTATION.CREATE')
   async create(@Payload() data: CreatePrestationRequestDto) {
-    const { user, prestation } = data;
-    return await this.appService.create(prestation, user);
+    const { user, prestation, image } = data;
+    return await this.appService.create(prestation, user, image);
   }
 
   @EventPattern('PRESTATION.GET_PRESTATIONS_OF_USER')
@@ -43,10 +44,15 @@ export class PrestationController {
 
   @EventPattern('PRESTATION.UPDATE_ONE')
   async updatePrestation(
-    @Payload() data: { id: string; prestation: UpdatePrestationDto },
+    @Payload()
+    data: {
+      id: string;
+      prestation: UpdatePrestationDto;
+      image: any;
+    },
   ) {
-    const { id, prestation } = data;
-    return await this.appService.updatePrestation(id, prestation);
+    const { id, prestation, image } = data;
+    return await this.appService.updatePrestation(id, prestation, image);
   }
 
   @EventPattern('PRESTATION.ENABLE_ONE')
@@ -62,5 +68,13 @@ export class PrestationController {
   @EventPattern('PRESTATION.DELETE_ONE')
   async deletePrestation(id: string) {
     return await this.appService.deletePrestation(id);
+  }
+
+  @EventPattern('PRESTATION.SEARCH')
+  async searchPrestations(
+    @Payload()
+    data: SearchPrestationsDto,
+  ) {
+    return await this.appService.searchPrestations(data);
   }
 }

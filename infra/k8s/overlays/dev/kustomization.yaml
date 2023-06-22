@@ -4,31 +4,39 @@ kind: Kustomization
 namespace: cinqoo
 
 resources:
-  - ../../base
+    - ../../base
 
 namePrefix: dev-
 
 commonLabels:
-  env: dev
+    env: dev
 
 configMapGenerator:
-  - name: variables
-    env: .env
-    options:
-      disableNameSuffixHash: true
+    - name: variables
+      env: .env
+      options:
+          disableNameSuffixHash: true
 secretGenerator:
-  - name: secrets
-    env: .env.secrets
-    options:
-      disableNameSuffixHash: true
+    - name: secrets
+      env: .env.secrets
+      options:
+          disableNameSuffixHash: true
 
 patches:
-  - target:
-      kind: HorizontalPodAutoscaler
-    patch: |-
-      - op: replace
-        path: /spec/maxReplicas
-        value: 2
-      - op: replace
-        path: /spec/metrics/0/resource/target/averageUtilization
-        value: 80
+    - target:
+          kind: HorizontalPodAutoscaler
+      patch: |-
+          - op: replace
+            path: /spec/maxReplicas
+            value: 2
+          - op: replace
+            path: /spec/metrics/0/resource/target/averageUtilization
+            value: 80
+    - patch: |-
+          - op: replace
+            path: /spec/type
+            value:
+              LoadBalancer
+      target:
+          kind: Service
+          name: gateway-service

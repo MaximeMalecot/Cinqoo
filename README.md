@@ -31,13 +31,13 @@ Once the settings are done, use the following command in your shell
 **Linux/MacOS:**
 
 ```bash
-stripe listen --forward-to localhost:3000/webhook/stripe
+stripe listen --forward-to localhost:3000/webhook/stripe/dev
 ```
 
 **Windows:**
 
 ```bash
-your/path/to/stripe/executable listen --forward-to localhost:3000/webhook/stripe
+your/path/to/stripe/executable listen --forward-to localhost:3000/webhook/stripe/dev
 ```
 
 The CLI should give you your webhook signing secret starting with "whsec\_". Copy this key and put it in the root .env file as it is (it's the same one for both ACCOUNT & PAYMENT secret keys):

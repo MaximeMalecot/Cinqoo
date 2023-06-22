@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: report-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/report-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/report-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT

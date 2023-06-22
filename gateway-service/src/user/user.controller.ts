@@ -7,13 +7,17 @@ import {
   Inject,
   Param,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 import { IsAccountOwnerGuard } from './guards/is-account-owner.guard';
@@ -44,8 +48,27 @@ export class UserController {
     });
   }
 
-  @Get(':userId')
+  @Get('freelancer/:userId')
   @Public()
+  public getFreelancerProfile(
+    @Param('userId', CheckObjectIdPipe) userId: string,
+  ) {
+    return this.userService.send('USER.GET_FREELANCER_PROFILE', {
+      id: userId,
+    });
+  }
+
+  @Patch('freelancer/self')
+  @Roles(ROLE.FREELANCER)
+  public updateFreelancerProfile(@Req() req, @Body() body) {
+    return this.userService.send('USER.UPDATE_FREELANCER_PROFILE', {
+      id: req.user._id,
+      freelancerProfileDto: body,
+    });
+  }
+
+  @Get(':userId')
+  @UseGuards(IsAccountOwnerGuard)
   public getUserById(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('getUserById', {
       id: userId,
@@ -85,8 +108,20 @@ export class UserController {
     return this.userService.send('deleteUser', userId);
   }
 
-  @Get('self/become-freelancer')
+  @Post('self/become-freelancer')
   public becomeFreelancer(@Req() req: any) {
     return this.userService.send('USER.BECOME_FREELANCER', req.user._id);
+  }
+
+  @Patch('freelancer/self')
+  @Roles(ROLE.FREELANCER)
+  public updateSelfFreelancerProfile(
+    @Req() req: any,
+    @Body() body: UpdateFreelancerDto,
+  ) {
+    return this.userService.send('USER.UPDATE_FREELANCER_PROFILE', {
+      user: req.user._id,
+      freelancerProfileDto: body,
+    });
   }
 }

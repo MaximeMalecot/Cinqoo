@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { DoneRequestDto } from './dto/done-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { Order, OrderStatus } from './schemas/order.schema';
 
@@ -13,6 +14,8 @@ export class AppService {
     @InjectModel('Order') private orderModel: Model<Order>,
     @Inject('PRESTATION_SERVICE')
     private readonly prestationService: ClientProxy,
+    @Inject('PAYMENT_SERVICE')
+    private readonly paymentService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -120,24 +123,26 @@ export class AppService {
 
   async getPendingRequests(userId: string) {
     try {
-      const requests = await this.orderModel.find({
-        applicant: userId,
-        status: OrderStatus.PENDING,
-      });
-
-      const requestsWithPrestations = await Promise.all(
-        requests.map(async (request) => {
-          const prestation = await firstValueFrom(
-            this.prestationService.send(
-              'PRESTATION.GET_ONE',
-              request.serviceId,
-            ),
-          );
-          return { ...request.toObject(), prestation };
-        }),
+      const prestations = await firstValueFrom(
+        this.prestationService.send(
+          'PRESTATION.GET_ACTIVE_PRESTATIONS_OF_USER',
+          userId,
+        ),
       );
 
-      return requestsWithPrestations;
+      const requests = [];
+
+      for (const prestation of prestations) {
+        const request = await this.orderModel.findOne({
+          serviceId: prestation._id,
+          status: OrderStatus.PENDING,
+        });
+        if (request) {
+          requests.push({ ...request.toObject(), prestation });
+        }
+      }
+
+      return requests;
     } catch (e: any) {
       if (e instanceof RpcException) {
         throw e;
@@ -170,23 +175,37 @@ export class AppService {
   }
 
   async refuseRequest(data: UpdateRequestDto) {
-    const { userId, orderId } = data;
-    const order = await this.orderModel.findById(new Types.ObjectId(orderId));
-    if (!order) {
+    try {
+      const { userId, orderId } = data;
+      const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+      if (!order) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Order not found',
+        });
+      }
+      if (order.status !== 'PENDING') {
+        throw new RpcException({
+          statusCode: 400,
+          message: 'Order is not pending',
+        });
+      }
+      order.status = OrderStatus.REFUSED;
+      await order.save();
+      await firstValueFrom(
+        this.paymentService.send('PAYMENT.REFUND_BILL', order.billId),
+      );
+      return { message: 'Order refused' };
+    } catch (e: any) {
+      console.log(e.message);
+      if (e instanceof RpcException) {
+        throw e;
+      }
       throw new RpcException({
-        statusCode: 404,
-        message: 'Order not found',
+        statusCode: 500,
+        message: 'Internal server error',
       });
     }
-    if (order.status !== 'PENDING') {
-      throw new RpcException({
-        statusCode: 400,
-        message: 'Order is not pending',
-      });
-    }
-    order.status = OrderStatus.REFUSED;
-    await order.save();
-    return { message: 'Order refused' };
   }
 
   async terminateRequest(data: UpdateRequestDto) {
@@ -230,6 +249,12 @@ export class AppService {
     }
     order.status = OrderStatus.DONE;
     await order.save();
+
+    //Pay the provider
+    await firstValueFrom(
+      this.paymentService.send('PAYMENT.PAY_PRESTATION_PROVIDER', order.billId),
+    );
+
     return { message: 'Order marked as done' };
   }
 
@@ -272,5 +297,16 @@ export class AppService {
         message: 'Internal server error',
       });
     }
+  }
+
+  async hasDone(data: DoneRequestDto) {
+    const order = await this.orderModel.findOne({
+      ...data,
+      status: OrderStatus.DONE,
+    });
+    if (!order) {
+      return false;
+    }
+    return true;
   }
 }

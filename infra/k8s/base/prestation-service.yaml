@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: prestation-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/prestation-service:0.1.0
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/prestation-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT
@@ -59,7 +59,7 @@ spec:
         kind: Deployment
         name: prestation-service
     minReplicas: 1
-    maxReplicas: 2
+    maxReplicas: 4
     metrics:
         - type: Resource
           resource:

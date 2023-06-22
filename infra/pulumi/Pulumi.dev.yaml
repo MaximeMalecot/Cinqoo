@@ -1,6 +1,2 @@
 config:
-  gcp:project: cinqoo
-  mongodbatlas:privateKey:
-    secure: AAABAM5urYJqGdVHqG8p8kvO08897Dhf5vxi5VO3fXCh6AxuRfOMNkhtJYpbWi4DaHFSOR4ZL8cDXmcV5z2ENrylQwE=
-  mongodbatlas:publicKey:
-    secure: AAABAJ0HyC1U0wqqKB6iVcFwmC3RFd45efF8gZm04cxomvAR40/+zw==
+    gcp:project: cinqoo

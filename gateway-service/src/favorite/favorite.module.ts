@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { FavoriteController } from './favorite.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PORTS, SERVICES } from 'src/constants';
+import { FavoriteController } from './favorite.controller';
 
 @Module({
   imports: [
@@ -12,6 +12,14 @@ import { PORTS, SERVICES } from 'src/constants';
         options: {
           host: SERVICES.FAVORITE,
           port: PORTS.FAVORITE,
+        },
+      },
+      {
+        name: 'PRESTATION_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.PRESTATION,
+          port: PORTS.PRESTATION,
         },
       },
     ]),
