@@ -1,7 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import * as fs from 'fs';
+import Handlebars from 'handlebars';
 import { firstValueFrom } from 'rxjs';
-import { SendMailDto } from './dto/send-mail.dto';
+import { SendInformativeMailDto } from './dto/send-informative-mail.dto';
+import { SendRedirectMailDto } from './dto/send-redirect-mail.dto';
 import { MAIL_CLIENT } from './mailer/constants';
 
 @Injectable()
@@ -15,19 +18,77 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async sendMail(data: SendMailDto) {
+  async sendInformativeMail(data: SendInformativeMailDto) {
     try {
       const { email: to } = await this.getUser(data.targetId);
 
+      const template = await fs.readFileSync(
+        'src/templates/informative.hbs',
+        'utf8',
+      );
+      const compiledTemplate = Handlebars.compile(template);
+      const html = compiledTemplate({
+        recipient: to,
+        subject: data.subject,
+        text: data.text,
+      });
+
       const res = await this.sendMailClient({
         to,
-        subject: 'SUJET',
-        text: 'TEXTE',
+        subject: data.subject,
+        html,
       });
+
       return res.messageId;
     } catch (err) {
-      console.log('err:', err);
-      return err;
+      if (err.statusCode && err.message) {
+        throw new RpcException({
+          statusCode: err.statusCode,
+          message: err.message,
+        });
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: err.message,
+      });
+    }
+  }
+
+  async sendRedirectMail(data: SendRedirectMailDto) {
+    try {
+      const { email: to } = await this.getUser(data.targetId);
+
+      const template = await fs.readFileSync(
+        'src/templates/redirect.hbs',
+        'utf8',
+      );
+      const compiledTemplate = Handlebars.compile(template);
+      const html = compiledTemplate({
+        recipient: to,
+        subject: data.subject,
+        text: data.text,
+        redirectUrl: data.redirectUrl,
+        label: data.label,
+      });
+
+      const res = await this.sendMailClient({
+        to,
+        subject: data.subject,
+        html,
+      });
+
+      return res.messageId;
+    } catch (err) {
+      if (err.statusCode && err.message) {
+        throw new RpcException({
+          statusCode: err.statusCode,
+          message: err.message,
+        });
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: err.message,
+      });
     }
   }
 

@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { SendMailDto } from './dto/send-mail.dto';
+import { SendInformativeMailDto } from './dto/send-informative-mail.dto';
+import { SendRedirectMailDto } from './dto/send-redirect-mail.dto';
 
 @ApiTags('mailer')
 @Controller('mailer')
@@ -17,7 +18,12 @@ export class MailerController {
   }
 
   @Post()
-  public sendMail(@Body() data: SendMailDto) {
-    return this.mailerService.send('MAILER.SEND', data);
+  public sendMail(@Body() data: SendInformativeMailDto) {
+    return this.mailerService.send('MAILER.SEND_INFORMATIVE_MAIL', data);
+  }
+
+  @Post('redirect')
+  public sendRedirectMail(@Body() data: SendRedirectMailDto) {
+    return this.mailerService.send('MAILER.SEND_REDIRECT_MAIL', data);
   }
 }
