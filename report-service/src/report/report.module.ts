@@ -7,7 +7,7 @@ import {
 } from '../report-reason/schema/report-reason.schema';
 import { Report, ReportSchema } from '../report/schema/report.schema';
 import { AppController } from './report.controller';
-import { AppService } from './report.service';
+import { ReportService } from './report.service';
 
 @Module({
   imports: [
@@ -19,6 +19,6 @@ import { AppService } from './report.service';
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ReportService],
 })
 export class ReportModule {}

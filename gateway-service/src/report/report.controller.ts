@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,6 +14,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { CreateReportReasonDto } from './dto/create-report-reason.dto';
+import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportReasonDto } from './dto/update-report-reason.dto';
 
 @ApiTags('report')
@@ -28,8 +30,11 @@ export class ReportController {
   }
 
   @Post()
-  public createReport(@Body() body: CreateReportReasonDto) {
-    return this.reportService.send('REPORT.CREATE', body);
+  public createReport(@Req() req: any, @Body() body: CreateReportDto) {
+    return this.reportService.send('REPORT.CREATE', {
+      userId: req.user._id,
+      createReport: body,
+    });
   }
 
   @Post('/reasonUser')
@@ -44,7 +49,7 @@ export class ReportController {
     return this.reportService.send('REPORT_REASON_SERVICE.CREATE', body);
   }
 
-  @Patch('/:reportReasonId')
+  @Patch('/reason/:reportReasonId')
   @Roles(ROLE.ADMIN)
   public updateReportReason(
     @Param('reportReasonId', CheckObjectIdPipe) reportReasonId: string,
