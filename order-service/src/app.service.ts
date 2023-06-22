@@ -14,6 +14,8 @@ export class AppService {
     @InjectModel('Order') private orderModel: Model<Order>,
     @Inject('PRESTATION_SERVICE')
     private readonly prestationService: ClientProxy,
+    @Inject('PAYMENT_SERVICE')
+    private readonly paymentService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -233,6 +235,12 @@ export class AppService {
     }
     order.status = OrderStatus.DONE;
     await order.save();
+
+    //Pay the provider
+    await firstValueFrom(
+      this.paymentService.send('PAYMENT.PAY_PRESTATION_PROVIDER', order.billId),
+    );
+
     return { message: 'Order marked as done' };
   }
 

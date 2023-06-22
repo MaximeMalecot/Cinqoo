@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
+import { TransferFundsToConnectAccount } from 'src/dto/transfer-fund-to-connect-account.dto';
 import Stripe from 'stripe';
 import { CreateCheckoutSessionDto } from '../dto/create-checkout-session.dto';
 import { CreatePriceDto } from '../dto/create-price.dto';
@@ -9,6 +10,8 @@ import { STRIPE_CLIENT } from '../stripe/constants';
 
 @Injectable()
 export class PaymentService {
+  fees = 0.2;
+
   constructor(@Inject(STRIPE_CLIENT) private readonly stripe: Stripe) {}
 
   async createPrice(data: CreatePriceDto) {
@@ -76,6 +79,34 @@ export class PaymentService {
       }
       throw new RpcException({
         message: 'Error while refunding payment intent',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async transferFunds(data: TransferFundsToConnectAccount) {
+    try {
+      const {
+        amount: rawAmount,
+        stripeConnectAccountId,
+        description,
+        currency,
+      } = data;
+      const amount = rawAmount * (1 - this.fees);
+      const transfer = await this.stripe.transfers.create({
+        amount: amount * 100,
+        currency: currency,
+        destination: stripeConnectAccountId,
+        description: description ?? 'Transfer to connect account',
+      });
+
+      return transfer;
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        message: 'Error while transfering funds',
         statusCode: 500,
       });
     }
