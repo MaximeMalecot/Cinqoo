@@ -45,4 +45,6 @@ In Dev and Staging, we are exposing "gateway-service" through a "LoadBalancer" s
 
 In Prod, we are keeping the service as a NodePort, to only allow communication inside VPC network, and use GCP LoadBalancer do the proxy, with a managedcertificate.
 
+This LoadBalancer is connected to a static IP that we created with pulumi. If you change the ressource "gatewayStaticIp" in infrastructure definition, you'll need to change the value of the anotation "kubernetes.io/ingress.global-static-ip-name" in the prod/ingress.yaml according to your new value.
+
 The prod environment can only work if you manage a domain under GCP DNS, and change the value in cert.yaml from "api.cinqoo.fr" to your desired domain.

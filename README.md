@@ -55,25 +55,12 @@ To start the project, run the following command:
 docker compose up --build -d
 ```
 
-## Recreate the deployment
+## Recreate the deployment or infrastructure
 
-This project is fully automated, and so you can even recreate the infrastructure easily on your own.
+This project is fully automated, and you can recreate the infrastructure easily on your own.
 
-First go to /infra/pulumi
+To do so, you'll have to check out both documentations.
 
-Before going anyfurther you'll have to follow pulumi's documentation about installing it and configuring it for GCP [here](https://www.pulumi.com/registry/packages/gcp/installation-configuration/).
+The one for k8s, if you only want to test it out, or handle your servers/providers on your own, [here](/infra/k8s/README.md).
 
-When it's done, run
-
-```
-pulumi up
-```
-
-After that you should have three variables on your output that'll use soon.
-
-If you want to run the CI/CD pipelines, to automate project on github workflow you just have to set secret keys on Github based on the output. It's important to keep the same name, since the workflows are based on them, if you want to customize it, do as you wish but don't forget to modify the files.
-
-The pulumi infrastructure definition, for now, is creating one Artifact Repository to store all our Docker images.
-Those images are publicly readable, so anyone can easily test out the projet or even work to make it better
-
-We took care to create the service account to push the docker images, while following GCP best practices. Which we highly recommend to read if you want to understand why we can push images without any token. You can find it [here](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity?hl=fr)
+The one for pulumi, which is our IaC solution, for creating ressources to easily reproduce the automation pipelines or the deployment of the infrastructure on k8s. You can find it [here](/infra/pulumi/README.md).
