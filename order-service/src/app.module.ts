@@ -18,6 +18,13 @@ import { Order, OrderSchema } from './schemas/order.schema';
           host: SERVICES.PRESTATION,
         },
       },
+      {
+        name: 'PAYMENT_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.PAYMENT,
+        },
+      },
     ]),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),

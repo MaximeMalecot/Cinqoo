@@ -18,6 +18,8 @@ export class PaymentService {
     private readonly orderService: ClientProxy,
     @Inject('STRIPE_SERVICE')
     private readonly stripeService: ClientProxy,
+    @Inject('USER_SERVICE')
+    private readonly userService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -128,6 +130,75 @@ export class PaymentService {
     await bill.save();
 
     return { success: true, message: 'Bill refunded' };
+  }
+
+  async payPrestationToProvider(billId: string) {
+    try {
+      const bill = await this.billModel.findById(new Types.ObjectId(billId));
+
+      if (!bill) {
+        throw new RpcException({
+          message: 'Bill not found',
+          statusCode: 404,
+        });
+      }
+
+      if (bill.status !== 'PAID') {
+        throw new RpcException({
+          message: 'Bill not paid',
+          statusCode: 404,
+        });
+      }
+
+      const prestation = await firstValueFrom(
+        this.prestationService.send('PRESTATION.GET_ONE', bill.serviceId),
+      );
+
+      if (!prestation) {
+        throw new RpcException({
+          message: 'Service not found',
+          statusCode: 404,
+        });
+      }
+
+      const provider = await firstValueFrom(
+        this.userService.send('getUserById', { id: prestation.owner }),
+      );
+
+      if (!provider) {
+        throw new RpcException({
+          message: 'Service provider not found',
+          statusCode: 404,
+        });
+      }
+
+      if (!provider.stripeAccountId) {
+        throw new RpcException({
+          message: 'Provider has no stripe account',
+          statusCode: 404,
+        });
+      }
+
+      await firstValueFrom(
+        this.stripeService.send('STRIPE.TRANSFER_FUNDS', {
+          stripeConnectAccountId: provider.stripeAccountId,
+          amount: bill.amount,
+          currency: 'eur',
+          description: `Paiement de la prestation ${prestation.title}`,
+        }),
+      );
+
+      return { success: true, message: 'Bill payment transfered' };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+
+      throw new RpcException({
+        message: e.message,
+        statusCode: 500,
+      });
+    }
   }
 
   async getBillsOfUser(userId: string) {

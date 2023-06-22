@@ -14,6 +14,8 @@ export class AppService {
     @InjectModel('Order') private orderModel: Model<Order>,
     @Inject('PRESTATION_SERVICE')
     private readonly prestationService: ClientProxy,
+    @Inject('PAYMENT_SERVICE')
+    private readonly paymentService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -173,23 +175,37 @@ export class AppService {
   }
 
   async refuseRequest(data: UpdateRequestDto) {
-    const { userId, orderId } = data;
-    const order = await this.orderModel.findById(new Types.ObjectId(orderId));
-    if (!order) {
+    try {
+      const { userId, orderId } = data;
+      const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+      if (!order) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Order not found',
+        });
+      }
+      if (order.status !== 'PENDING') {
+        throw new RpcException({
+          statusCode: 400,
+          message: 'Order is not pending',
+        });
+      }
+      order.status = OrderStatus.REFUSED;
+      await order.save();
+      await firstValueFrom(
+        this.paymentService.send('PAYMENT.REFUND_BILL', order.billId),
+      );
+      return { message: 'Order refused' };
+    } catch (e: any) {
+      console.log(e.message);
+      if (e instanceof RpcException) {
+        throw e;
+      }
       throw new RpcException({
-        statusCode: 404,
-        message: 'Order not found',
+        statusCode: 500,
+        message: 'Internal server error',
       });
     }
-    if (order.status !== 'PENDING') {
-      throw new RpcException({
-        statusCode: 400,
-        message: 'Order is not pending',
-      });
-    }
-    order.status = OrderStatus.REFUSED;
-    await order.save();
-    return { message: 'Order refused' };
   }
 
   async terminateRequest(data: UpdateRequestDto) {
@@ -233,6 +249,12 @@ export class AppService {
     }
     order.status = OrderStatus.DONE;
     await order.save();
+
+    //Pay the provider
+    await firstValueFrom(
+      this.paymentService.send('PAYMENT.PAY_PRESTATION_PROVIDER', order.billId),
+    );
+
     return { message: 'Order marked as done' };
   }
 

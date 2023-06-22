@@ -3,6 +3,7 @@ export const SERVICES = {
   ORDER: process.env.ORDER_SERVICE ?? 'order-service',
   PRESTATION: process.env.PRESTATION_SERVICE ?? 'prestation-service',
   STRIPE: process.env.STRIPE_SERVICE ?? 'stripe-service',
+  USER: process.env.USER_SERVICE ?? 'user-service',
 };
 
 export const PORTS = {

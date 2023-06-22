@@ -43,4 +43,9 @@ export class PaymentController {
   async cancelPayment(@Payload() data: UpdatePaymentStatusDto) {
     return await this.paymentService.cancelPayment(data);
   }
+
+  @EventPattern('PAYMENT.PAY_PRESTATION_PROVIDER')
+  async payPrestationToProvider(billId: string) {
+    return await this.paymentService.payPrestationToProvider(billId);
+  }
 }

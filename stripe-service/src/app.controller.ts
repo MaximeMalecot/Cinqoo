@@ -5,6 +5,7 @@ import { CreatePriceDto } from './dto/create-price.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { HandleWebhookDto } from './dto/handle-webhook.dto';
 import { RefundPaymentIntentDto } from './dto/refund-payment-intent.dto';
+import { TransferFundsToConnectAccount } from './dto/transfer-fund-to-connect-account.dto';
 import { AccountService } from './services/account.service';
 import { PaymentService } from './services/payment-service';
 import { WebhookService } from './services/webhook.service';
@@ -37,6 +38,11 @@ export class AppController {
   @EventPattern('STRIPE.REFUND_PAYMENT_INTENT')
   async refund(@Payload() data: RefundPaymentIntentDto) {
     return this.paymentService.refund(data);
+  }
+
+  @EventPattern('STRIPE.TRANSFER_FUNDS')
+  async transferFunds(@Payload() data: TransferFundsToConnectAccount) {
+    return this.paymentService.transferFunds(data);
   }
 
   // Webhooks
