@@ -10,13 +10,23 @@ export class Report {
   @Prop({
     type: Types.ObjectId,
   })
-  user: string;
+  service: string;
+
+  @Prop({
+    type: Types.ObjectId,
+  })
+  target: string;
+
+  @Prop({
+    type: Types.ObjectId,
+  })
+  creator: string;
 
   @Prop({
     type: Types.ObjectId,
     ref: 'reports',
   })
-  reportReasion: string;
+  reportReason: string;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);
