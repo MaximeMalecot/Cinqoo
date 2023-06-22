@@ -59,6 +59,17 @@ services:
             - /home/node/node_modules
         env_file: .env
 
+    stripe-service:
+        hostname: "${STRIPE_SERVICE}"
+        build:
+            context: ./stripe-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./stripe-service:/home/node
+            - /home/node/node_modules
+        env_file: .env
+
     user-service:
         hostname: "${USER_SERVICE}"
         build:
@@ -68,6 +79,8 @@ services:
         volumes:
             - ./user-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -81,6 +94,8 @@ services:
         volumes:
             - ./prestation-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -94,6 +109,8 @@ services:
         volumes:
             - ./review-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -107,6 +124,8 @@ services:
         volumes:
             - ./report-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -120,20 +139,11 @@ services:
         volumes:
             - ./payment-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
-
-    stripe-service:
-        hostname: "${STRIPE_SERVICE}"
-        build:
-            context: ./stripe-service
-            target: dev
-        command: npm run start:dev
-        volumes:
-            - ./stripe-service:/home/node
-            - /home/node/node_modules
-        env_file: .env
 
     order-service:
         hostname: "${ORDER_SERVICE}"
@@ -144,6 +154,8 @@ services:
         volumes:
             - ./order-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -157,6 +169,8 @@ services:
         volumes:
             - ./deliverable-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
@@ -170,6 +184,8 @@ services:
         volumes:
             - ./favorite-service:/home/node
             - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db

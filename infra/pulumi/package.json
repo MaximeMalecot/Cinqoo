@@ -6,7 +6,8 @@
     },
     "dependencies": {
         "@pulumi/gcp": "^6.57.0",
+        "@pulumi/mongodbatlas": "^3.8.1",
         "@pulumi/pulumi": "^3.0.0",
-        "dotenv": "^16.1.3"
+        "dotenv": "^16.2.0"
     }
 }

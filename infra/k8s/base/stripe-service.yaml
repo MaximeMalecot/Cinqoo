@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: stripe-service
+    namespace: cinqoo
+    labels:
+        app: stripe-service
+spec:
+    selector:
+        matchLabels:
+            app: stripe-service
+    template:
+        metadata:
+            labels:
+                app: stripe-service
+        spec:
+            containers:
+                - name: stripe-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/stripe-service:latest
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: STRIPE_SECRET_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: STRIPE_SECRET_KEY
+                      - name: STRIPE_WH_PAYMENT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: STRIPE_WH_PAYMENT_SECRET
+                      - name: STRIPE_WH_ACCOUNT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: STRIPE_WH_ACCOUNT_SECRET
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: stripe-service
+    namespace: cinqoo
+    labels:
+        app: stripe-service
+spec:
+    type: ClusterIP
+    selector:
+        app: stripe-service
+    ports:
+        - port: 3000
+          targetPort: 3000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+    name: stripe-service
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: stripe-service
+    minReplicas: 1
+    maxReplicas: 2
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 60

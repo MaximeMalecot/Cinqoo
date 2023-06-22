@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { DoneRequestDto } from './dto/done-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 
 @Controller()
@@ -29,13 +30,11 @@ export class AppController {
 
   @EventPattern('ORDER.GET_ALL_ORDERS')
   async getAllOrder() {
-    console.log('get all orders');
     return await this.appService.getAllOrders();
   }
 
   @EventPattern('ORDER.GET_ALL_ORDERS_WITH_PRESTATION')
   async getAllOrdersWithPrestation() {
-    console.log('get all orders');
     return await this.appService.getAllOrdersWithPrestation();
   }
 
@@ -74,5 +73,10 @@ export class AppController {
   @EventPattern('ORDER.START_REVISION')
   async startRevision(@Payload() data: UpdateRequestDto) {
     return await this.appService.startRevision(data);
+  }
+
+  @EventPattern('ORDER.HAS_DONE')
+  async hasDone(@Payload() data: DoneRequestDto) {
+    return await this.appService.hasDone(data);
   }
 }

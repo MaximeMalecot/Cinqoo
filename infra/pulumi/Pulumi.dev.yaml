@@ -1,2 +1,2 @@
 config:
-  gcp:project: cinqoo
+    gcp:project: cinqoo

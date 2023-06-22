@@ -8,19 +8,17 @@ Also, you need a Stripe account since we are using it to handle payments and pro
 ## Get your Stripe secret key
 
 The project is using Stripe to handle payments, therefore, you might need an actual Stripe secret key to create products and be able to perform most user flows. To do this, you just have to go to the [Stripe test developer page](https://dashboard.stripe.com/test/apikeys) and generate a secret key.
+
+Create the .env file like that :
+
+```bash
+cp .env.example .env
+```
+
 Once you have it, copy this key and put it in the root .env file as it is:
 
 ```bash
 STRIPE_SECRET_KEY=<your_stripe_secret_key>
-```
-
-## Starting the project
-
-To start the project, run the following command:
-
-```
-cp .env.example .env
-docker compose up --build -d
 ```
 
 ## Listening Stripe events locally
@@ -33,19 +31,28 @@ Once the settings are done, use the following command in your shell
 **Linux/MacOS:**
 
 ```bash
-stripe listen --forward-to localhost:3000/webhook/stripe
+stripe listen --forward-to localhost:3000/webhook/stripe/dev
 ```
 
 **Windows:**
 
 ```bash
-your/path/to/stripe/executable listen --forward-to localhost:3000/webhook/stripe
+your/path/to/stripe/executable listen --forward-to localhost:3000/webhook/stripe/dev
 ```
 
-The CLI should give you your webhook signing secret starting with "whsec\_". Copy this key and put it in the root .env file as it is:
+The CLI should give you your webhook signing secret starting with "whsec\_". Copy this key and put it in the root .env file as it is (it's the same one for both ACCOUNT & PAYMENT secret keys):
 
 ```bash
-STRIPE_WH_SECRET=<your_webhook_key>
+STRIPE_WH_ACCOUNT_SECRET=<your_webhook_key>
+STRIPE_WH_PAYMENT_SECRET=<your_webhook_key>
+```
+
+## Starting the project
+
+To start the project, run the following command:
+
+```
+docker compose up --build -d
 ```
 
 ## Recreate the deployment

@@ -1,13 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { EventPattern } from '@nestjs/microservices';
+import {
+  FavoriteRequestDto,
+  FavoriteResultDto,
+  GetFavoritesDto,
+} from './dto/favorite-express.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('getHello')
-  async getHello(): Promise<string> {
-    return await this.appService.getHello();
+  @EventPattern('FAVORITE.GET_SELF')
+  async getSelfFavorites(@Payload() data: GetFavoritesDto) {
+    return await this.appService.getSelfFavorites(data.userId);
+  }
+
+  @EventPattern('FAVORITE.PUT')
+  async addOrDeleteFavorite(
+    @Payload() data: FavoriteRequestDto,
+  ): Promise<FavoriteResultDto> {
+    return await this.appService.addOrDeleteFavorite(data);
   }
 }

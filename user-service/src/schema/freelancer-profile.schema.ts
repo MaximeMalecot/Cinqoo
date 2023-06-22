@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { User } from './user.schema';
 
 export type FreelancerProfileDocument = HydratedDocument<FreelancerProfile>;
 
@@ -13,13 +14,8 @@ export class FreelancerProfile {
   description?: string;
 
   @Prop({
-    type: String,
-  })
-  stripeId?: string;
-
-  @Prop({
     type: Types.ObjectId,
-    ref: 'profile',
+    ref: User.name,
   })
   user: string;
 

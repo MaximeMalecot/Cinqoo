@@ -1,20 +1,139 @@
-name: Push k8s infra
+name: Push GKE
 
 on:
-  pull_request:
-    types:
-      - opened
-    branches:
-      - master
-    paths:
-      - infra/k8s/**
+    workflow_dispatch:
 
 jobs:
-  push:
-    name: push
-    runs-on: ubuntu-latest
-    steps:  
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: echo
-        run: echo "INFRA"
+    push:
+        permissions:
+            contents: "read"
+            id-token: "write"
+        name: push
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: "Authenticate with GCP"
+              uses: google-github-actions/auth@v0
+              with:
+                  token_format: access_token
+                  workload_identity_provider: ${{ secrets.PROVIDER_ID}}
+                  service_account: ${{ secrets.SERVICE_ACCOUNT}}
+
+            - name: "Set up Cloud SDK"
+              uses: "google-github-actions/setup-gcloud@v1"
+              with:
+                  version: ">= 363.0.0"
+
+            - run: gcloud --quiet auth configure-docker
+
+            - id: "get-credentials"
+              uses: "google-github-actions/get-gke-credentials@v1"
+              with:
+                  cluster_name: ${{ secrets.GKE_CLUSTER_NAME}}
+                  location: ${{ secrets.GKE_CLUSTER_LOCATION}}
+
+            - name: Set up Kustomize
+              run: |-
+                  curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+                  chmod u+x ./kustomize
+
+            - name: Set up secret
+              working-directory: ./infra/k8s/overlays/prod
+              run: |-
+                  cp .env.example .env
+                  cp .env.secrets.example .env.secrets
+                  sed -i 's/<user>/${{ secrets.MONGODB_USER }}/g' .env.secrets
+                  sed -i 's/<password>/${{ secrets.MONGODB_PASSWORD }}/g' .env.secrets
+                  sed -i 's/<mongouri>/${{ secrets.MONGODB_URI }}/g' .env.secrets
+                  sed -i 's/<jwtsecret>/${{ secrets.JWT_SECRET }}/g' .env.secrets
+                  sed -i 's/<stsk>/${{ secrets.STRIPE_SECRET_KEY }}/g' .env.secrets
+                  sed -i 's/<whpsk>/${{ secrets.STRIPE_WH_PAYMENT_SECRET }}/g' .env.secrets
+                  sed -i 's/<whask>/${{ secrets.STRIPE_WH_ACCOUNT_SECRET }}/g' .env.secrets
+
+            - name: auth-version
+              id: auth-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: auth-service
+
+            - name: deliverable-version
+              id: deliverable-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: deliverable-service
+
+            - name: favorite-version
+              id: favorite-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: favorite-service
+
+            - name: gateway-version
+              id: gateway-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: gateway-service
+
+            - name: order-version
+              id: order-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: order-service
+
+            - name: payment-version
+              id: payment-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: payment-service
+
+            - name: prestation-version
+              id: prestation-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: prestation-service
+
+            - name: report-version
+              id: report-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: report-service
+
+            - name: review-version
+              id: review-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: review-service
+
+            - name: stripe-version
+              id: stripe-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: stripe-service
+
+            - name: user-version
+              id: user-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: user-service
+
+            - name: Set up version
+              working-directory: ./infra/k8s/base
+              run: |-
+                  sed -i 's/latest/${{ steps.auth-version.outputs.current-version}}/g' auth-service.yaml
+                  sed -i 's/latest/${{ steps.deliverable-version.outputs.current-version}}/g' deliverable-service.yaml
+                  sed -i 's/latest/${{ steps.favorite-version.outputs.current-version}}/g' favorite-service.yaml
+                  sed -i 's/latest/${{ steps.gateway-version.outputs.current-version}}/g' gateway-service.yaml
+                  sed -i 's/latest/${{ steps.order-version.outputs.current-version}}/g' order-service.yaml
+                  sed -i 's/latest/${{ steps.payment-version.outputs.current-version}}/g' payment-service.yaml
+                  sed -i 's/latest/${{ steps.prestation-version.outputs.current-version}}/g' prestation-service.yaml
+                  sed -i 's/latest/${{ steps.report-version.outputs.current-version}}/g' report-service.yaml
+                  sed -i 's/latest/${{ steps.review-version.outputs.current-version}}/g' review-service.yaml
+                  sed -i 's/latest/${{ steps.stripe-version.outputs.current-version}}/g' stripe-service.yaml
+                  sed -i 's/latest/${{ steps.user-version.outputs.current-version}}/g' user-service.yaml
+
+            - name: Deploy
+              working-directory: ./infra/k8s/overlays/prod
+              run: |-
+                  kubectl apply -k .

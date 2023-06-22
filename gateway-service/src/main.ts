@@ -23,6 +23,8 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN ?? '*',
   });
   app.use(helmet());
+  SwaggerModule.setup('docs', app, document);
+  app.use(helmet({ crossOriginResourcePolicy: false }));
   await app.listen(3000);
 }
 bootstrap();

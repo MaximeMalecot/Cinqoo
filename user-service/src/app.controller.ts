@@ -1,8 +1,10 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { OwnerOrAdminGards } from './guards/user.guards';
+import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 
 @Controller()
 export class AppController {
@@ -19,12 +21,12 @@ export class AppController {
   }
 
   @EventPattern('getUserByEmail')
-  getUserByEmail(@Payload() data: { email: string }) {
+  async getUserByEmail(@Payload() data: { email: string }) {
     return this.appService.getUserByEmail(data.email);
   }
 
   @EventPattern('getUserById')
-  getUserById(@Payload() data: { id: string }) {
+  async getUserById(@Payload() data: { id: string }) {
     return this.appService.getUserById(data.id);
   }
 
@@ -33,9 +35,56 @@ export class AppController {
     return this.appService.createUser(data);
   }
 
-  @UseGuards(OwnerOrAdminGards)
+  @EventPattern('updateUser')
+  async updateUser(
+    @Payload() data: { userId: string; updateUserDto: UpdateUserDto },
+  ) {
+    return this.appService.updateUser(data.userId, data.updateUserDto);
+  }
+
+  @EventPattern('updatePwdUser')
+  async updatePwdUser(
+    @Payload() data: { userId: string; updatePwdUser: UpdatePwdUserDto },
+  ) {
+    return this.appService.updatePwdUser(data.userId, data.updatePwdUser);
+  }
+
   @EventPattern('deleteUser')
-  async removeUser(@Payload() data: { id: string }) {
-    return this.appService.removeUser(data.id);
+  async removeUser(userId: string) {
+    return this.appService.removeUser(userId);
+  }
+
+  @EventPattern('USER.PROMOTE_OR_DEMOTE')
+  async promoteOrDemoteUserWithStripe(
+    @Payload() data: { stripeAccountId: string; promote: boolean },
+  ) {
+    return this.appService.promoteOrDemoteUserWithStripe(
+      data.stripeAccountId,
+      data.promote,
+    );
+  }
+
+  @EventPattern('USER.BECOME_FREELANCER')
+  async becomeFreelancer(userId: string) {
+    return this.appService.becomeFreelancer(userId);
+  }
+
+  @EventPattern('USER.GET_FREELANCER_PROFILE')
+  async getFreelancerProfile(userId: string) {
+    return this.appService.getFreelancerProfile(userId);
+  }
+
+  @EventPattern('USER.UPDATE_FREELANCER_PROFILE')
+  async updateFreelancerProfile(
+    @Payload()
+    data: {
+      id: string;
+      freelancerProfileDto: UpdateFreelancerDto;
+    },
+  ) {
+    return this.appService.updateFreelancerProfile(
+      data.id,
+      data.freelancerProfileDto,
+    );
   }
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { DeliverableController } from './deliverable.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PORTS, SERVICES } from 'src/constants';
+import { DeliverableController } from './deliverable.controller';
 
 @Module({
   imports: [
@@ -12,6 +12,14 @@ import { PORTS, SERVICES } from 'src/constants';
         options: {
           host: SERVICES.DELIVERABLE,
           port: PORTS.DELIVERABLE,
+        },
+      },
+      {
+        name: 'ORDER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.ORDER,
+          port: PORTS.ORDER,
         },
       },
     ]),

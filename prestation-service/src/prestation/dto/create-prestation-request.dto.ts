@@ -7,4 +7,7 @@ export class CreatePrestationRequestDto {
 
   @IsObject()
   prestation: CreatePrestationDto;
+
+  @IsString()
+  image: string;
 }

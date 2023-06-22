@@ -5,6 +5,7 @@ import { CreatePriceDto } from './dto/create-price.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { HandleWebhookDto } from './dto/handle-webhook.dto';
 import { RefundPaymentIntentDto } from './dto/refund-payment-intent.dto';
+import { TransferFundsToConnectAccount } from './dto/transfer-fund-to-connect-account.dto';
 import { AccountService } from './services/account.service';
 import { PaymentService } from './services/payment-service';
 import { WebhookService } from './services/webhook.service';
@@ -39,12 +40,36 @@ export class AppController {
     return this.paymentService.refund(data);
   }
 
-  // Webhooks
-
-  @EventPattern('STRIPE.HANDLE_WEBHOOK')
-  async handleWebhook(@Payload() data: HandleWebhookDto) {
-    return this.webhookService.handleWebhook(data);
+  @EventPattern('STRIPE.TRANSFER_FUNDS')
+  async transferFunds(@Payload() data: TransferFundsToConnectAccount) {
+    return this.paymentService.transferFunds(data);
   }
 
+  // Webhooks
+
+  @EventPattern('STRIPE.HANDLE_WEBHOOK_DEV')
+  async handleWebhookDev(@Payload() data: HandleWebhookDto) {
+    return this.webhookService.handleWebhookDev(data);
+  }
+
+  @EventPattern('STRIPE.HANDLE_WEBHOOK_PAYMENT')
+  async handleWebhookPayment(@Payload() data: HandleWebhookDto) {
+    return this.webhookService.handleWebhookPayment(data);
+  }
+
+  @EventPattern('STRIPE.HANDLE_WEBHOOK_ACCOUNT')
+  async handleWebhookAccount(@Payload() data: HandleWebhookDto) {
+    return this.webhookService.handleWebhookAccount(data);
+  }
   // Accounts
+
+  @EventPattern('STRIPE.CREATE_ACCOUNT')
+  async createAccount() {
+    return this.accountService.createAccount();
+  }
+
+  @EventPattern('STRIPE.CREATE_ACCOUNT_LINK')
+  async createAccountLink(accountId: string) {
+    return await this.accountService.createAccountLink(accountId);
+  }
 }

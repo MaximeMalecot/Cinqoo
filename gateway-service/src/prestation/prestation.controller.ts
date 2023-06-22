@@ -2,21 +2,30 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   Get,
   Inject,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
   Post,
+  Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
-import { CreatePrestationDto } from './dto/create-prestation.dto';
+import { SearchPrestationsDto } from './dto/search-prestations.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { IsServiceAccessible } from './guards/is-service-accessible.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
@@ -40,6 +49,12 @@ export class PrestationController {
     return this.prestationService.send('PRESTATION.GET_ALL_ADMIN', {});
   }
 
+  @Get('search')
+  @Public()
+  public searchPrestations(@Query() query: SearchPrestationsDto) {
+    return this.prestationService.send('PRESTATION.SEARCH', query);
+  }
+
   @Get('self')
   public getSelf(@Req() req: any) {
     return this.prestationService.send('PRESTATION.GET_PRESTATIONS_OF_USER', {
@@ -58,13 +73,42 @@ export class PrestationController {
 
   @Patch(':prestationId')
   @UseGuards(IsServiceOwner)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './files/prestation',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = uniqueSuffix + ext;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
   public updatePrestation(
+    @Req() req: any,
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
-    @Body() body: UpdatePrestationDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
+    @Body() body,
   ) {
+    body as UpdatePrestationDto;
+    if (body.categories) {
+      body.categories = JSON.parse(body.categories) as String[];
+    }
     return this.prestationService.send('PRESTATION.UPDATE_ONE', {
       id: prestationId,
       prestation: body,
+      image: `${req.protocol}://${req.get('Host')}/${image.path}`,
     });
   }
 
@@ -103,11 +147,42 @@ export class PrestationController {
   }
 
   @Post()
-  @Roles(ROLE.FREELANCER)
-  public createPrestation(@Body() body: CreatePrestationDto, @Req() req: any) {
+  @Roles(ROLE.FREELANCER, ROLE.ADMIN)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './files/prestation',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = uniqueSuffix + ext;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
+  public createPrestation(
+    @Req() req: any,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }),
+        ],
+      }),
+    )
+    image: Express.Multer.File,
+    @Body() body,
+  ) {
+    // body = body as CreatePrestationDto;
+    if (body.categories) {
+      body.categories = JSON.parse(body.categories) as String[];
+    }
     return this.prestationService.send('PRESTATION.CREATE', {
       user: req.user._id,
       prestation: body,
+      image: `${req.protocol}://${req.get('Host')}/${image.path}`,
     });
   }
 }

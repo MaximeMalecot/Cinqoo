@@ -42,6 +42,7 @@ export class OrderController {
     return this.orderService.send('ORDER.GET_ORDERS_OF_USER', req.user._id);
   }
 
+  @Roles(ROLE.FREELANCER)
   @Get('/request/pending')
   public getSelfRequestOrders(@Req() req: any) {
     return this.orderService.send('ORDER.GET_PENDING_REQUESTS', req.user._id);

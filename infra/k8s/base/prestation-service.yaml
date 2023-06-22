@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: prestation-service
+    namespace: cinqoo
+    labels:
+        app: prestation-service
+spec:
+    selector:
+        matchLabels:
+            app: prestation-service
+    template:
+        metadata:
+            labels:
+                app: prestation-service
+        spec:
+            containers:
+                - name: prestation-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/prestation-service:latest
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: PRESTATION_DATABASE_URL
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: prestation-service
+    namespace: cinqoo
+    labels:
+        app: prestation-service
+spec:
+    type: ClusterIP
+    selector:
+        app: prestation-service
+    ports:
+        - port: 3000
+          targetPort: 3000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+    name: prestation-service
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: prestation-service
+    minReplicas: 1
+    maxReplicas: 4
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 60
