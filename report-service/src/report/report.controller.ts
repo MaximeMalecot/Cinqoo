@@ -7,15 +7,28 @@ import { ReportService } from './report.service';
 export class AppController {
   constructor(private readonly reportService: ReportService) {}
 
-  @EventPattern('getHello')
-  async getHello(): Promise<string> {
-    return await this.reportService.getHello();
+  @EventPattern('REPORT.GET_ALL')
+  async getAllReports() {
+    return await this.reportService.getAllReports();
+  }
+
+  @EventPattern('REPORT.GET_BY_SERVICE')
+  async getReportByService(@Payload() serviceId: string) {
+    return await this.reportService.getReportByService(serviceId);
+  }
+
+  @EventPattern('REPORT.GET_BY_USER')
+  async getReportByUser(@Payload() userId: string) {
+    return await this.reportService.getReportByUser(userId);
   }
 
   @EventPattern('REPORT.CREATE')
-  async createReportService(
+  async createReport(
     @Payload() data: { userId: string; createReport: CreateReportDto },
   ) {
-    return this.reportService.createReport(data.userId, data.createReport);
+    return await this.reportService.createReport(
+      data.userId,
+      data.createReport,
+    );
   }
 }
