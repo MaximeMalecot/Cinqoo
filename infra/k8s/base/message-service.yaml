@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: message-service
+    namespace: cinqoo
+    labels:
+        app: message-service
+spec:
+    selector:
+        matchLabels:
+            app: message-service
+    template:
+        metadata:
+            labels:
+                app: message-service
+        spec:
+            containers:
+                - name: message-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/message-service:latest
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: MESSAGE_DATABASE_URL
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: message-service
+    namespace: cinqoo
+    labels:
+        app: message-service
+spec:
+    type: ClusterIP
+    selector:
+        app: message-service
+    ports:
+        - port: 3000
+          targetPort: 3000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+    name: message-service
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: message-service
+    minReplicas: 1
+    maxReplicas: 2
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 60

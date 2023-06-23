@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { DeliverableModule } from './deliverable/deliverable.module';
 import { FavoriteModule } from './favorite/favorite.module';
+import { MailerModule } from './mailer/mailer.module';
+import { MessageModule } from './message/message.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrestationModule } from './prestation/prestation.module';
@@ -24,6 +28,7 @@ import { WebhookModule } from './webhook/webhook.module';
     ReviewModule,
     PaymentModule,
     ReportModule,
+    MailerModule,
     OrderModule,
     DeliverableModule,
     FavoriteModule,
@@ -38,7 +43,18 @@ import { WebhookModule } from './webhook/webhook.module';
         index: false,
       },
     }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 15,
+    }),
+    MessageModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

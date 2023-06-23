@@ -80,7 +80,7 @@ For staging overlay, you'll need to set this variables from pulumi's output to g
 -   MONGODB_URI
 -   MONGODB_USER
 
-You'll also need to set this variables on your own, we couldn't create these from pulumi sorry... (For the explanation on stripe follow root's folder README to understand)
+You'll also need to set this variables on your own, we couldn't create these from pulumi sorry... (For the explanation on stripe follow root's folder [README](/README.md#get-your-stripe-secret-key) to understand)
 
 -   JWT_SECRET
 -   STRIPE_SECRET_KEY

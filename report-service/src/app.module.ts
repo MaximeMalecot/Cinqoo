@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Report, ReportSchema } from './schema/report.schema';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ReportReasonModule } from './report-reason/report-reason.module';
 import {
   ReportReason,
   ReportReasonSchema,
-} from './schema/report-reason.schema';
+} from './report-reason/schema/report-reason.schema';
+import { ReportModule } from './report/report.module';
+import { Report, ReportSchema } from './report/schema/report.schema';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import {
     MongooseModule.forFeature([
       { name: ReportReason.name, schema: ReportReasonSchema },
     ]),
+    ReportModule,
+    ReportReasonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

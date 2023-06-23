@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: mailer-service
+    namespace: cinqoo
+    labels:
+        app: mailer-service
+spec:
+    selector:
+        matchLabels:
+            app: mailer-service
+    template:
+        metadata:
+            labels:
+                app: mailer-service
+        spec:
+            containers:
+                - name: mailer-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/mailer-service:latest
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: MAILER_CLIENT_HOST
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: MAILER_CLIENT_HOST
+                      - name: MAILER_CLIENT_PORT
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: MAILER_CLIENT_PORT
+                      - name: MAILER_CLIENT_USER
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: MAILER_CLIENT_USER
+                      - name: MAILER_CLIENT_PASS
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: MAILER_CLIENT_PASS
+                      - name: MAILER_CLIENT_FROM
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: MAILER_CLIENT_FROM
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: mailer-service
+    namespace: cinqoo
+    labels:
+        app: mailer-service
+spec:
+    type: ClusterIP
+    selector:
+        app: mailer-service
+    ports:
+        - port: 3000
+          targetPort: 3000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+    name: mailer-service
+spec:
+    scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: mailer-service
+    minReplicas: 1
+    maxReplicas: 3
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 60

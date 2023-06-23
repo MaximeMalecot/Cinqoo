@@ -48,6 +48,12 @@ export class OrderController {
     return this.orderService.send('ORDER.GET_PENDING_REQUESTS', req.user._id);
   }
 
+  @Roles(ROLE.FREELANCER)
+  @Get('/request/all')
+  public getUserRequests(@Req() req: any) {
+    return this.orderService.send('ORDER.GET_ALL_REQUESTS', req.user._id);
+  }
+
   //Check if user is admin or owner of the service ordered
   @Patch('/request/:orderId/accept')
   @UseGuards(IsServiceOwner)

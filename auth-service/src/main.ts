@@ -1,10 +1,9 @@
-import './tracing';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { RpcException, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { PORTS } from './constants';
-
+import './tracing';
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.TCP,
@@ -13,7 +12,6 @@ async function bootstrap() {
       port: PORTS.AUTH,
     },
   });
-  console.log('Microservice is listening on port', process.env.PORT || '3000');
 
   app.useGlobalPipes(
     new ValidationPipe({

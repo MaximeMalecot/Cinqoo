@@ -20,6 +20,8 @@ export class PaymentService {
     private readonly stripeService: ClientProxy,
     @Inject('USER_SERVICE')
     private readonly userService: ClientProxy,
+    @Inject('MAILER_SERVICE')
+    private readonly mailerService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -51,8 +53,6 @@ export class PaymentService {
           productId: serviceExists.stripeId,
         }),
       );
-
-      console.log(price);
       //creating stripe checkout session with created price
       const stripeCheckoutSession = await firstValueFrom(
         this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {
@@ -188,6 +188,8 @@ export class PaymentService {
         }),
       );
 
+      this.sendMoneyTransferedEmail(provider._id, prestation.name, bill.amount);
+
       return { success: true, message: 'Bill payment transfered' };
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -289,5 +291,14 @@ export class PaymentService {
     await bill.save();
 
     return { success: true, message: 'Bill canceled' };
+  }
+
+  // Mails
+  sendMoneyTransferedEmail(userId: string, prestation: string, amount: number) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: userId,
+      subject: 'Your prestation is over 🎉',
+      text: `Your "${prestation}" service has come to an end. Your stripe account is about to be credited with ${amount}€ ✨. Have a nice day!`,
+    });
   }
 }
