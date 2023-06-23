@@ -17,13 +17,10 @@ export class AppService {
     @Inject(MAIL_CLIENT) private readonly sendMailClient: Function,
   ) {
     const informativeTemplate = fs.readFileSync(
-      'src/templates/informative.hbs',
+      'templates/informative.hbs',
       'utf8',
     );
-    const redirectTemplate = fs.readFileSync(
-      'src/templates/redirect.hbs',
-      'utf8',
-    );
+    const redirectTemplate = fs.readFileSync('templates/redirect.hbs', 'utf8');
     this.informativeTemplate = informativeTemplate;
     this.redirectTemplate = redirectTemplate;
   }

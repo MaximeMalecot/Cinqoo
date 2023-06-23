@@ -20,7 +20,7 @@ execute_migrate_script() {
     package_content=$(cat "$package_file")
 
     echo "Installing for project $project_dir."
-    (cd "$project_dir" && npm ci)
+    (cd "$project_dir" && npm i)
     
   fi
 }
