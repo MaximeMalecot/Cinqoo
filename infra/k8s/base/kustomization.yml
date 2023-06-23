@@ -8,6 +8,7 @@ resources:
     - favorite-service.yaml
     - gateway-service.yaml
     - mailer-service.yaml
+    - message-service.yaml
     - order-service.yaml
     - payment-service.yaml
     - prestation-service.yaml
