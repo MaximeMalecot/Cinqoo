@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { RpcException, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { PORTS } from './constants';
-import './tracing';
+
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.TCP,
