@@ -7,6 +7,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Throttle } from '@nestjs/throttler';
 import { firstValueFrom } from 'rxjs';
 import { Public } from './decorators/public.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,6 +25,7 @@ export class AuthController {
     return this.authService.send('getHello', {});
   }
 
+  @Throttle(5, 60)
   @Public()
   @Post('login')
   public async login(@Body(ValidationPipe) body: LoginDto) {
