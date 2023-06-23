@@ -70,7 +70,10 @@ export class AppService {
       const res = new this.userModel(data);
       await res.save();
       this.sendWelcomeMail(res._id.toString());
-      return res;
+
+      return {
+        message: 'User created successfully',
+      };
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {
         if (error.code === 11000) {
@@ -329,6 +332,8 @@ export class AppService {
       });
     }
   }
+
+  //Emails
 
   sendWelcomeFreelancer(id: string) {
     this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
