@@ -40,7 +40,7 @@ export class AppService {
       status: 'PENDING',
     });
 
-    // TODO ? Send an email to the applicant and the service provider to confirm the order
+    // Send an email to the applicant and the service provider to confirm the order
     this.sendOrderPendingEmail(order.applicant);
     this.sendRequestPendingEmail(serviceId);
 
@@ -265,6 +265,7 @@ export class AppService {
     }
     order.status = OrderStatus.TERMINATED;
     await order.save();
+    this.sendOrderTerminatedEmail(order.applicant);
     return { message: 'Order terminated' };
   }
 
@@ -292,6 +293,8 @@ export class AppService {
     await firstValueFrom(
       this.paymentService.send('PAYMENT.PAY_PRESTATION_PROVIDER', order.billId),
     );
+
+    //Mail already sent in PAYMENT.PAY_PRESTATION_PROVIDER
 
     return { message: 'Order marked as done' };
   }
@@ -327,6 +330,7 @@ export class AppService {
       await order.save();
 
       // Todo : send mail to the provider
+      this.sendRevisionStartedEmail(order.serviceId);
 
       return { message: 'Revision started' };
     } catch (e: any) {
@@ -361,20 +365,17 @@ export class AppService {
     });
   }
 
-  async sendRequestPendingEmail(serviceId: string) {
-    const prestation = await firstValueFrom(
-      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
-    );
-
-    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
-      targetId: prestation.owner,
-      subject: 'Request pending ⚡️',
-      text: 'You have a new request for your service, you can accept or refuse it.',
+  async sendOrderTerminatedEmail(userId: string) {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
+      targetId: userId,
+      subject: 'Order terminated ✅',
+      text: 'Your order has been marked as terminated by the service provider, you can confirm the finalization of the order or ask for a revision if there are any left.',
+      redirectUrl: 'http://localhost:3000/orders',
+      label: 'Confirm finalization',
     });
   }
 
   sendOrderAcceptedEmail(userId: string) {
-    console.log('Sending email to', userId);
     this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
       targetId: userId,
       subject: 'Order accepted ✅',
@@ -392,5 +393,27 @@ export class AppService {
     });
   }
 
-  sendRevisionStartedEmail(userId: string) {}
+  async sendRequestPendingEmail(serviceId: string) {
+    const prestation = await firstValueFrom(
+      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
+    );
+
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: prestation.owner,
+      subject: 'Request pending ⚡️',
+      text: 'You have a new request for your service, you can accept or refuse it.',
+    });
+  }
+
+  async sendRevisionStartedEmail(serviceId: string) {
+    const prestation = await firstValueFrom(
+      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
+    );
+
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: prestation.owner,
+      subject: 'A revision has been started ⚡️',
+      text: 'The client has started a revision on your service.',
+    });
+  }
 }

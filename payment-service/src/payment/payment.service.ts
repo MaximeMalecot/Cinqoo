@@ -300,7 +300,7 @@ export class PaymentService {
     this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
       targetId: userId,
       subject: 'Your prestation is over 🎉',
-      text: `Your ${prestation} service has come to an end. Your stripe account is about to be credited with ${amount}€ ✨. Have a nice day!`,
+      text: `Your "${prestation}" service has come to an end. Your stripe account is about to be credited with ${amount}€ ✨. Have a nice day!`,
     });
   }
 }
