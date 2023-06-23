@@ -326,7 +326,7 @@ export class AppService {
 
       return { message: 'Freelancer profile updated' };
     } catch (e: any) {
-      return new RpcException({
+      throw new RpcException({
         message: e.message,
         statusCode: 400,
       });
