@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: stripe-service
-    namespace: cinqoo
     labels:
         app: stripe-service
 spec:
@@ -16,7 +15,7 @@ spec:
         spec:
             containers:
                 - name: stripe-service
-                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/stripe-service:0.1.1
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/stripe-service:latest
                   imagePullPolicy: Always
                   env:
                       - name: PORT
@@ -48,7 +47,6 @@ apiVersion: v1
 kind: Service
 metadata:
     name: stripe-service
-    namespace: cinqoo
     labels:
         app: stripe-service
 spec:
@@ -69,7 +67,7 @@ spec:
         kind: Deployment
         name: stripe-service
     minReplicas: 1
-    maxReplicas: 5
+    maxReplicas: 2
     metrics:
         - type: Resource
           resource:

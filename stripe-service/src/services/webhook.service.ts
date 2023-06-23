@@ -42,7 +42,7 @@ export class WebhookService {
           return await this.updateCapability(event);
       }
 
-      return new RpcException({
+      throw new RpcException({
         message: 'Event type not handled',
         statusCode: 500,
       });
@@ -81,7 +81,7 @@ export class WebhookService {
           return await this.cancelPayment(event);
       }
 
-      return new RpcException({
+      throw new RpcException({
         message: 'Event type not handled',
         statusCode: 500,
       });
@@ -112,7 +112,7 @@ export class WebhookService {
           return await this.updateCapability(event);
       }
 
-      return new RpcException({
+      throw new RpcException({
         message: 'Event type not handled',
         statusCode: 500,
       });

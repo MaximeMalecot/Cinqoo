@@ -19,7 +19,7 @@ export class Bill {
   serviceId: string;
 
   @Prop({ type: Number, required: true })
-  amount: Number;
+  amount: number;
 
   @Prop({
     type: String,

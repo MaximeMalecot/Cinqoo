@@ -1,15 +1,6 @@
 version: "3.8"
 
 services:
-    tracing:
-        image: jaegertracing/all-in-one:latest
-        environment:
-            - COLLECTOR_OTLP_ENABLED=true
-        ports:
-            - 16686:16686
-            - 14268:14268
-            - 4318:4318
-
     mongo-db:
         image: "mongo:latest"
         environment:
@@ -95,6 +86,18 @@ services:
 
     favorite-service:
         image: europe-west9-docker.pkg.dev/cinqoo/challenge/favorite-service:latest
+        env_file: .env
+        depends_on:
+            - mongo-db
+
+    mailer-service:
+        image: europe-west9-docker.pkg.dev/cinqoo/challenge/mailer-service:latest
+        env_file: .env
+        depends_on:
+            - mongo-db
+
+    message-service:
+        image: europe-west9-docker.pkg.dev/cinqoo/challenge/message-service:latest
         env_file: .env
         depends_on:
             - mongo-db

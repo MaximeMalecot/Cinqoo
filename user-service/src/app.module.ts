@@ -27,6 +27,13 @@ import { User, UserSchema } from './schema/user.schema';
           host: SERVICES.STRIPE,
         },
       },
+      {
+        name: 'MAILER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.MAILER,
+        },
+      },
     ]),
   ],
   controllers: [AppController],

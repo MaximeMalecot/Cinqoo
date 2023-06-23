@@ -18,10 +18,13 @@ export class PaymentService {
     private readonly orderService: ClientProxy,
     @Inject('STRIPE_SERVICE')
     private readonly stripeService: ClientProxy,
+    @Inject('USER_SERVICE')
+    private readonly userService: ClientProxy,
+    @Inject('MAILER_SERVICE')
+    private readonly mailerService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
-    console.log(this.prestationService);
     const billCount = await this.billModel.countDocuments();
     return `Payment service : there are currently ${billCount} bills in the database`;
   }
@@ -50,8 +53,6 @@ export class PaymentService {
           productId: serviceExists.stripeId,
         }),
       );
-
-      console.log(price);
       //creating stripe checkout session with created price
       const stripeCheckoutSession = await firstValueFrom(
         this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {
@@ -129,6 +130,77 @@ export class PaymentService {
     await bill.save();
 
     return { success: true, message: 'Bill refunded' };
+  }
+
+  async payPrestationToProvider(billId: string) {
+    try {
+      const bill = await this.billModel.findById(new Types.ObjectId(billId));
+
+      if (!bill) {
+        throw new RpcException({
+          message: 'Bill not found',
+          statusCode: 404,
+        });
+      }
+
+      if (bill.status !== 'PAID') {
+        throw new RpcException({
+          message: 'Bill not paid',
+          statusCode: 404,
+        });
+      }
+
+      const prestation = await firstValueFrom(
+        this.prestationService.send('PRESTATION.GET_ONE', bill.serviceId),
+      );
+
+      if (!prestation) {
+        throw new RpcException({
+          message: 'Service not found',
+          statusCode: 404,
+        });
+      }
+
+      const provider = await firstValueFrom(
+        this.userService.send('getUserById', { id: prestation.owner }),
+      );
+
+      if (!provider) {
+        throw new RpcException({
+          message: 'Service provider not found',
+          statusCode: 404,
+        });
+      }
+
+      if (!provider.stripeAccountId) {
+        throw new RpcException({
+          message: 'Provider has no stripe account',
+          statusCode: 404,
+        });
+      }
+
+      await firstValueFrom(
+        this.stripeService.send('STRIPE.TRANSFER_FUNDS', {
+          stripeConnectAccountId: provider.stripeAccountId,
+          amount: bill.amount,
+          currency: 'eur',
+          description: `Paiement de la prestation ${prestation.title}`,
+        }),
+      );
+
+      this.sendMoneyTransferedEmail(provider._id, prestation.name, bill.amount);
+
+      return { success: true, message: 'Bill payment transfered' };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+
+      throw new RpcException({
+        message: e.message,
+        statusCode: 500,
+      });
+    }
   }
 
   async getBillsOfUser(userId: string) {
@@ -219,5 +291,14 @@ export class PaymentService {
     await bill.save();
 
     return { success: true, message: 'Bill canceled' };
+  }
+
+  // Mails
+  sendMoneyTransferedEmail(userId: string, prestation: string, amount: number) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: userId,
+      subject: 'Your prestation is over 🎉',
+      text: `Your "${prestation}" service has come to an end. Your stripe account is about to be credited with ${amount}€ ✨. Have a nice day!`,
+    });
   }
 }

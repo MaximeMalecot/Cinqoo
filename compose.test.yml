@@ -1,15 +1,6 @@
 version: "3.8"
 
 services:
-    tracing:
-        image: jaegertracing/all-in-one:latest
-        environment:
-            - COLLECTOR_OTLP_ENABLED=true
-        ports:
-            - 16686:16686
-            - 14268:14268
-            - 4318:4318
-
     mongo-db:
         image: "mongo:latest"
         environment:
@@ -31,19 +22,12 @@ services:
             context: ./gateway-service
             target: dev
         command: npm run start:dev
+        volumes:
+            - ./gateway-service:/home/node
+            - /home/node/node_modules
         env_file: .env
         ports:
             - "3000:3000"
-        depends_on:
-            - auth-service
-            - user-service
-            - prestation-service
-            - review-service
-            - report-service
-            - payment-service
-            - deliverable-service
-            - order-service
-            - favorite-service
 
     auth-service:
         hostname: "${AUTH_SERVICE}"
@@ -51,6 +35,20 @@ services:
             context: ./auth-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./auth-service:/home/node
+        #     - /home/node/node_modules
+        env_file: .env
+
+    stripe-service:
+        hostname: "${STRIPE_SERVICE}"
+        build:
+            context: ./stripe-service
+            target: dev
+        command: npm run start:dev
+        # volumes:
+        #     - ./stripe-service:/home/node
+        #     - /home/node/node_modules
         env_file: .env
 
     user-service:
@@ -59,6 +57,9 @@ services:
             context: ./user-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./user-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/user?authSource=admin&directConnection=true
         env_file: .env
@@ -71,6 +72,9 @@ services:
             context: ./prestation-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./prestation-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/prestation?authSource=admin&directConnection=true
         env_file: .env
@@ -83,6 +87,9 @@ services:
             context: ./review-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./review-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/review?authSource=admin&directConnection=true
         env_file: .env
@@ -95,6 +102,9 @@ services:
             context: ./report-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./report-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
@@ -107,18 +117,11 @@ services:
             context: ./payment-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./payment-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/payment?authSource=admin&directConnection=true
-        env_file: .env
-        depends_on:
-            - mongo-db
-
-    stripe-service:
-        hostname: "${STRIPE_SERVICE}"
-        build:
-            context: ./stripe-service
-            target: dev
-        command: npm run start:dev
         env_file: .env
         depends_on:
             - mongo-db
@@ -129,6 +132,9 @@ services:
             context: ./order-service
             target: dev
         command: npm run start:dev
+        volumes:
+            - ./order-service:/home/node
+            - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
         env_file: .env
@@ -141,6 +147,9 @@ services:
             context: ./deliverable-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./deliverable-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/deliverable?authSource=admin&directConnection=true
         env_file: .env
@@ -153,18 +162,50 @@ services:
             context: ./favorite-service
             target: dev
         command: npm run start:dev
+        # volumes:
+        #     - ./favorite-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
         env_file: .env
         depends_on:
             - mongo-db
 
+    mailer-service:
+        hostname: "${MAILER_SERVICE}"
+        build:
+            context: ./mailer-service
+            target: dev
+        command: npm run start:dev
+        # volumes:
+        #     - ./mailer-service:/home/node
+        #     - /home/node/node_modules
+        env_file: .env
+
+    message-service:
+        hostname: "${MESSAGE_SERVICE}"
+        build:
+            context: ./message-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./message-service:/home/node
+            - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/message?authSource=admin&directConnection=true
+        env_file: .env
+        depends_on:
+            - mongo-db
+
     front:
-        hostname: "${FRONT_SERVICE}"
+        hostname: "${FRONT}"
         build:
             context: ./front
             target: dev
         command: npm run dev
+        # volumes:
+        #     - ./front:/usr/src/app
+        #     - /usr/src/app/node_modules
         env_file: .env
         ports:
             - "8080:8080"
