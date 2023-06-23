@@ -19,6 +19,7 @@ export class AppService {
     @InjectModel(FreelancerProfile.name)
     private freelancerProfileModel: Model<FreelancerProfile>,
     @Inject('STRIPE_SERVICE') private readonly stripeService: ClientProxy,
+    @Inject('MAILER_SERVICE') private readonly mailerService: ClientProxy,
   ) {}
 
   getHello() {
@@ -67,7 +68,12 @@ export class AppService {
       );
       data['stripeAccountId'] = stripeAccountId.id;
       const res = new this.userModel(data);
-      return await res.save();
+      await res.save();
+      this.sendWelcomeMail(res._id.toString());
+
+      return {
+        message: 'User created successfully',
+      };
     } catch (error) {
       if (error.name === 'MongoServerError' || error.name === 'MongoError') {
         if (error.code === 11000) {
@@ -79,6 +85,14 @@ export class AppService {
       }
       throw new RpcException({ code: 500 });
     }
+  }
+
+  async sendWelcomeMail(id: string) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: id,
+      subject: 'Welcome to Cinqoo!',
+      text: 'Welcome to Cinqoo! We are glad to have you here.',
+    });
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
@@ -220,6 +234,7 @@ export class AppService {
             await freelancerProfile.save();
           }
         }
+        this.sendWelcomeFreelancer(user._id.toString());
       }
     } catch (e: any) {
       throw new RpcException({
@@ -254,7 +269,6 @@ export class AppService {
 
   async getFreelancerProfile(id: string) {
     try {
-      console.log(id);
       const profile = await this.freelancerProfileModel.findOne(
         {
           user: new Types.ObjectId(id),
@@ -284,7 +298,7 @@ export class AppService {
 
       return { ...user.toObject(), freelancerProfile: profile.toObject() };
     } catch (e: any) {
-      return new RpcException({
+      throw new RpcException({
         message: e.message,
         statusCode: 400,
       });
@@ -317,5 +331,15 @@ export class AppService {
         statusCode: 400,
       });
     }
+  }
+
+  //Emails
+
+  sendWelcomeFreelancer(id: string) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: id,
+      subject: 'You are now a freelancer!',
+      text: 'You are now a freelancer! You can now update your freelancer profile, create services and start working!',
+    });
   }
 }

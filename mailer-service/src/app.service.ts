@@ -28,13 +28,16 @@ export class AppService {
     this.redirectTemplate = redirectTemplate;
   }
 
-  getHello(): string {
-    return 'Hello World!';
+  private async getUser(id: string) {
+    return await firstValueFrom(this.userService.send('getUserById', { id }));
   }
 
   async sendInformativeMail(data: SendInformativeMailDto) {
     try {
       const { email: to } = await this.getUser(data.targetId);
+
+      // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      // await sleep(10000);
 
       const compiledTemplate = Handlebars.compile(this.informativeTemplate);
       const html = compiledTemplate({
@@ -52,6 +55,7 @@ export class AppService {
 
       return res.messageId;
     } catch (err) {
+      console.log(err);
       if (err.statusCode && err.message) {
         throw new RpcException({
           statusCode: err.statusCode,
@@ -98,9 +102,5 @@ export class AppService {
         message: err.message,
       });
     }
-  }
-
-  async getUser(id: string) {
-    return await firstValueFrom(this.userService.send('getUserById', { id }));
   }
 }
