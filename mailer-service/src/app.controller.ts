@@ -15,6 +15,7 @@ export class AppController {
 
   @EventPattern('MAILER.SEND_REDIRECT_MAIL')
   async sendRedirectMail(@Payload() data: SendRedirectMailDto) {
+    console.log(data);
     return this.appService.sendRedirectMail(data);
   }
 }
