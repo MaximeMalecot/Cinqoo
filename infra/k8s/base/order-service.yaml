@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: order-service
-    namespace: cinqoo
     labels:
         app: order-service
 spec:
@@ -38,7 +37,6 @@ apiVersion: v1
 kind: Service
 metadata:
     name: order-service
-    namespace: cinqoo
     labels:
         app: order-service
 spec:
