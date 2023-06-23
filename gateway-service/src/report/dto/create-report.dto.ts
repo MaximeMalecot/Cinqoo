@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IsMongoIdObject } from 'src/decorators/mongoId.decorator';
 
 export class CreateReportDto {
@@ -9,6 +9,10 @@ export class CreateReportDto {
   @IsOptional()
   @IsMongoIdObject()
   target: string;
+
+  @IsNotEmpty()
+  @IsString()
+  description: string;
 
   @IsNotEmpty()
   @IsMongoIdObject()

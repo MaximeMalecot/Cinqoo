@@ -92,6 +92,7 @@ export class ReportService {
         target: report.target,
         creator: userId,
         reason: report.reportReason,
+        description: report.description,
       });
       return await res.save();
     } catch (error) {

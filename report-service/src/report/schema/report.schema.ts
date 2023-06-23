@@ -23,6 +23,11 @@ export class Report {
   creator: string;
 
   @Prop({
+    type: String,
+  })
+  description: string;
+
+  @Prop({
     type: Types.ObjectId,
     ref: 'reports',
   })
