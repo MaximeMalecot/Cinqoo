@@ -25,6 +25,13 @@ import { Order, OrderSchema } from './schemas/order.schema';
           host: SERVICES.PAYMENT,
         },
       },
+      {
+        name: 'MAILER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.MAILER,
+        },
+      },
     ]),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),

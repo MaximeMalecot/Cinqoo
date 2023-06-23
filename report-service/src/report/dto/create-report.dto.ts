@@ -9,5 +9,9 @@ export class CreateReportDto {
 
   @IsNotEmpty()
   @IsString()
+  description: string;
+
+  @IsNotEmpty()
+  @IsString()
   reportReason: string;
 }

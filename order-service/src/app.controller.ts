@@ -50,6 +50,11 @@ export class AppController {
 
   // Requests
 
+  @EventPattern('ORDER.GET_ALL_REQUESTS')
+  async getAllRequests(@Payload() userId: string) {
+    return await this.appService.getRequests(userId);
+  }
+
   @EventPattern('ORDER.GET_PENDING_REQUESTS')
   async getPendingRequest(@Payload() userId: string) {
     return await this.appService.getPendingRequests(userId);

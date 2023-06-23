@@ -20,6 +20,45 @@ export class ReportService {
     return `Report service : there are currently ${reportCount} reports in the database and ${reportReasonCount} report reasons in the database`;
   }
 
+  async getAllReports() {
+    try {
+      return await this.reportModel.find();
+    } catch (error) {
+      throw new RpcException({
+        message: `Error while getting all reports`,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async getReportByService(serviceId: string) {
+    try {
+      return await this.reportModel.find({
+        service: serviceId,
+      });
+    } catch (error) {
+      throw new RpcException({
+        message: `Error while getting reports by service`,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async getReportByUser(userId: string) {
+    try {
+      const res = await this.reportModel.find({
+        target: userId,
+      });
+      console.log(res, userId);
+      return res;
+    } catch (error) {
+      throw new RpcException({
+        message: `Error while getting reports by user`,
+        statusCode: 400,
+      });
+    }
+  }
+
   async createReport(userId: string, report: CreateReportDto) {
     const ReportReason = await this.reportReasonModel.findById(
       new Types.ObjectId(report.reportReason),
@@ -53,6 +92,7 @@ export class ReportService {
         target: report.target,
         creator: userId,
         reason: report.reportReason,
+        description: report.description,
       });
       return await res.save();
     } catch (error) {

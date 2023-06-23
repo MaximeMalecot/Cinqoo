@@ -16,12 +16,6 @@ export class ReportReasonService {
     private reportReasonModel: Model<ReportReason>,
   ) {}
 
-  async getHello(): Promise<string> {
-    const reportCount = await this.reportModel.countDocuments();
-    const reportReasonCount = await this.reportReasonModel.countDocuments();
-    return `Report service : there are currently ${reportCount} reports in the database and ${reportReasonCount} report reasons in the database`;
-  }
-
   async getReportReasons(): Promise<ReportReason[]> {
     return await this.reportReasonModel.find();
   }

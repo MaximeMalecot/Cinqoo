@@ -8,11 +8,6 @@ import { SendRedirectMailDto } from './dto/send-redirect-mail.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('MAILER.HELLO')
-  getHello() {
-    return this.appService.getHello();
-  }
-
   @EventPattern('MAILER.SEND_INFORMATIVE_MAIL')
   async sendInformativeMail(@Payload() data: SendInformativeMailDto) {
     return this.appService.sendInformativeMail(data);
@@ -20,6 +15,7 @@ export class AppController {
 
   @EventPattern('MAILER.SEND_REDIRECT_MAIL')
   async sendRedirectMail(@Payload() data: SendRedirectMailDto) {
+    console.log(data);
     return this.appService.sendRedirectMail(data);
   }
 }

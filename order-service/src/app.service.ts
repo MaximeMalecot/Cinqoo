@@ -16,6 +16,8 @@ export class AppService {
     private readonly prestationService: ClientProxy,
     @Inject('PAYMENT_SERVICE')
     private readonly paymentService: ClientProxy,
+    @Inject('MAILER_SERVICE')
+    private readonly mailerService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -38,7 +40,9 @@ export class AppService {
       status: 'PENDING',
     });
 
-    // TODO ? Send an email to the applicant and the service provider to confirm the order
+    // Send an email to the applicant and the service provider to confirm the order
+    this.sendOrderPendingEmail(order.applicant);
+    this.sendRequestPendingEmail(serviceId);
 
     return await order.save();
   }
@@ -185,6 +189,38 @@ export class AppService {
     }
   }
 
+  async getRequests(userId: string) {
+    try {
+      const prestations = await firstValueFrom(
+        this.prestationService.send(
+          'PRESTATION.GET_ACTIVE_PRESTATIONS_OF_USER',
+          userId,
+        ),
+      );
+
+      const requests = [];
+
+      for (const prestation of prestations) {
+        const request = await this.orderModel.findOne({
+          serviceId: prestation._id,
+        });
+        if (request) {
+          requests.push({ ...request.toObject(), prestation });
+        }
+      }
+
+      return requests;
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
+  }
+
   async acceptRequest(data: UpdateRequestDto) {
     const { userId, orderId } = data;
     const order = await this.orderModel.findById(new Types.ObjectId(orderId));
@@ -201,6 +237,7 @@ export class AppService {
       });
     }
     order.status = OrderStatus.IN_PROGRESS;
+    this.sendOrderAcceptedEmail(order.applicant);
     await order.save();
     return { message: 'Order accepted' };
   }
@@ -226,6 +263,7 @@ export class AppService {
       await firstValueFrom(
         this.paymentService.send('PAYMENT.REFUND_BILL', order.billId),
       );
+      this.sendOrderRefusedEmail(order.applicant);
       return { message: 'Order refused' };
     } catch (e: any) {
       console.log(e.message);
@@ -258,6 +296,7 @@ export class AppService {
     }
     order.status = OrderStatus.TERMINATED;
     await order.save();
+    this.sendOrderTerminatedEmail(order.applicant);
     return { message: 'Order terminated' };
   }
 
@@ -285,6 +324,8 @@ export class AppService {
     await firstValueFrom(
       this.paymentService.send('PAYMENT.PAY_PRESTATION_PROVIDER', order.billId),
     );
+
+    //Mail already sent in PAYMENT.PAY_PRESTATION_PROVIDER
 
     return { message: 'Order marked as done' };
   }
@@ -318,6 +359,10 @@ export class AppService {
       order.currentRevisionNb = order.currentRevisionNb + 1;
       order.status = OrderStatus.IN_PROGRESS;
       await order.save();
+
+      // Todo : send mail to the provider
+      this.sendRevisionStartedEmail(order.serviceId);
+
       return { message: 'Revision started' };
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -339,5 +384,67 @@ export class AppService {
       return false;
     }
     return true;
+  }
+
+  // Mails
+
+  sendOrderPendingEmail(userId: string) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: userId,
+      subject: 'Order pending ⚡️',
+      text: 'The payment has been successfull and your order is pending, you will be notified when it is accepted or refused by the service provider.',
+    });
+  }
+
+  async sendOrderTerminatedEmail(userId: string) {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
+      targetId: userId,
+      subject: 'Order terminated ✅',
+      text: 'Your order has been marked as terminated by the service provider, you can confirm the finalization of the order or ask for a revision if there are any left.',
+      redirectUrl: 'http://localhost:3000/orders',
+      label: 'Confirm finalization',
+    });
+  }
+
+  sendOrderAcceptedEmail(userId: string) {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
+      targetId: userId,
+      subject: 'Order accepted ✅',
+      text: 'Your order has been accepted, you can follow its progress. The service provider will start working on it.',
+      redirectUrl: 'http://localhost:3000/orders',
+      label: "Follow your order's progress",
+    });
+  }
+
+  sendOrderRefusedEmail(userId: string) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: userId,
+      subject: 'Order refused ',
+      text: "Unfortunately, your order has been refused by the service provider, you'll be refunded.",
+    });
+  }
+
+  async sendRequestPendingEmail(serviceId: string) {
+    const prestation = await firstValueFrom(
+      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
+    );
+
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: prestation.owner,
+      subject: 'Request pending ⚡️',
+      text: 'You have a new request for your service, you can accept or refuse it.',
+    });
+  }
+
+  async sendRevisionStartedEmail(serviceId: string) {
+    const prestation = await firstValueFrom(
+      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
+    );
+
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: prestation.owner,
+      subject: 'A revision has been started ⚡️',
+      text: 'The client has started a revision on your service.',
+    });
   }
 }
