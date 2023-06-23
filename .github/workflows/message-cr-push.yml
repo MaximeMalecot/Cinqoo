@@ -1,4 +1,4 @@
-name: message Push
+name: Message Push
 
 on:
     workflow_dispatch:
