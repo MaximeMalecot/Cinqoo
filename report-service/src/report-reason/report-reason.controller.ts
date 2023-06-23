@@ -8,12 +8,7 @@ import { ReportReasonService } from './report-reason.service';
 export class ReportReasonController {
   constructor(private readonly reportReasonService: ReportReasonService) {}
 
-  @EventPattern('getHello')
-  async getHello(): Promise<string> {
-    return await this.reportReasonService.getHello();
-  }
-
-  @EventPattern('REPORT_REASON.GETALL')
+  @EventPattern('REPORT_REASON.GET_ALL')
   async getAllReportReasons() {
     return await this.reportReasonService.getReportReasons();
   }

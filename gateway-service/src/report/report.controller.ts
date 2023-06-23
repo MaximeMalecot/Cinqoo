@@ -24,31 +24,29 @@ export class ReportController {
     @Inject('REPORT_SERVICE') private readonly reportService: ClientProxy,
   ) {}
 
-  @Get()
-  public getReportHello() {
-    return this.reportService.send('getHello', {});
-  }
-
   @Get('/reason/all')
   public getAllReportReasons() {
-    return this.reportService.send('REPORT_REASON.GETALL', {});
+    return this.reportService.send('REPORT_REASON.GET_ALL', {});
   }
 
-  @Get('/all')
+  @Get('/')
+  @Roles(ROLE.ADMIN)
   public getAllReports() {
-    return this.reportService.send('REPORT.GETALL', {});
+    return this.reportService.send('REPORT.GET_ALL', {});
   }
 
   @Get('/service/:serviceId')
+  @Roles(ROLE.ADMIN)
   public getReportByService(
     @Param('serviceId', CheckObjectIdPipe) serviceId: string,
   ) {
-    return this.reportService.send('REPORT.GETBYSERVICE', serviceId);
+    return this.reportService.send('REPORT.GET_BY_SERVICE', serviceId);
   }
 
   @Get('/user/:userId')
+  @Roles(ROLE.ADMIN)
   public getReportByUser(@Param('userId', CheckObjectIdPipe) userId: string) {
-    return this.reportService.send('REPORT.GETBYUSER', userId);
+    return this.reportService.send('REPORT.GET_BY_USER', userId);
   }
 
   @Post()
