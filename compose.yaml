@@ -1,15 +1,6 @@
 version: "3.8"
 
 services:
-    tracing:
-        image: jaegertracing/all-in-one:latest
-        environment:
-            - COLLECTOR_OTLP_ENABLED=true
-        ports:
-            - 16686:16686
-            - 14268:14268
-            - 4318:4318
-
     mongo-db:
         image: "mongo:latest"
         environment:
@@ -201,6 +192,21 @@ services:
             - ./mailer-service:/home/node
             - /home/node/node_modules
         env_file: .env
+
+    message-service:
+        hostname: "${MESSAGE_SERVICE}"
+        build:
+            context: ./message-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./message-service:/home/node
+            - /home/node/node_modules
+        environment:
+            - DATABASE_URL=mongodb://root:password@mongo-db:27017/message?authSource=admin&directConnection=true
+        env_file: .env
+        depends_on:
+            - mongo-db
 
     front:
         hostname: "${FRONT}"

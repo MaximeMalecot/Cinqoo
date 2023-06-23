@@ -53,8 +53,6 @@ export class PaymentService {
           productId: serviceExists.stripeId,
         }),
       );
-
-      console.log(price);
       //creating stripe checkout session with created price
       const stripeCheckoutSession = await firstValueFrom(
         this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {

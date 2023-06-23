@@ -123,6 +123,40 @@ export class AppService {
     }
   }
 
+  async getUsers(orderId: string) {
+    try {
+      const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+      if (!order) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Order not found',
+        });
+      }
+      const prestation = await firstValueFrom(
+        this.prestationService.send('PRESTATION.GET_ONE', order.serviceId),
+      );
+      if (!prestation) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Prestation not found',
+        });
+      }
+      const users = [prestation.owner, order.applicant];
+      return {
+        order,
+        users,
+      };
+    } catch (err) {
+      if (err instanceof RpcException) {
+        throw err;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
+  }
+
   // Requests
 
   async getPendingRequests(userId: string) {
@@ -235,7 +269,6 @@ export class AppService {
       this.sendOrderRefusedEmail(order.applicant);
       return { message: 'Order refused' };
     } catch (e: any) {
-      console.log(e.message);
       if (e instanceof RpcException) {
         throw e;
       }

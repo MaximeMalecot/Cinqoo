@@ -43,6 +43,11 @@ export class AppController {
     return await this.appService.getOrdersOfUser(userId);
   }
 
+  @EventPattern('ORDER.GET_USERS')
+  async getUsers(@Payload() orderId: string) {
+    return await this.appService.getUsers(orderId);
+  }
+
   // Requests
 
   @EventPattern('ORDER.GET_ALL_REQUESTS')

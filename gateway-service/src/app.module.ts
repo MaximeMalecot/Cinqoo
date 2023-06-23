@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { DeliverableModule } from './deliverable/deliverable.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { MailerModule } from './mailer/mailer.module';
+import { MessageModule } from './message/message.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrestationModule } from './prestation/prestation.module';
@@ -46,6 +47,7 @@ import { WebhookModule } from './webhook/webhook.module';
       ttl: 60,
       limit: 15,
     }),
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [
