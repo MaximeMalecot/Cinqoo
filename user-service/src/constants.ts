@@ -1,6 +1,7 @@
 export const SERVICES = {
   USER: process.env.USER_SERVICE ?? 'user-service',
   STRIPE: process.env.STRIPE_SERVICE ?? 'stripe-service',
+  MAILER: process.env.MAILER_SERVICE ?? 'mailer-service',
 };
 
 export const PORTS = {
