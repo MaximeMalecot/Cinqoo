@@ -42,6 +42,7 @@ export class AppService {
 
     // TODO ? Send an email to the applicant and the service provider to confirm the order
     this.sendOrderPendingEmail(order.applicant);
+    this.sendRequestPendingEmail(serviceId);
 
     return await order.save();
   }
@@ -324,6 +325,9 @@ export class AppService {
       order.currentRevisionNb = order.currentRevisionNb + 1;
       order.status = OrderStatus.IN_PROGRESS;
       await order.save();
+
+      // Todo : send mail to the provider
+
       return { message: 'Revision started' };
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -357,6 +361,18 @@ export class AppService {
     });
   }
 
+  async sendRequestPendingEmail(serviceId: string) {
+    const prestation = await firstValueFrom(
+      this.prestationService.send('PRESTATION.GET_ONE', serviceId),
+    );
+
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: prestation.owner,
+      subject: 'Request pending ⚡️',
+      text: 'You have a new request for your service, you can accept or refuse it.',
+    });
+  }
+
   sendOrderAcceptedEmail(userId: string) {
     console.log('Sending email to', userId);
     this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
@@ -375,4 +391,6 @@ export class AppService {
       text: "Unfortunately, your order has been refused by the service provider, you'll be refunded.",
     });
   }
+
+  sendRevisionStartedEmail(userId: string) {}
 }
