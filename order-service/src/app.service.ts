@@ -142,7 +142,10 @@ export class AppService {
         });
       }
       const users = [prestation.owner, order.applicant];
-      return users;
+      return {
+        order,
+        users,
+      };
     } catch (err) {
       if (err instanceof RpcException) {
         throw err;
@@ -266,7 +269,6 @@ export class AppService {
       this.sendOrderRefusedEmail(order.applicant);
       return { message: 'Order refused' };
     } catch (e: any) {
-      console.log(e.message);
       if (e instanceof RpcException) {
         throw e;
       }

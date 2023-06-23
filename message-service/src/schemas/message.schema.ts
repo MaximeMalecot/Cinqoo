@@ -13,6 +13,9 @@ export class Message {
 
   @Prop({ type: String, required: true })
   orderId: string;
+
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

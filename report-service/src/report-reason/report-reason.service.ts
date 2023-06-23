@@ -50,8 +50,6 @@ export class ReportReasonService {
     id: string,
     updateReportReason: UpdateReportReasonDto,
   ) {
-    console.log(id);
-    console.log(updateReportReason);
     const reportReason = await this.reportReasonModel.findById(
       new Types.ObjectId(id),
     );

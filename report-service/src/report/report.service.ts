@@ -49,7 +49,6 @@ export class ReportService {
       const res = await this.reportModel.find({
         target: userId,
       });
-      console.log(res, userId);
       return res;
     } catch (error) {
       throw new RpcException({

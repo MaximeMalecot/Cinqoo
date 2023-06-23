@@ -33,7 +33,6 @@ export class ReportReasonController {
       updateReportReason: UpdateReportReasonDto;
     },
   ) {
-    console.log(data);
     return await this.reportReasonService.updateReportReason(
       data.reportReasonId,
       data.updateReportReason,

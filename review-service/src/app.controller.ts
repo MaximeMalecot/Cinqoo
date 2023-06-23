@@ -14,7 +14,6 @@ export class AppController {
   async getForPrestation(
     @Payload() data: ReviewRequestDto,
   ): Promise<ReviewDocument[]> {
-    console.log('onéla');
     return await this.appService.getForPrestation(data.prestationId);
   }
 
