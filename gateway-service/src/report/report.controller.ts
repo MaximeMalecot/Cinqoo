@@ -29,6 +29,28 @@ export class ReportController {
     return this.reportService.send('getHello', {});
   }
 
+  @Get('/reason/all')
+  public getAllReportReasons() {
+    return this.reportService.send('REPORT_REASON.GETALL', {});
+  }
+
+  @Get('/all')
+  public getAllReports() {
+    return this.reportService.send('REPORT.GETALL', {});
+  }
+
+  @Get('/service/:serviceId')
+  public getReportByService(
+    @Param('serviceId', CheckObjectIdPipe) serviceId: string,
+  ) {
+    return this.reportService.send('REPORT.GETBYSERVICE', serviceId);
+  }
+
+  @Get('/user/:userId')
+  public getReportByUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.reportService.send('REPORT.GETBYUSER', userId);
+  }
+
   @Post()
   public createReport(@Req() req: any, @Body() body: CreateReportDto) {
     return this.reportService.send('REPORT.CREATE', {

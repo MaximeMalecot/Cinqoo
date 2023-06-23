@@ -12,10 +12,28 @@ export class AppController {
     return await this.reportService.getHello();
   }
 
+  @EventPattern('REPORT.GETALL')
+  async getAllReports() {
+    return await this.reportService.getAllReports();
+  }
+
+  @EventPattern('REPORT.GETBYSERVICE')
+  async getReportByService(@Payload() serviceId: string) {
+    return await this.reportService.getReportByService(serviceId);
+  }
+
+  @EventPattern('REPORT.GETBYUSER')
+  async getReportByUser(@Payload() userId: string) {
+    return await this.reportService.getReportByUser(userId);
+  }
+
   @EventPattern('REPORT.CREATE')
-  async createReportService(
+  async createReport(
     @Payload() data: { userId: string; createReport: CreateReportDto },
   ) {
-    return this.reportService.createReport(data.userId, data.createReport);
+    return await this.reportService.createReport(
+      data.userId,
+      data.createReport,
+    );
   }
 }

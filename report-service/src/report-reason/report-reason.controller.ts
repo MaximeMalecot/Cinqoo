@@ -13,8 +13,8 @@ export class ReportReasonController {
     return await this.reportReasonService.getHello();
   }
 
-  @EventPattern('getReportReasons')
-  async getReportReasons() {
+  @EventPattern('REPORT_REASON.GETALL')
+  async getAllReportReasons() {
     return await this.reportReasonService.getReportReasons();
   }
 
