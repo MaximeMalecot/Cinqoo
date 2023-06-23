@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: gateway-claim
+spec:
+    storageClassName: standard-rwo
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 10Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,6 +28,9 @@ spec:
             containers:
                 - name: gateway-service
                   image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
+                  volumeMounts:
+                      - name: gateway-claim
+                        mountPath: /home/node/files
                   imagePullPolicy: Always
                   env:
                       - name: PORT
@@ -27,6 +42,10 @@ spec:
                           cpu: 500m
                       requests:
                           cpu: 200m
+            volumes:
+                - name: gateway-claim
+                  persistentVolumeClaim:
+                      claimName: gateway-claim
 ---
 apiVersion: v1
 kind: Service

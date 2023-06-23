@@ -17,6 +17,7 @@ secretGenerator:
       env: .env.secrets
       options:
           disableNameSuffixHash: true
+
 patches:
     - patch: |-
           - op: replace
