@@ -231,6 +231,7 @@ export class AppService {
             await freelancerProfile.save();
           }
         }
+        this.sendWelcomeFreelancer(user._id.toString());
       }
     } catch (e: any) {
       throw new RpcException({
@@ -327,5 +328,13 @@ export class AppService {
         statusCode: 400,
       });
     }
+  }
+
+  sendWelcomeFreelancer(id: string) {
+    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+      targetId: id,
+      subject: 'You are now a freelancer!',
+      text: 'You are now a freelancer! You can now update your freelancer profile, create services and start working!',
+    });
   }
 }
