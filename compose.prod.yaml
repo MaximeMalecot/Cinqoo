@@ -1,15 +1,6 @@
 version: "3.8"
 
 services:
-    tracing:
-        image: jaegertracing/all-in-one:latest
-        environment:
-            - COLLECTOR_OTLP_ENABLED=true
-        ports:
-            - 16686:16686
-            - 14268:14268
-            - 4318:4318
-
     mongo-db:
         image: "mongo:latest"
         environment:

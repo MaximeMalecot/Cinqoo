@@ -119,6 +119,37 @@ export class AppService {
     }
   }
 
+  async getUsers(orderId: string) {
+    try {
+      const order = await this.orderModel.findById(new Types.ObjectId(orderId));
+      if (!order) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Order not found',
+        });
+      }
+      const prestation = await firstValueFrom(
+        this.prestationService.send('PRESTATION.GET_ONE', order.serviceId),
+      );
+      if (!prestation) {
+        throw new RpcException({
+          statusCode: 404,
+          message: 'Prestation not found',
+        });
+      }
+      const users = [prestation.owner, order.applicant];
+      return users;
+    } catch (err) {
+      if (err instanceof RpcException) {
+        throw err;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
+  }
+
   // Requests
 
   async getPendingRequests(userId: string) {
