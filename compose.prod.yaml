@@ -90,6 +90,18 @@ services:
         depends_on:
             - mongo-db
 
+    mailer-service:
+        image: europe-west9-docker.pkg.dev/cinqoo/challenge/mailer-service:latest
+        env_file: .env
+        depends_on:
+            - mongo-db
+
+    message-service:
+        image: europe-west9-docker.pkg.dev/cinqoo/challenge/message-service:latest
+        env_file: .env
+        depends_on:
+            - mongo-db
+
     front:
         image: europe-west9-docker.pkg.dev/cinqoo/challenge/front:latest
         env_file: .env

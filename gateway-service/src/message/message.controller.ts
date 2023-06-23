@@ -23,6 +23,7 @@ export class MessageController {
   @UseGuards(IsUserPartOfOrderGuard)
   @Get(':orderId')
   async getMessagesByOrder(@Param('orderId') orderId: string) {
+    console.log('MESSAGE CONTROLLER');
     return await this.messageService.send(
       'MESSAGE.GET_MESSAGES_BY_ORDER',
       orderId,

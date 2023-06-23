@@ -18,9 +18,11 @@ export class AppService {
   }
 
   async getMessagesByOrder(orderId: string) {
+    console.log('AHBATARD');
     const order = await firstValueFrom(
       this.orderService.send('ORDER.GET_ONE', orderId),
     );
+    console.log('TUFME');
     if (!order) {
       throw new RpcException({
         message: 'Order not found',

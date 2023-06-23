@@ -18,11 +18,13 @@ export class IsUserPartOfOrderGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('MESSAGE GUARD');
     const { user } = context.switchToHttp().getRequest();
     if (!user) throw new UnauthorizedException();
     const orderId =
       context.switchToHttp().getRequest().body.orderId ??
       context.switchToHttp().getRequest().params.orderId;
+    console.log(orderId);
     const users = await firstValueFrom(
       this.orderService.send('ORDER.GET_USERS', orderId),
     );
