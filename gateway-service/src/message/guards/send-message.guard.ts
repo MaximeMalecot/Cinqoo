@@ -29,7 +29,6 @@ export class SendMessageGuard implements CanActivate {
     const { order, users } = await firstValueFrom(
       this.orderService.send('ORDER.GET_USERS', orderId),
     );
-    console.log(order, users);
     if (!order) throw new NotFoundException({ message: 'Order not found' });
     if (!users.includes(user._id)) return false;
     if (!this.validStatus.includes(order.status))

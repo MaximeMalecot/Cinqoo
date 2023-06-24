@@ -19,5 +19,6 @@ import { SseService } from './sse.service';
   ],
   controllers: [SseController],
   providers: [SseService],
+  exports: [SseService],
 })
 export class SseModule {}

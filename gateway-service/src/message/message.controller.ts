@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { firstValueFrom } from 'rxjs';
+import { SseService } from 'src/sse/sse.service';
 import { SendMessageDto } from './dto/send-message.dto';
 import { GetMessageGuard } from './guards/get-message.guard';
 import { SendMessageGuard } from './guards/send-message.guard';
@@ -19,6 +21,7 @@ import { SendMessageGuard } from './guards/send-message.guard';
 export class MessageController {
   constructor(
     @Inject('MESSAGE_SERVICE') private readonly messageService: ClientProxy,
+    private readonly sseService: SseService,
   ) {}
 
   @UseGuards(GetMessageGuard)
@@ -33,9 +36,16 @@ export class MessageController {
   @UseGuards(SendMessageGuard)
   @Post()
   async sendMessage(@Req() req, @Body() data: SendMessageDto) {
-    return await this.messageService.send('MESSAGE.SEND_MESSAGE', {
-      ...data,
-      senderId: req.user._id,
-    });
+    const message = await firstValueFrom(
+      this.messageService.send('MESSAGE.SEND_MESSAGE', {
+        ...data,
+        senderId: req.user._id,
+      }),
+    );
+    this.sseService.broadcastOrder(
+      { type: 'new_message', message },
+      data.orderId,
+    );
+    return message;
   }
 }

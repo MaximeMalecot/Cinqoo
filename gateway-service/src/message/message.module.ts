@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PORTS, SERVICES } from 'src/constants';
+import { SseModule } from 'src/sse/sse.module';
 import { MessageController } from './message.controller';
 
 @Module({
@@ -23,6 +24,7 @@ import { MessageController } from './message.controller';
         },
       },
     ]),
+    SseModule,
   ],
   controllers: [MessageController],
 })

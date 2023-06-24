@@ -22,8 +22,12 @@ export class SseService {
   };
 
   broadcastOrder = (message, orderId) => {
-    if (this.orders[orderId] && this.orders[orderId].length > 0) {
-      this.orders[orderId].map((userId) => {
+    if (
+      this.orders[orderId] &&
+      this.orders[orderId].size &&
+      this.orders[orderId].size > 0
+    ) {
+      this.orders[orderId].forEach((userId) => {
         this.broadcastSpecific(message, userId);
       });
     }

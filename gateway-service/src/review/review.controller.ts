@@ -27,7 +27,6 @@ export class ReviewController {
   public getAverageForPrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
   ) {
-    console.log('ahbatard');
     return this.reviewService.send('REVIEW.GET_AVERAGE_ON_PRESTATION', {
       prestationId,
     });
