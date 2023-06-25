@@ -33,6 +33,24 @@ class UserService {
         return await res.json();
     }
 
+    async getStripeLink() {
+        const res = await fetch(`${API_ENDPOINT}user/self/become-freelancer`, {
+            method: "POST",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 201) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to login");
+        }
+
+        return await res.json();
+    }
+
     async updatePassword(
         userId: string,
         oldPassword: string,

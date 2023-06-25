@@ -8,6 +8,7 @@ import NotFound from "./pages/not-found";
 
 const Login = lazy(() => import("./pages/login"));
 const Register = lazy(() => import("./pages/register"));
+const BecomeFreelancer = lazy(() => import("./pages/become-freelancer"));
 
 function App() {
     const { isConnected } = useAuthContext();
@@ -18,6 +19,10 @@ function App() {
                     <Route path="/" element={<Home />} />
                 </Route>
                 <Route element={<AppLayout />}>
+                    <Route
+                        path="/become-freelancer"
+                        element={<BecomeFreelancer />}
+                    />
                     {isConnected && <></>}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
