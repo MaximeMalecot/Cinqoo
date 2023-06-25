@@ -1,37 +1,50 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 import { SseService } from './sse.service';
 
 @ApiTags('sse')
 @Controller('sse')
 export class SseController {
-  constructor(private sseService: SseService) {}
+  constructor(private readonly sseService: SseService) {}
 
-  @Get()
-  async getSse(@Req() req, @Res() res: Response, next) {
-    try {
-      const userId = req.user._id;
-      this.sseService.addUser(userId, res, req.user.roles);
+  @Post()
+  async test() {
+    const res = await this.sseService.broadcastAll({
+      message: {
+        type: 'new_message',
+        data: {
+          test: 'oui',
+        },
+      },
+    });
+    return res;
+  }
 
-      res.on('close', () => {
-        console.log('close', userId);
-        this.sseService.deleteUser(userId, req.user.roles);
-      });
+  @Post('order')
+  async order() {
+    const res = await this.sseService.broadcastOrder({
+      message: {
+        type: 'new_message',
+        data: {
+          test: 'oui',
+        },
+      },
+      orderId: 'hihi',
+    });
+    return res;
+  }
 
-      const headers = {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      };
-      res.writeHead(200, headers);
-      res.write(`data: ${JSON.stringify({ type: 'connect', userId })}\n\n`);
-      setInterval(() => {
-        this.sseService.broadcastSpecific({ type: 'connect', userId }, userId);
-      }, 5000);
-    } catch (err) {
-      console.error(err);
-      next();
-    }
+  @Post('user')
+  async user() {
+    const res = await this.sseService.broadcastUser({
+      message: {
+        type: 'new_message',
+        data: {
+          test: 'oui',
+        },
+      },
+      userId: '64944b3c6610724aea88568e',
+    });
+    return res;
   }
 }

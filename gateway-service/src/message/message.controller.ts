@@ -42,10 +42,10 @@ export class MessageController {
         senderId: req.user._id,
       }),
     );
-    this.sseService.broadcastOrder(
-      { type: 'new_message', message },
-      data.orderId,
-    );
+    // this.sseService.broadcastOrder(
+    //   { type: 'new_message', message },
+    //   data.orderId,
+    // );
     return message;
   }
 }
