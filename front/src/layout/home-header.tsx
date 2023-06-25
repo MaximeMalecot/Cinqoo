@@ -7,7 +7,7 @@ export default function HomeHeader() {
     const menuRef = useRef<HTMLDetailsElement>(null);
 
     return (
-        <header className={`navbar fixed top-0 bg-transparent`}>
+        <header className={`navbar fixed top-0 bg-primary`}>
             <div className={`container mx-auto text-white `}>
                 <div className="flex-1">
                     <Link
@@ -50,7 +50,7 @@ export default function HomeHeader() {
                                             </li>
                                             {isFreelancer && (
                                                 <li>
-                                                    <Link to="/account">
+                                                    <Link to="/account/prestations">
                                                         Prestations
                                                     </Link>{" "}
                                                 </li>

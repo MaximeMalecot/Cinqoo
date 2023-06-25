@@ -1,11 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Button from "../components/button";
 import HomeSearchInput from "../components/home-search-input";
+import ViewPrestationCard from "../components/prestation-card/view-prestation-card";
+import prestationService from "../services/prestation.service";
+import { displayMsg } from "../utils/toast";
 
 const IMAGE_LINK =
     "https://images.unsplash.com/photo-1661956601030-fdfb9c7e9e2f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1342&q=80";
 
 export default function Home() {
     const [prestations, setPrestations] = useState([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const fetchPrestations = async () => {
+        try {
+            setLoading(true);
+            const res = await prestationService.getPrestations();
+            setPrestations(res);
+        } catch (e: any) {
+            console.log(e);
+            displayMsg(e.message, "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPrestations();
+    }, []);
 
     return (
         <div className="flex flex-col">
@@ -31,10 +54,19 @@ export default function Home() {
                     </div>
                 </div>
             </section>
-            <section className="py-10 px-10 flex flex-col gap-5">
-                <h2 className="text-2xl font-bold">Prestations</h2>
+            <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col gap-5">
+                <div className="flex justify-between">
+                    <h2 className="text-2xl font-bold">Prestations</h2>
+                    <Link to={"/prestations"}>
+                        <Button visual="primary">See all</Button>
+                    </Link>
+                </div>
                 {prestations.length > 0 ? (
-                    <div></div>
+                    <div className="flex flex-col items-center md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {prestations.map((p, index) => (
+                            <ViewPrestationCard prestation={p} key={index} />
+                        ))}
+                    </div>
                 ) : (
                     <div className="flex">
                         <p>There is no prestation found</p>

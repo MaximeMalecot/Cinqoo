@@ -1,3 +1,7 @@
 export default function Account() {
-    return <></>;
+    return (
+        <>
+            <h1>Account</h1>
+        </>
+    );
 }

@@ -65,7 +65,6 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? '*',
   });
-  app.use(helmet());
   SwaggerModule.setup('docs', app, document);
   app.enableVersioning({
     type: VersioningType.URI,
@@ -73,7 +72,6 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? '*',
   });
-  app.use(helmet());
   app.use(helmet({ crossOriginResourcePolicy: false }));
   await app.listen(3000);
 }

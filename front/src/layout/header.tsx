@@ -44,7 +44,7 @@ export default function Header() {
                                             </li>
                                             {isFreelancer && (
                                                 <li>
-                                                    <Link to="/account">
+                                                    <Link to="/account/prestations">
                                                         Prestations
                                                     </Link>{" "}
                                                 </li>
