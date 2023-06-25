@@ -26,13 +26,13 @@ export class SendMessageGuard implements CanActivate {
     const orderId = context.switchToHttp().getRequest().body.orderId;
     if (!orderId || !ObjectId.isValid(orderId))
       throw new BadRequestException('Invalid order id');
-    const order = await firstValueFrom(
+    const { order, users } = await firstValueFrom(
       this.orderService.send('ORDER.GET_USERS', orderId),
     );
     if (!order) throw new NotFoundException({ message: 'Order not found' });
-    if (!order.users.includes(user._id)) return false;
+    if (!users.includes(user._id)) return false;
     if (!this.validStatus.includes(order.status))
-      throw new BadRequestException('Order is completed');
+      throw new BadRequestException('Order status is invalid');
     return true;
   }
 }

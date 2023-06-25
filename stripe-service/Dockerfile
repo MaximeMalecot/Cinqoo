@@ -21,6 +21,8 @@ USER node
 
 FROM node:18-alpine 
 
+WORKDIR /home/node
+
 COPY --chown=node:node --from=build /home/node/node_modules ./node_modules
 COPY --chown=node:node --from=build /home/node/dist ./dist
 

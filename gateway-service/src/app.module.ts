@@ -16,6 +16,7 @@ import { PaymentModule } from './payment/payment.module';
 import { PrestationModule } from './prestation/prestation.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';
+import { SseModule } from './sse/sse.module';
 import { UserModule } from './user/user.module';
 import { WebhookModule } from './webhook/webhook.module';
 
@@ -48,6 +49,7 @@ import { WebhookModule } from './webhook/webhook.module';
       limit: 15,
     }),
     MessageModule,
+    SseModule,
   ],
   controllers: [AppController],
   providers: [

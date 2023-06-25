@@ -78,7 +78,11 @@ export class PrestationService {
     );
 
     const localCategories = [];
-    if (prestation.categories && prestation.categories.length > 0) {
+    if (
+      prestation.categories &&
+      Array.isArray(prestation.categories) &&
+      prestation.categories.length > 0
+    ) {
       const rawCategories = Array.from(new Set(prestation.categories));
       await Promise.all(
         rawCategories.map(async (category: string) => {
@@ -194,7 +198,11 @@ export class PrestationService {
     file: string,
   ) {
     const localCategories = [];
-    if (prestation.categories.length > 0) {
+    if (
+      prestation.categories &&
+      Array.isArray(prestation.categories) &&
+      prestation.categories.length > 0
+    ) {
       const rawCategories = Array.from(new Set(prestation.categories));
       await Promise.all(
         rawCategories.map(async (category: string) => {
