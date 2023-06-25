@@ -19,3 +19,7 @@ export interface CreatePrestationForm {
     price: number;
     categories: string[];
 }
+
+export interface PrestationFormInitData extends CreatePrestationForm {
+    image?: string;
+}

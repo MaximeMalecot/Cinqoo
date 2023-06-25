@@ -46,7 +46,7 @@ export default function ManagePrestationCard({
 
                     <Link
                         className="flex-1"
-                        to={`/account/prestations/${prestation._id}`}
+                        to={`/account/prestations/${prestation._id}/edit`}
                     >
                         <Button
                             visual={"bordered-primary"}
