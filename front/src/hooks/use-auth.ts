@@ -54,6 +54,7 @@ const useAuth = () => {
         localStorage.removeItem(TOKEN_STORAGE_KEY);
         setToken(null);
         setUserData(null);
+        navigate("/");
         return true;
     }, []);
 

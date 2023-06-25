@@ -14,7 +14,7 @@ export default function ViewPrestationCard({
             : prestation.description;
     return (
         <Link
-            to={`/account/prestations/${prestation._id}`}
+            to={`/prestations/${prestation._id}`}
             className="card w-72 bg-base-100 shadow-xl border border-2 overflow-hidden duration-500 hover:opacity-75"
         >
             <figure

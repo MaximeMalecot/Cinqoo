@@ -9,7 +9,7 @@ export const FREELANCER_TABS = [
     },
     {
         name: "requests",
-        path: "/account/manage-requests",
+        path: "/account/requests",
     },
 ];
 
@@ -21,9 +21,5 @@ export const USER_TABS = [
     {
         name: "orders",
         path: "/account/orders",
-    },
-    {
-        name: "bills",
-        path: "/account/bills",
     },
 ];

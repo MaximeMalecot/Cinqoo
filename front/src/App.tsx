@@ -15,9 +15,13 @@ const CreatePrestation = lazy(
     () => import("./pages/account/prestations/create")
 );
 const EditPrestation = lazy(() => import("./pages/account/prestations/edit"));
+const Orders = lazy(() => import("./pages/account/orders"));
+const Requests = lazy(() => import("./pages/account/requests"));
+const Prestation = lazy(() => import("./pages/prestation"));
+const Prestations = lazy(() => import("./pages/prestations"));
 
 function App() {
-    const { isConnected } = useAuthContext();
+    const { isConnected, isFreelancer } = useAuthContext();
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
@@ -31,20 +35,34 @@ function App() {
                     />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/prestations" element={<Prestations />} />
+                    <Route path="/prestations/:id" element={<Prestation />} />
                     {isConnected && (
                         <>
                             <Route path="/account">
+                                {isFreelancer && (
+                                    <>
+                                        <Route
+                                            path="/account/prestations/:id/edit"
+                                            element={<EditPrestation />}
+                                        />
+                                        <Route
+                                            path="/account/prestations/create"
+                                            element={<CreatePrestation />}
+                                        />
+                                        <Route
+                                            path="/account/prestations"
+                                            element={<AccountPrestations />}
+                                        />
+                                        <Route
+                                            path="/account/requests"
+                                            element={<Requests />}
+                                        />
+                                    </>
+                                )}
                                 <Route
-                                    path="/account/prestations/:id/edit"
-                                    element={<EditPrestation />}
-                                />
-                                <Route
-                                    path="/account/prestations/create"
-                                    element={<CreatePrestation />}
-                                />
-                                <Route
-                                    path="/account/prestations"
-                                    element={<AccountPrestations />}
+                                    path="/account/orders"
+                                    element={<Orders />}
                                 />
                                 <Route
                                     path="/account/settings"

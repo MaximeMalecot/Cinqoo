@@ -22,7 +22,7 @@ export default function Header() {
                 <div className="flex-none hidden md:block">
                     <ul className="menu menu-horizontal px-1 flex items-center gap-2">
                         <li>
-                            <Link className="text-xl" to="/discover">
+                            <Link className="text-xl" to="/prestations">
                                 Discover
                             </Link>
                         </li>

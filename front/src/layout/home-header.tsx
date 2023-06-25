@@ -23,7 +23,7 @@ export default function HomeHeader() {
                         <li>
                             <Link
                                 className="text-xl hover:text-white"
-                                to="/discover"
+                                to="/prestations"
                             >
                                 Discover
                             </Link>
