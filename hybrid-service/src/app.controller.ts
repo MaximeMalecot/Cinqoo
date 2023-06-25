@@ -31,7 +31,7 @@ export class AppController {
       res.writeHead(200, headers);
       res.write(`data: ${JSON.stringify({ type: 'connect', userId })}\n\n`);
       setInterval(() => {
-        this.appService.broadcastSpecific({ type: 'connect', userId }, userId);
+        this.appService.logOrders();
       }, 5000);
     } catch (err) {
       console.error(err);
@@ -42,7 +42,6 @@ export class AppController {
   @EventPattern('HYBRID.BROADCAST_ALL')
   async broadcastAll(@Payload() data: BroadcastDto) {
     await this.appService.broadcastAll(data.message);
-    console.log('ALL', data);
     return {
       event: 'message_printed',
       success: true,
@@ -51,7 +50,7 @@ export class AppController {
 
   @EventPattern('HYBRID.BROADCAST_ORDER')
   async broadcastOrder(@Payload() data: BroadcastOrderDto) {
-    console.log('ORDER', data);
+    await this.appService.broadcastOrder(data.message, data.orderId);
     return {
       event: 'message_printed',
       success: true,
@@ -61,7 +60,6 @@ export class AppController {
   @EventPattern('HYBRID.BROADCAST_USER')
   async broadcastUser(@Payload() data: BroadcastUserDto) {
     await this.appService.broadcastSpecific(data.message, data.userId);
-    console.log('USER', data);
     return {
       event: 'message_printed',
       success: true,

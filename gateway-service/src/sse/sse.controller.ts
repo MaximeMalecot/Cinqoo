@@ -1,5 +1,6 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { SseService } from './sse.service';
 
 @ApiTags('sse')
@@ -12,38 +13,32 @@ export class SseController {
     const res = await this.sseService.broadcastAll({
       message: {
         type: 'new_message',
-        data: {
-          test: 'oui',
-        },
+        data: 'BROADCASTINGALL',
       },
     });
     return res;
   }
 
-  @Post('order')
-  async order() {
+  @Post('order/:orderId')
+  async order(@Param('orderId', CheckObjectIdPipe) orderId: string) {
     const res = await this.sseService.broadcastOrder({
       message: {
         type: 'new_message',
-        data: {
-          test: 'oui',
-        },
+        data: 'BROADCASTINGORDER',
       },
-      orderId: 'hihi',
+      orderId,
     });
     return res;
   }
 
-  @Post('user')
-  async user() {
+  @Post('user/:userId')
+  async user(@Param('userId', CheckObjectIdPipe) userId: string) {
     const res = await this.sseService.broadcastUser({
       message: {
         type: 'new_message',
-        data: {
-          test: 'oui',
-        },
+        data: 'BROADCASTINGUSER',
       },
-      userId: '64944b3c6610724aea88568e',
+      userId,
     });
     return res;
   }
