@@ -39,9 +39,9 @@ export default function Prestation() {
         );
 
     return (
-        <div className="flex flex-col">
-            <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex gap-5 relative">
-                <div className="w-2/3 flex flex-col gap-5">
+        <div className="flex md:flex-col">
+            <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col md:flex-row gap-5 relative">
+                <div className="w-full md:w-2/3 flex flex-col gap-5">
                     <h1 className="text-4xl">{prestation.name}</h1>
                     <div
                         className="duration-700 bg-slate-200 hover:bg-slate-300 rounded-md p-5 overflow-hidden w-full"
@@ -79,7 +79,7 @@ export default function Prestation() {
                         <h3 className="text-xl font-bold">Rating</h3>
                     </div>
                 </div>
-                <div className="w-1/3 h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full">
+                <div className="w-full md:w-1/3 h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full">
                     <h1 className="text-xl">Order this prestation</h1>
                     <div className="flex flex-col">
                         <div className="flex justify-between">
