@@ -4,6 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import Button from "../components/button";
 import { Input } from "../components/input";
 import { useAuthContext } from "../contexts/auth.context";
+import { displayMsg } from "../utils/toast";
 
 export default function Login() {
     const { login, isConnected } = useAuthContext();
@@ -22,6 +23,7 @@ export default function Login() {
             await login(email, password);
         } catch (e: any) {
             console.log(e.message);
+            displayMsg(e.message, "error");
         } finally {
             setLoading(false);
         }

@@ -1,11 +1,13 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Input } from "../components/input";
 import { useAuthContext } from "../contexts/auth.context";
+import { displayMsg } from "../utils/toast";
 
 export default function Register() {
     const { register, isConnected } = useAuthContext();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const {
         register: registerField,
@@ -18,8 +20,10 @@ export default function Register() {
             setLoading(true);
             const { password, username, email } = data;
             await register(email, password, username);
+            navigate("/login");
         } catch (e: any) {
             console.log(e.message);
+            displayMsg(e.message, "error");
         } finally {
             setLoading(false);
         }
