@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: hybrid-service
+    labels:
+        app: hybrid-service
+spec:
+    selector:
+        matchLabels:
+            app: hybrid-service
+    template:
+        metadata:
+            labels:
+                app: hybrid-service
+        spec:
+            containers:
+                - name: hybrid-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/hybrid-service:latest
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                      - name: JWT_SECRET
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: JWT_SECRET
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: hybrid-service
+    labels:
+        app: hybrid-service
+spec:
+    type: NodePort
+    selector:
+        app: hybrid-service
+    ports:
+        - name: default
+          port: 3000
+          targetPort: 3000
+        - name: my-https-port
+          port: 443
+          targetPort: 3000
+        - name: my-http-port
+          port: 80
+          targetPort: 3000
