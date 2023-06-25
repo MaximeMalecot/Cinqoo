@@ -3,7 +3,7 @@ import authHeader from "./auth.header";
 
 class UserService {
     async getSelf() {
-        const res = await fetch(`${API_ENDPOINT}/users/self`, {
+        const res = await fetch(`${API_ENDPOINT}user/self`, {
             method: "GET",
             headers: {
                 ...authHeader(),
@@ -14,7 +14,7 @@ class UserService {
     }
 
     async getUsers() {
-        const res = await fetch(`${API_ENDPOINT}/users`, {
+        const res = await fetch(`${API_ENDPOINT}user`, {
             method: "GET",
             headers: {
                 ...authHeader(),
@@ -24,7 +24,7 @@ class UserService {
     }
 
     async getUser(id: string) {
-        const res = await fetch(`${API_ENDPOINT}/users/${id}`, {
+        const res = await fetch(`${API_ENDPOINT}user/${id}`, {
             method: "GET",
             headers: {
                 ...authHeader(),
@@ -38,7 +38,7 @@ class UserService {
         oldPassword: string,
         password: string
     ): Promise<boolean> {
-        const res = await fetch(`${API_ENDPOINT}/users/${userId}`, {
+        const res = await fetch(`${API_ENDPOINT}user/${userId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

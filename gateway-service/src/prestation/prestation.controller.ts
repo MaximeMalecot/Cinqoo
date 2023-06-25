@@ -39,6 +39,7 @@ export class PrestationController {
   ) {}
 
   @Get()
+  @Public()
   public getAllPrestations() {
     return this.prestationService.send('PRESTATION.GET_ALL', {});
   }
