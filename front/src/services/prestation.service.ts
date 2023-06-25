@@ -136,6 +136,40 @@ class PrestationService {
         }
         return await res.json();
     }
+
+    async enablePrestation(id: string) {
+        const res = await fetch(`${API_ENDPOINT}prestation/enable/${id}`, {
+            method: "PATCH",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to create prestation");
+        }
+        return await res.json();
+    }
+
+    async disablePrestation(id: string) {
+        const res = await fetch(`${API_ENDPOINT}prestation/disable/${id}`, {
+            method: "PATCH",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to create prestation");
+        }
+        return await res.json();
+    }
 }
 
 export default new PrestationService();
