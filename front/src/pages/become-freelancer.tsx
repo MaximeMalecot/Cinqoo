@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "../components/button";
 import { useAuthContext } from "../contexts/auth.context";
 import userService from "../services/user.service";
@@ -9,10 +9,7 @@ const IMG =
     "https://plus.unsplash.com/premium_photo-1682434160151-004f907e2458?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
 
 export default function BecomeFreelancer() {
-    const [link, setLink] = useState("");
-    const { data, isConnected } = useAuthContext();
-    const isFreelancer = data?.roles.includes("FREELANCER");
-    const navigate = useNavigate();
+    const { data, isConnected, isFreelancer } = useAuthContext();
     const [loading, setLoading] = useState(false);
 
     const redirectToStripe = useCallback(async () => {
@@ -28,7 +25,7 @@ export default function BecomeFreelancer() {
         }
     }, []);
 
-    if (!isFreelancer) {
+    if (isFreelancer) {
         return (
             <div className="flex flex-col w-full">
                 <div
@@ -39,11 +36,18 @@ export default function BecomeFreelancer() {
                 </div>
                 <div className="flex flex-col p-0 pt-10 md:p-10 md:p-20 gap-10">
                     <h1 className="text-2xl">Become freelancer</h1>
-                    <div>
+                    <div className="flex flex-col">
                         <p>
-                            You've already completed the procedure and granted
-                            the Freelancer role.
+                            You've already completed the procedure and are
+                            granted the Freelancer role.
                         </p>
+                        <div className="divider p-0 m-0"></div>
+                        <Link
+                            to={"/account/freelancer"}
+                            className="flex-1 btn btn-primary"
+                        >
+                            Manage your freelancer profile
+                        </Link>
                     </div>
                 </div>
             </div>

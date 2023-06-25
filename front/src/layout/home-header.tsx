@@ -1,9 +1,10 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { ROLES } from "../constants/roles";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function HomeHeader() {
-    const { data, isConnected, logout } = useAuthContext();
+    const { data, isConnected, logout, isFreelancer } = useAuthContext();
+    const menuRef = useRef<HTMLDetailsElement>(null);
 
     return (
         <header className={`navbar fixed top-0 bg-transparent`}>
@@ -25,21 +26,19 @@ export default function HomeHeader() {
                             >
                                 Discover
                             </Link>
-                        </li>{" "}
-                        {!data?.roles.includes(ROLES.FREELANCER) && (
-                            <li>
-                                <Link
-                                    className="text-xl hover:text-white"
-                                    to="/become-freelancer"
-                                >
-                                    Become freelancer
-                                </Link>
-                            </li>
-                        )}
+                        </li>
+                        <li>
+                            <Link
+                                className="text-xl hover:text-white"
+                                to="/become-freelancer"
+                            >
+                                Become freelancer
+                            </Link>
+                        </li>
                         {isConnected ? (
                             <>
                                 <li>
-                                    <details>
+                                    <details ref={menuRef}>
                                         <summary className="text-xl bg-transparent border border-white text-white hover:bg-white hover:text-black hover:border-transparent">
                                             {data?.email}
                                         </summary>
@@ -49,6 +48,13 @@ export default function HomeHeader() {
                                                     Account
                                                 </Link>{" "}
                                             </li>
+                                            {isFreelancer && (
+                                                <li>
+                                                    <Link to="/account">
+                                                        Prestations
+                                                    </Link>{" "}
+                                                </li>
+                                            )}
                                             <li>
                                                 <p onClick={logout}>Logout</p>
                                             </li>

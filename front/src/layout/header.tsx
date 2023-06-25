@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { ROLES } from "../constants/roles";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function Header() {
-    const { data, isConnected, logout } = useAuthContext();
+    const { data, isConnected, logout, isFreelancer } = useAuthContext();
 
     return (
         <header
@@ -24,17 +23,12 @@ export default function Header() {
                             <Link className="text-xl" to="/discover">
                                 Discover
                             </Link>
-                        </li>{" "}
-                        {!data?.roles.includes(ROLES.FREELANCER) && (
-                            <li>
-                                <Link
-                                    className="text-xl"
-                                    to="/become-freelancer"
-                                >
-                                    Become freelancer
-                                </Link>
-                            </li>
-                        )}
+                        </li>
+                        <li>
+                            <Link className="text-xl" to="/become-freelancer">
+                                Become freelancer
+                            </Link>
+                        </li>
                         {isConnected ? (
                             <>
                                 <li>
@@ -48,6 +42,13 @@ export default function Header() {
                                                     Account
                                                 </Link>
                                             </li>
+                                            {isFreelancer && (
+                                                <li>
+                                                    <Link to="/account">
+                                                        Prestations
+                                                    </Link>{" "}
+                                                </li>
+                                            )}
                                             <li>
                                                 <p onClick={logout}>Logout</p>
                                             </li>

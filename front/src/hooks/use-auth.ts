@@ -2,6 +2,7 @@ import jwt_decode from "jwt-decode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TOKEN_STORAGE_KEY } from "../constants/keys";
+import { ROLES } from "../constants/roles";
 import { UserData } from "../interfaces/user";
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
@@ -28,6 +29,9 @@ const useAuth = () => {
     const [token, setToken] = useState<string | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
     const isConnected = useMemo(() => !!token && !!userData, [token, userData]);
+    const isFreelancer =
+        isConnected &&
+        (userData?.roles.includes(ROLES.FREELANCER) ? true : false);
     const navigate = useNavigate();
 
     const register = useCallback(
@@ -92,6 +96,7 @@ const useAuth = () => {
         isConnected,
         register,
         reload: getUser,
+        isFreelancer,
     };
 };
 

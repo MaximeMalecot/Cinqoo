@@ -15,6 +15,7 @@ type AuthContextType = {
     login: (mail: string, password: string) => Promise<boolean>;
     logout: () => void;
     isConnected: boolean;
+    isFreelancer: boolean;
     data: UserData | null;
     reload: () => void;
 };
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextType>({
     login: async () => false,
     logout: () => {},
     isConnected: false,
+    isFreelancer: false,
     data: null,
     reload: () => {},
 });
@@ -41,11 +43,20 @@ export const useAuthContext = () => {
 };
 
 export const AuthContextProvider: React.FC<Props> = ({ children }) => {
-    const { login, logout, isConnected, register, data, reload } = useAuth();
+    const { login, logout, isConnected, register, data, reload, isFreelancer } =
+        useAuth();
 
     return (
         <AuthContext.Provider
-            value={{ login, logout, isConnected, register, data, reload }}
+            value={{
+                login,
+                logout,
+                isConnected,
+                register,
+                data,
+                reload,
+                isFreelancer,
+            }}
         >
             {children}
         </AuthContext.Provider>
