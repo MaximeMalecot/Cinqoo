@@ -29,7 +29,7 @@ export class PaymentService {
   async createProduct(data: CreateProductDto) {
     try {
       const { name } = data;
-
+      console.log(name);
       const product = await this.stripe.products.create({
         name: name,
       });

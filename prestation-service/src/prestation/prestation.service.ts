@@ -71,59 +71,69 @@ export class PrestationService {
   }
 
   async create(prestation: CreatePrestationDto, userId: string, file: string) {
-    const product = await firstValueFrom(
-      this.stripeService.send('STRIPE.CREATE_PRODUCT', {
-        name: prestation.name,
-      }),
-    );
-
-    const localCategories = [];
-    if (
-      prestation.categories &&
-      Array.isArray(prestation.categories) &&
-      prestation.categories.length > 0
-    ) {
-      const rawCategories = Array.from(new Set(prestation.categories));
-      await Promise.all(
-        rawCategories.map(async (category: string) => {
-          const exists = await this.categoryService.getOne(category);
-          if (exists) {
-            localCategories.push(exists._id);
-          }
+    try {
+      const product = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_PRODUCT', {
+          name: prestation.name,
         }),
       );
+
+      const localCategories = [];
+      if (
+        prestation.categories &&
+        Array.isArray(prestation.categories) &&
+        prestation.categories.length > 0
+      ) {
+        const rawCategories = Array.from(new Set(prestation.categories));
+        await Promise.all(
+          rawCategories.map(async (category: string) => {
+            const exists = await this.categoryService.getOne(category);
+            if (exists) {
+              localCategories.push(exists._id);
+            }
+          }),
+        );
+      }
+
+      const newPrestation = {
+        ...prestation,
+        categories: localCategories,
+        stripeId: product.id,
+        owner: new Types.ObjectId(userId),
+        image: file,
+      };
+      const createdPrestation = new this.prestationModel(newPrestation);
+      const savedPrestation = await createdPrestation.save();
+
+      const {
+        image,
+        name,
+        revisionNb,
+        description,
+        price,
+        delay,
+        _id,
+        categories,
+      } = savedPrestation;
+      return {
+        image,
+        name,
+        revisionNb,
+        description,
+        price,
+        delay,
+        _id,
+        categories,
+      };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: e.message,
+      });
     }
-
-    const newPrestation = {
-      ...prestation,
-      categories: localCategories,
-      stripeId: product.id,
-      owner: new Types.ObjectId(userId),
-      image: file,
-    };
-    const createdPrestation = new this.prestationModel(newPrestation);
-    const savedPrestation = await createdPrestation.save();
-
-    const {
-      image,
-      name,
-      revisionNb,
-      description,
-      price,
-      delay,
-      _id,
-      categories,
-    } = savedPrestation;
-    return {
-      image,
-      name,
-      revisionNb,
-      description,
-      price,
-      delay,
-      _id,
-      categories,
-    };
   }
 
   async getPrestationsOfUser(userId: string, active: boolean) {

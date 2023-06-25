@@ -1,4 +1,5 @@
 import { API_ENDPOINT } from "../constants/endpoints";
+import { CreatePrestationForm } from "../interfaces/prestation";
 import authHeader from "./auth.header";
 
 class PrestationService {
@@ -39,8 +40,25 @@ class PrestationService {
         return await res.json();
     }
 
-    async createPrestation() {
+    async createPrestation(form: CreatePrestationForm, image: File) {
+        const { name, description, revisionNb, delay, price, categories } =
+            form;
         const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("delay", delay.toString());
+        formData.append("price", price.toString());
+        formData.append("image", image);
+
+        if (categories) {
+            categories.forEach((category) => {
+                formData.append("categories", category);
+            });
+        }
+
+        if (revisionNb) {
+            formData.append("revisionNb", revisionNb.toString());
+        }
 
         const res = await fetch(`${API_ENDPOINT}prestation`, {
             method: "POST",
@@ -49,7 +67,13 @@ class PrestationService {
             },
             body: formData,
         });
-        if (res.status !== 200) return false;
+        if (res.status !== 201) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to create prestation");
+        }
         return await res.json();
     }
 

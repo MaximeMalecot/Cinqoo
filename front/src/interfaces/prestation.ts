@@ -14,8 +14,8 @@ export interface PrestationItemList {
 export interface CreatePrestationForm {
     name: string;
     description: string;
+    revisionNb?: number;
     delay: number;
-    image: string;
     price: number;
     categories: string[];
 }
