@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { ROLES } from "../constants/roles";
+import { useAuthContext } from "../contexts/auth.context";
 
 export default function Header() {
+    const { data, isConnected } = useAuthContext();
+
     return (
         <header
             className={`navbar relative bg-base-100 border border-b2 border-base-200`}
@@ -21,24 +25,41 @@ export default function Header() {
                                 Discover
                             </Link>
                         </li>{" "}
-                        <li>
-                            <Link className="text-xl" to="/become-freelancer">
-                                Become freelancer
-                            </Link>
-                        </li>
-                        <li>
-                            <Link className="text-xl" to="/login">
-                                Login
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/register"
-                                className="text-xl bg-transparent border border-primary text-primary hover:bg-primary hover:text-white hover:border-transparent"
-                            >
-                                Register
-                            </Link>
-                        </li>
+                        {!data?.roles.includes(ROLES.FREELANCER) && (
+                            <li>
+                                <Link
+                                    className="text-xl"
+                                    to="/become-freelancer"
+                                >
+                                    Become freelancer
+                                </Link>
+                            </li>
+                        )}
+                        {isConnected ? (
+                            <>
+                                <li>
+                                    <Link className="text-xl" to="/login">
+                                        {data?.email}
+                                    </Link>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <Link className="text-xl" to="/login">
+                                        Login
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="/register"
+                                        className="text-xl bg-transparent border border-primary text-primary hover:bg-primary hover:text-white hover:border-transparent"
+                                    >
+                                        Register
+                                    </Link>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </div>
