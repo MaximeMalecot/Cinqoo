@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import PrestationForm from "../../../components/prestation/prestation-form";
 import { CreatePrestationForm } from "../../../interfaces/prestation";
 import prestationService from "../../../services/prestation.service";
 import { displayMsg } from "../../../utils/toast";
-import PrestationForm from "./prestation-form";
 
 export default function CreatePrestation() {
     const navigate = useNavigate();

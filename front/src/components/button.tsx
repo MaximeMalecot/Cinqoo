@@ -4,7 +4,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
         | "primary"
         | "secondary"
         | "bordered-primary"
-        | "bordered-secondary";
+        | "bordered-secondary"
+        | "danger"
+        | "bordered-danger";
 }
 
 export default function Button({
@@ -20,6 +22,9 @@ export default function Button({
             "btn bg-transparent border border-primary text-primary hover:bg-primary hover:text-white hover:border-transparent",
         "bordered-secondary":
             "btn bg-transparent border border border-secondary text-secondary hover:bg-secondary hover:text-white hover:border-transparent",
+        "bordered-danger":
+            "btn bg-transparent border border border-error text-error hover:bg-error hover:text-white hover:border-transparent",
+        danger: "btn btn-error text-white",
     };
 
     return (

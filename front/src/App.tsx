@@ -9,7 +9,7 @@ import NotFound from "./pages/not-found";
 const Login = lazy(() => import("./pages/login"));
 const Register = lazy(() => import("./pages/register"));
 const BecomeFreelancer = lazy(() => import("./pages/become-freelancer"));
-const Account = lazy(() => import("./pages/account"));
+const AccountSettings = lazy(() => import("./pages/account/settings"));
 const AccountPrestations = lazy(() => import("./pages/account/prestations"));
 const CreatePrestation = lazy(
     () => import("./pages/account/prestations/create")
@@ -46,7 +46,10 @@ function App() {
                                     path="/account/prestations"
                                     element={<AccountPrestations />}
                                 />
-                                <Route path="/account" element={<Account />} />
+                                <Route
+                                    path="/account/settings"
+                                    element={<AccountSettings />}
+                                />
                             </Route>
                         </>
                     )}

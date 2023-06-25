@@ -1,11 +1,11 @@
 export const FREELANCER_TABS = [
     {
-        name: "Prestations",
-        path: "/account/prestations",
-    },
-    {
         name: "Freelancer profile",
         path: "/account/manage-freelancer-profile",
+    },
+    {
+        name: "Prestations",
+        path: "/account/prestations",
     },
     {
         name: "requests",

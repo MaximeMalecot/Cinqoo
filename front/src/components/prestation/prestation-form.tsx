@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import Button from "../../../components/button";
-import { Input } from "../../../components/input";
-import { TextArea } from "../../../components/text-area";
 import {
     CreatePrestationForm,
     PrestationItemList,
-} from "../../../interfaces/prestation";
-import { displayMsg } from "../../../utils/toast";
+} from "../../interfaces/prestation";
+import { displayMsg } from "../../utils/toast";
+import Button from "../button";
+import { Input } from "../input";
+import { TextArea } from "../text-area";
 
 interface PrestationFormProps {
     initData?: PrestationItemList | null;

@@ -45,7 +45,10 @@ export default function HomeHeader() {
                                         </summary>
                                         <ul className="p-2 bg-transparent w-full text-black">
                                             {USER_TABS.map((tab, index) => (
-                                                <li className="capitalize">
+                                                <li
+                                                    key={index}
+                                                    className="capitalize"
+                                                >
                                                     <Link to={tab.path}>
                                                         {tab.name}
                                                     </Link>
@@ -54,7 +57,10 @@ export default function HomeHeader() {
                                             {isFreelancer &&
                                                 FREELANCER_TABS.map(
                                                     (tab, index) => (
-                                                        <li className="capitalize">
+                                                        <li
+                                                            key={index}
+                                                            className="capitalize"
+                                                        >
                                                             <Link to={tab.path}>
                                                                 {tab.name}
                                                             </Link>

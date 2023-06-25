@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { PrestationItemList } from "../../interfaces/prestation";
+import { PrestationItemList } from "../../../interfaces/prestation";
 
 interface ViewPrestationCardProps {
     prestation: PrestationItemList;

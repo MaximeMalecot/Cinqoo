@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { PrestationItemList } from "../../interfaces/prestation";
-import Button from "../button";
+import { PrestationItemList } from "../../../interfaces/prestation";
+import Button from "../../button";
 
 interface ManagePrestationCardProps {
     prestation: PrestationItemList;

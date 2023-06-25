@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import PrestationForm from "../../../components/prestation/prestation-form";
 import {
     CreatePrestationForm,
     PrestationItemList,
 } from "../../../interfaces/prestation";
 import prestationService from "../../../services/prestation.service";
 import { displayMsg } from "../../../utils/toast";
-import PrestationForm from "./prestation-form";
 
 export default function EditPrestation() {
     const [prestation, setPrestation] = useState<PrestationItemList | null>(

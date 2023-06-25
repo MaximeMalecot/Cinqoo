@@ -58,11 +58,17 @@ const useAuth = () => {
     }, []);
 
     const getUser = useCallback(async () => {
-        if (!token) return;
-        const res = await userService.getSelf();
-        if (res) {
-            setUserData(res);
-        } else {
+        try {
+            if (!token) return;
+            const res = await userService.getSelf();
+            if (res) {
+                setUserData(res);
+            } else {
+                logout();
+                navigate("/login");
+            }
+        } catch (e: any) {
+            console.log(e);
             logout();
             navigate("/login");
         }

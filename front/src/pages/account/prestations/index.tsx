@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/button";
-import ManagePrestationCard from "../../../components/prestation-card/manage-prestation-card";
+import ManagePrestationCard from "../../../components/prestation/prestation-card/manage-prestation-card";
 import { PrestationItemList } from "../../../interfaces/prestation";
 import prestationService from "../../../services/prestation.service";
 import { displayMsg } from "../../../utils/toast";

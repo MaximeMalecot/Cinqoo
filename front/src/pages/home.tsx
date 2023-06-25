@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/button";
 import HomeSearchInput from "../components/home-search-input";
-import ViewPrestationCard from "../components/prestation-card/view-prestation-card";
+import ViewPrestationCard from "../components/prestation/prestation-card/view-prestation-card";
 import prestationService from "../services/prestation.service";
 import { displayMsg } from "../utils/toast";
 
