@@ -19,14 +19,9 @@ spec:
                   imagePullPolicy: Always
                   env:
                       - name: PORT
-                        value: "3000"
-                      - name: JWT_SECRET
-                        valueFrom:
-                            secretKeyRef:
-                                name: secrets
-                                key: JWT_SECRET
+                        value: "3001"
                   ports:
-                      - containerPort: 3000
+                      - containerPort: 3001
                   resources:
                       limits:
                           cpu: 500m
@@ -45,11 +40,11 @@ spec:
         app: hybrid-service
     ports:
         - name: default
-          port: 3000
-          targetPort: 3000
+          port: 3001
+          targetPort: 3001
         - name: my-https-port
           port: 443
-          targetPort: 3000
+          targetPort: 3001
         - name: my-http-port
           port: 80
-          targetPort: 3000
+          targetPort: 3001
