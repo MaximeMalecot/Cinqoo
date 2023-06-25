@@ -3,7 +3,7 @@ import { ROLES } from "../constants/roles";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function Header() {
-    const { data, isConnected } = useAuthContext();
+    const { data, isConnected, logout } = useAuthContext();
 
     return (
         <header
@@ -38,9 +38,21 @@ export default function Header() {
                         {isConnected ? (
                             <>
                                 <li>
-                                    <Link className="text-xl" to="/login">
-                                        {data?.email}
-                                    </Link>
+                                    <details>
+                                        <summary className="text-xl">
+                                            {data?.email}
+                                        </summary>
+                                        <ul className="p-2 bg-base-100 w-full">
+                                            <li>
+                                                <Link to="/account">
+                                                    Account
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <p onClick={logout}>Logout</p>
+                                            </li>
+                                        </ul>
+                                    </details>
                                 </li>
                             </>
                         ) : (

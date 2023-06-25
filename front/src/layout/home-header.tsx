@@ -3,7 +3,7 @@ import { ROLES } from "../constants/roles";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function HomeHeader() {
-    const { data, isConnected } = useAuthContext();
+    const { data, isConnected, logout } = useAuthContext();
 
     return (
         <header className={`navbar fixed top-0 bg-transparent`}>
@@ -39,12 +39,21 @@ export default function HomeHeader() {
                         {isConnected ? (
                             <>
                                 <li>
-                                    <Link
-                                        className="text-xl bg-transparent border border-white text-white hover:bg-white hover:text-black hover:border-transparent"
-                                        to="/account"
-                                    >
-                                        {data?.email}
-                                    </Link>
+                                    <details>
+                                        <summary className="text-xl bg-transparent border border-white text-white hover:bg-white hover:text-black hover:border-transparent">
+                                            {data?.email}
+                                        </summary>
+                                        <ul className="p-2 bg-transparent w-full text-black">
+                                            <li>
+                                                <Link to="/account">
+                                                    Account
+                                                </Link>{" "}
+                                            </li>
+                                            <li>
+                                                <p onClick={logout}>Logout</p>
+                                            </li>
+                                        </ul>
+                                    </details>
                                 </li>
                             </>
                         ) : (
