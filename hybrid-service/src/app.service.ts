@@ -10,18 +10,18 @@ export class AppService {
     @Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
   ) {}
 
-  convertMessage = ({ type, ...data }) => {
+  convertMessage({ type, ...data }) {
     console.log(`event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`);
     return `event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`;
-  };
+  }
 
-  broadcastSpecific = (message, userId) => {
+  broadcastSpecific(message, userId) {
     if (this.users[userId]) {
       this.users[userId].write(this.convertMessage(message));
     }
-  };
+  }
 
-  broadcastOrder = (message, orderId) => {
+  broadcastOrder(message, orderId) {
     if (
       this.orders[orderId] &&
       this.orders[orderId].size &&
@@ -31,15 +31,15 @@ export class AppService {
         this.broadcastSpecific(message, userId);
       });
     }
-  };
+  }
 
-  broadcastAll = (message) => {
+  broadcastAll(message) {
     Object.keys(this.users).forEach((userId) => {
       this.broadcastSpecific(message, userId);
     });
-  };
+  }
 
-  addUser = async (userId, res, roles = ['USER']) => {
+  async addUser(userId, res, roles = ['USER']) {
     this.users[userId] = res;
     let orders = await this.getOrders(userId, roles);
     if (orders.length > 0) {
@@ -48,9 +48,9 @@ export class AppService {
         this.orders[order._id].add(userId);
       });
     }
-  };
+  }
 
-  deleteUser = async (userId, roles = ['USER']) => {
+  async deleteUser(userId, roles = ['USER']) {
     delete this.users[userId];
     let orders = await this.getOrders(userId, roles);
     if (orders.length > 0) {
@@ -58,9 +58,9 @@ export class AppService {
         this.orders[order._id].delete(userId);
       });
     }
-  };
+  }
 
-  getOrders = async (userId, roles = ['USER']) => {
+  async getOrders(userId, roles = ['USER']) {
     let orders = [];
     if (roles.includes('FREELANCER')) {
       orders = await firstValueFrom(
@@ -74,9 +74,9 @@ export class AppService {
       )),
     ];
     return orders;
-  };
+  }
 
-  logOrders = () => {
+  logOrders() {
     console.log('orders', this.orders);
-  };
+  }
 }

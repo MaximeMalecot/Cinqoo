@@ -1,22 +1,14 @@
 export class BroadcastDto {
   message: {
     type: string;
-    data: object;
+    data: object | string | Array<any>;
   };
 }
 
-export class BroadcastOrderDto {
-  message: {
-    type: string;
-    data: object;
-  };
+export class BroadcastOrderDto extends BroadcastDto {
   orderId: string;
 }
 
-export class BroadcastUserDto {
-  message: {
-    type: string;
-    data: object;
-  };
+export class BroadcastUserDto extends BroadcastDto {
   userId: string;
 }
