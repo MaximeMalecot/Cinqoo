@@ -62,7 +62,7 @@ export default function Home() {
                     </Link>
                 </div>
                 {prestations.length > 0 ? (
-                    <div className="flex flex-col items-center md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="flex flex-col items-center gap-5 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {prestations.map((p, index) => (
                             <ViewPrestationCard prestation={p} key={index} />
                         ))}

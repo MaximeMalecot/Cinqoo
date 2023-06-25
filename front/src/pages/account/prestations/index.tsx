@@ -45,7 +45,7 @@ export default function Prestations() {
                     <p>You have no prestation yet</p>
                 </div>
             ) : (
-                <div className="flex flex-col items-center md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="flex flex-col gap-5 items-center md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {prestations.map((p, index) => (
                         <ManagePrestationCard prestation={p} key={index} />
                     ))}
