@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/button";
 import { Input } from "../../../components/input";
@@ -68,12 +68,6 @@ export default function PrestationForm({
         },
         [image]
     );
-
-    useEffect(() => {
-        if (Array.isArray(errors) && errors.length > 0) {
-            console.log(errors);
-        }
-    }, [errors]);
 
     return (
         <form
@@ -165,7 +159,8 @@ export default function PrestationForm({
                     {label ? label : "Apply"}
                 </Button>
                 <p className="text-center text-sm text-slate-500">
-                    By creating your service you agree to the Cinqoo ToS
+                    By creating or updating your service you agree to the Cinqoo
+                    ToS
                 </p>
             </div>
         </form>

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function HomeHeader() {
@@ -43,18 +44,23 @@ export default function HomeHeader() {
                                             {data?.email}
                                         </summary>
                                         <ul className="p-2 bg-transparent w-full text-black">
-                                            <li>
-                                                <Link to="/account">
-                                                    Account
-                                                </Link>{" "}
-                                            </li>
-                                            {isFreelancer && (
-                                                <li>
-                                                    <Link to="/account/prestations">
-                                                        Prestations
-                                                    </Link>{" "}
+                                            {USER_TABS.map((tab, index) => (
+                                                <li className="capitalize">
+                                                    <Link to={tab.path}>
+                                                        {tab.name}
+                                                    </Link>
                                                 </li>
-                                            )}
+                                            ))}
+                                            {isFreelancer &&
+                                                FREELANCER_TABS.map(
+                                                    (tab, index) => (
+                                                        <li className="capitalize">
+                                                            <Link to={tab.path}>
+                                                                {tab.name}
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                )}
                                             <li>
                                                 <p onClick={logout}>Logout</p>
                                             </li>

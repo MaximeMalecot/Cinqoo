@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function Header() {
@@ -6,7 +7,8 @@ export default function Header() {
 
     return (
         <header
-            className={`navbar relative bg-base-100 border border-b2 border-base-200`}
+            style={{ position: "relative", zIndex: 10000 }}
+            className={`navbar top-0 relative bg-base-100 border border-b2 border-base-200`}
         >
             <div className={`container mx-auto `}>
                 <div className="flex-1">
@@ -37,18 +39,23 @@ export default function Header() {
                                             {data?.email}
                                         </summary>
                                         <ul className="p-2 bg-base-100 w-full">
-                                            <li>
-                                                <Link to="/account">
-                                                    Account
-                                                </Link>
-                                            </li>
-                                            {isFreelancer && (
-                                                <li>
-                                                    <Link to="/account/prestations">
-                                                        Prestations
-                                                    </Link>{" "}
+                                            {USER_TABS.map((tab, index) => (
+                                                <li className="capitalize">
+                                                    <Link to={tab.path}>
+                                                        {tab.name}
+                                                    </Link>
                                                 </li>
-                                            )}
+                                            ))}
+                                            {isFreelancer &&
+                                                FREELANCER_TABS.map(
+                                                    (tab, index) => (
+                                                        <li className="capitalize">
+                                                            <Link to={tab.path}>
+                                                                {tab.name}
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                )}
                                             <li>
                                                 <p onClick={logout}>Logout</p>
                                             </li>
