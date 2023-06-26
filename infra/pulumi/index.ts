@@ -11,7 +11,6 @@ const atlasGcpLocation = "EUROPE_WEST_9";
 const DB_USER = process.env.DB_USER ?? "cinqoo-admin";
 const DB_PWD = process.env.DB_PWD ?? "cinqoo-admin-pwd";
 const organization = mongodbatlas.getRolesOrgId({});
-
 // Create Artifact Registries and give access to all users
 const repository = new gcp.artifactregistry.Repository("cinqoo", {
     project: project,
@@ -92,16 +91,6 @@ new gcp.artifactregistry.RepositoryIamMember("admin", {
 
 //GKE Cluster
 
-const network = new gcp.compute.Network("network", {
-    project: project,
-});
-const subnet = new gcp.compute.Subnetwork("subnet", {
-    project: project,
-    ipCidrRange: "10.2.0.0/16",
-    region: gcpLocation,
-    network: network.id,
-});
-
 const cluster = new gcp.container.Cluster(
     "cinqoo-gke-cluster",
     {
@@ -160,22 +149,7 @@ new mongodbatlas.DatabaseUser("admin", {
     ],
 });
 
-// Networking to acces DB from GKE
-
-const atlasNetworkPeer = new mongodbatlas.NetworkPeering("atlasNetworkPerr", {
-    containerId: mongodbAtlasCluster.containerId,
-    projectId: mongodbAtlasProject.id,
-    providerName: "GCP",
-    gcpProjectId: project,
-    networkName: network.name,
-});
-
-new gcp.compute.NetworkPeering("gcpPeering", {
-    name: "gcppeering",
-    network: network.selfLink,
-    peerNetwork: pulumi.interpolate`https://www.googleapis.com/compute/v1/projects/${atlasNetworkPeer.atlasGcpProjectId}/global/networks/${atlasNetworkPeer.atlasVpcName}`,
-});
-
+// DNS and StaticIP for Gateway setup
 const dns = new gcp.dns.ManagedZone("cinqoo-dns", {
     project: project,
     name: "cinqoo",
@@ -187,7 +161,7 @@ const gatewayStaticIp = new gcp.compute.GlobalAddress("gateway-service", {
     project: project,
 });
 
-const aRecord = new gcp.dns.RecordSet("gateway-a-record", {
+new gcp.dns.RecordSet("gateway-a-record", {
     project: project,
     managedZone: dns.name,
     name: "api.cinqoo.fr.",

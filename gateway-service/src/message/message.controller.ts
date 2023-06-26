@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { SseService } from 'src/sse/sse.service';
 import { SendMessageDto } from './dto/send-message.dto';
 import { GetMessageGuard } from './guards/get-message.guard';
 import { SendMessageGuard } from './guards/send-message.guard';
@@ -19,6 +20,7 @@ import { SendMessageGuard } from './guards/send-message.guard';
 export class MessageController {
   constructor(
     @Inject('MESSAGE_SERVICE') private readonly messageService: ClientProxy,
+    private readonly sseService: SseService,
   ) {}
 
   @UseGuards(GetMessageGuard)
