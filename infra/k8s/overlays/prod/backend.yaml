@@ -1,0 +1,7 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+    name: sse-backendconfig
+    namespace: cinqoo
+spec:
+    timeoutSec: 3600
