@@ -9,7 +9,7 @@ import {
   BroadcastUserDto,
 } from './dto/broadcast.dto';
 
-@Controller()
+@Controller('conversations')
 export class AppController {
   constructor(private appService: AppService) {}
 
@@ -17,7 +17,7 @@ export class AppController {
   @HttpCode(200)
   @Public()
   hello() {
-    return 'Hello World!';
+    return 'Welcome to Cinqoo REALTIME-SERVICE';
   }
 
   @Get('/health')

@@ -10,23 +10,17 @@ metadata:
         kubernetes.io/ingress.allow-http: "false"
 
 spec:
-    defaultBackend:
-        service:
-            name: gateway-service
-            port:
-                number: 3000
     rules:
-        - host: api.cinqoo.fr
-          http:
+        - http:
               paths:
-                  - pathType: ImplementationSpecific
+                  - pathType: Prefix
                     path: /
                     backend:
                         service:
                             name: gateway-service
                             port:
                                 number: 3000
-                  - pathType: ImplementationSpecific
+                  - pathType: Prefix
                     path: /conversations
                     backend:
                         service:

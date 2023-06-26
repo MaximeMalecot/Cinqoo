@@ -6,7 +6,7 @@ export class AppController {
   @Public()
   @Get()
   async getHello(@Req() req): Promise<string> {
-    return 'Hello World!';
+    return 'Welcome to Cinqoo API-GATEWAY';
   }
 
   @Get('/health')
