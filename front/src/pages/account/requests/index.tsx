@@ -6,6 +6,7 @@ import { displayMsg } from "../../../utils/toast";
 
 export default function Requests() {
     const [requests, setRequests] = useState<Request[]>([]);
+    const [tab, setTab] = useState(0);
 
     const fetchRequests = useCallback(async () => {
         try {
@@ -31,11 +32,33 @@ export default function Requests() {
         fetchRequests();
     }, []);
 
+    useEffect(() => {
+        if (tab === 0) {
+            fetchRequests();
+        } else {
+            fetchPendingRequests();
+        }
+    }, [tab]);
+
     return (
         <div className="container mx-auto flex flex-col p-5 md:p-0 md:py-10 gap-5">
             <div className="flex flex-col gap-5">
                 <div>
                     <h1 className="text-2xl">Requests</h1>
+                </div>
+                <div className="tabs">
+                    <a
+                        className={`tab ${tab === 0 ? "tab-active" : ""}`}
+                        onClick={() => setTab(0)}
+                    >
+                        All
+                    </a>
+                    <a
+                        className={`tab ${tab === 1 ? "tab-active" : ""}`}
+                        onClick={() => setTab(1)}
+                    >
+                        Pending
+                    </a>
                 </div>
                 {requests.length < 0 ? (
                     <p>You have no requests</p>

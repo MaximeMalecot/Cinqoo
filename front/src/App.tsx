@@ -19,6 +19,7 @@ const Orders = lazy(() => import("./pages/account/orders"));
 const Requests = lazy(() => import("./pages/account/requests"));
 const Prestation = lazy(() => import("./pages/prestation"));
 const Prestations = lazy(() => import("./pages/prestations"));
+const Favorites = lazy(() => import("./pages/favorites"));
 
 function App() {
     const { isConnected, isFreelancer } = useAuthContext();
@@ -60,6 +61,10 @@ function App() {
                                         />
                                     </>
                                 )}
+                                <Route
+                                    path="/account/favorites"
+                                    element={<Favorites />}
+                                />
                                 <Route
                                     path="/account/orders"
                                     element={<Orders />}
