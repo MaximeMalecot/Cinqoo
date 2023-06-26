@@ -22,20 +22,6 @@ spec:
                         value: "3001"
                   ports:
                       - containerPort: 3001
-                  livenessProbe:
-                      httpGet:
-                          path: /conversations/health
-                          port: 3001
-                      initialDelaySeconds: 60
-                      periodSeconds: 10
-                      timeoutSeconds: 10
-                  readinessProbe:
-                      httpGet:
-                          path: /conversations/health
-                          port: 3001
-                      initialDelaySeconds: 60
-                      periodSeconds: 10
-                      timeoutSeconds: 10
                   resources:
                       limits:
                           cpu: 500m
