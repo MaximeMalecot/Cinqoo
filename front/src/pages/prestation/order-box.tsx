@@ -28,7 +28,7 @@ export default function OrderBox({ prestation }: OrderBoxProps) {
     }, [prestation, isConnected]);
 
     return (
-        <div className="w-full md:w-1/3 h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full">
+        <div className="w-full h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full">
             <h1 className="text-xl">Order this prestation</h1>
             <div className="flex flex-col">
                 <div className="flex justify-between">
@@ -41,7 +41,7 @@ export default function OrderBox({ prestation }: OrderBoxProps) {
                 </div>
                 <div className="text-xl font-bold flex justify-between">
                     <p>Total price:</p>
-                    <p>{prestation.price} $</p>
+                    <p>{prestation.price} €</p>
                 </div>
             </div>
             {isConnected ? (

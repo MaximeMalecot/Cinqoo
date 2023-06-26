@@ -4,7 +4,9 @@ import { useAuthContext } from "../../contexts/auth.context";
 import { PrestationItemList } from "../../interfaces/prestation";
 import prestationService from "../../services/prestation.service";
 import { displayMsg } from "../../utils/toast";
+import FavoritePart from "./favorite-part";
 import OrderBox from "./order-box";
+import ReportPart from "./report-part";
 
 export default function Prestation() {
     const { isConnected } = useAuthContext();
@@ -42,7 +44,9 @@ export default function Prestation() {
         <div className="flex md:flex-col">
             <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col md:flex-row gap-5 relative">
                 <div className="w-full md:w-2/3 flex flex-col gap-5">
-                    <h1 className="text-4xl">{prestation.name}</h1>
+                    <div className="flex gap-1">
+                        <h1 className="text-4xl">{prestation.name}</h1>
+                    </div>
                     <div
                         className="duration-700 bg-slate-200 hover:bg-slate-300 rounded-md p-5 overflow-hidden w-full"
                         style={{
@@ -56,6 +60,7 @@ export default function Prestation() {
                             className="object-contain w-full h-full"
                         />
                     </div>
+                    <FavoritePart prestationId={prestation._id} />
                     <div className="divider my-0"></div>
                     <div>
                         <h3 className="text-xl font-bold">
@@ -79,7 +84,19 @@ export default function Prestation() {
                         <h3 className="text-xl font-bold">Rating</h3>
                     </div>
                 </div>
-                <OrderBox prestation={prestation} />
+                <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
+                    <OrderBox prestation={prestation} />
+                    <div className="w-full h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full">
+                        <p className="text-xs text-slate-500">
+                            Once the order has been paid, you will have the
+                            opportunity to discuss your request with the
+                            freelancer. It is on the basis of your exchange that
+                            the freelancer will be able to accept or refuse your
+                            request.
+                        </p>
+                    </div>
+                    <ReportPart prestationId={prestation._id} />
+                </div>
             </section>
         </div>
     );

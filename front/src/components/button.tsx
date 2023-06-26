@@ -24,7 +24,7 @@ export default function Button({
             "btn bg-transparent border border border-secondary text-secondary hover:bg-secondary hover:text-white hover:border-transparent",
         "bordered-danger":
             "btn bg-transparent border border border-error text-error hover:bg-error hover:text-white hover:border-transparent",
-        danger: "btn btn-error text-white",
+        danger: "btn btn-error text-white hover:opacity-90",
     };
 
     return (
