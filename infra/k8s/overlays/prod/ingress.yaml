@@ -20,14 +20,14 @@ spec:
           http:
               paths:
                   - pathType: Prefix
-                    path: /
+                    path: /*
                     backend:
                         service:
                             name: gateway-service
                             port:
                                 number: 3000
                   - pathType: Prefix
-                    path: /conversations
+                    path: /conversations/*
                     backend:
                         service:
                             name: hybrid-service
