@@ -42,12 +42,6 @@ spec:
                           cpu: 500m
                       requests:
                           cpu: 200m
-                  livenessProbe:
-                      httpGet:
-                          path: /health
-                          port: 3000
-                      initialDelaySeconds: 3
-                      periodSeconds: 3
             volumes:
                 - name: gateway-claim
                   persistentVolumeClaim:
