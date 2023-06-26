@@ -20,13 +20,7 @@ export default function PromptReportModal({
     const { isConnected } = useAuthContext();
 
     const dialogRef = useRef<HTMLDialogElement>(null);
-    const {
-        register: registerField,
-        handleSubmit,
-        reset,
-        formState: { errors },
-        setError,
-    } = useForm();
+    const { register: registerField, handleSubmit, reset } = useForm();
 
     const openDialog = () => {
         if (!dialogRef.current) return;

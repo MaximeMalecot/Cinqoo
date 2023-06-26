@@ -67,9 +67,10 @@ class PrestationService {
         formData.append("image", image);
 
         if (categories) {
-            categories.forEach((category) => {
-                formData.append("categories", category);
-            });
+            // categories.forEach((category) => {
+            //     formData.append("categories", category);
+            // });
+            formData.append("categories", JSON.stringify(categories));
         }
 
         if (revisionNb) {
@@ -111,9 +112,10 @@ class PrestationService {
         }
 
         if (categories) {
-            categories.forEach((category) => {
-                formData.append("categories", category);
-            });
+            // categories.forEach((category) => {
+            //     formData.append("categories", category);
+            // });
+            formData.append("categories", JSON.stringify(categories));
         }
 
         if (revisionNb) {

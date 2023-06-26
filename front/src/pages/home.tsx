@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Button from "../components/button";
 import HomeSearchInput from "../components/home-search-input";
 import ViewPrestationCard from "../components/prestation/prestation-card/view-prestation-card";
+import { Category } from "../interfaces/category";
+import categoryService from "../services/category.service";
 import prestationService from "../services/prestation.service";
 import { displayMsg } from "../utils/toast";
 
@@ -12,6 +14,17 @@ const IMAGE_LINK =
 export default function Home() {
     const [prestations, setPrestations] = useState([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await categoryService.getCategories();
+            setCategories(res);
+        } catch (e: any) {
+            console.log(e);
+            displayMsg(e.message, "error");
+        }
+    };
 
     const fetchPrestations = async () => {
         try {
@@ -28,6 +41,7 @@ export default function Home() {
 
     useEffect(() => {
         fetchPrestations();
+        fetchCategories();
     }, []);
 
     return (
@@ -40,7 +54,22 @@ export default function Home() {
                             <h1>service, right away</h1>
                         </div>
                         <HomeSearchInput />
-                        <h3>Examples:</h3>
+                        {categories.length > 0 && (
+                            <div>
+                                <h3>Examples:</h3>
+                                <div className="flex gap-2">
+                                    {categories.slice(0, 5).map((c, index) => (
+                                        <Link
+                                            to={`/prestations?category=${c._id}`}
+                                            key={index}
+                                            className="cursor-pointer border border-1 border-white w-fit px-2 rounded-md hover:bg-white hover:text-primary duration-500"
+                                        >
+                                            {c.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div

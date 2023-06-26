@@ -1,13 +1,16 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Category } from "../../interfaces/category";
 import {
     CreatePrestationForm,
     PrestationItemList,
 } from "../../interfaces/prestation";
+import categoryService from "../../services/category.service";
 import { displayMsg } from "../../utils/toast";
 import Button from "../button";
 import { Input } from "../input";
 import { TextArea } from "../text-area";
+import CategoriesSelector from "./categories-selector";
 
 interface PrestationFormProps {
     initData?: PrestationItemList | null;
@@ -29,6 +32,38 @@ export default function PrestationForm({
         initData?.image || ""
     );
     const [image, setImage] = useState<File | null>(null);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(
+        initData?.categories ? initData.categories.map((c: any) => c!._id) : []
+    );
+
+    const fetchCategories = useCallback(async () => {
+        try {
+            const res = await categoryService.getCategories();
+            setCategories(res);
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    }, []);
+
+    const addCategory = useCallback(
+        (id: string) => {
+            if (selectedCategories.includes(id)) return;
+            setSelectedCategories((prev) => [...prev, id]);
+            console.log("adding ", id);
+        },
+        [selectedCategories]
+    );
+
+    const removeCategory = useCallback(
+        (id: string) => {
+            setSelectedCategories((prev) =>
+                prev.filter((categoryId) => categoryId !== id)
+            );
+        },
+        [selectedCategories]
+    );
 
     const handleFileChange = useCallback(
         (e: any) => {
@@ -59,6 +94,9 @@ export default function PrestationForm({
         async (data: any) => {
             try {
                 if (submitCb) {
+                    if (selectedCategories.length > 0) {
+                        data.categories = selectedCategories;
+                    }
                     submitCb(data, image);
                 }
             } catch (e: any) {
@@ -66,8 +104,12 @@ export default function PrestationForm({
                 displayMsg(e.message, "error");
             }
         },
-        [image]
+        [image, selectedCategories]
     );
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     return (
         <form
@@ -153,6 +195,12 @@ export default function PrestationForm({
                     min: 1,
                     value: initData?.delay,
                 })}
+            />
+            <CategoriesSelector
+                categories={categories}
+                addCategory={addCategory}
+                removeCategory={removeCategory}
+                selectedCategories={selectedCategories}
             />
             <div className="w-full flex flex-col gap-5">
                 <Button visual="primary" type="submit" className="flex-1">
