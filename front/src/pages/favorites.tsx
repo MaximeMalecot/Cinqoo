@@ -25,7 +25,7 @@ export default function Favorites() {
         for (const favorite of favorites) {
             const res = await prestationService
                 .getPrestation(favorite.prestationId)
-                .catch((e) => null);
+                .catch(() => null);
             if (res) {
                 localPrestations.push(res);
             }

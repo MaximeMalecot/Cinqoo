@@ -60,7 +60,10 @@ export default function PasswordSection() {
                     placeholder="Current password"
                     register={registerField("oldPassword", {
                         required: true,
-                        minLength: 8,
+                        minLength: {
+                            value: 8,
+                            message: "Password must be at least 8 characters",
+                        },
                     })}
                 />
                 {errors.oldPassword && (
@@ -71,7 +74,10 @@ export default function PasswordSection() {
                     placeholder="New password"
                     register={registerField("password", {
                         required: true,
-                        minLength: 8,
+                        minLength: {
+                            value: 8,
+                            message: "Password must be at least 8 characters",
+                        },
                     })}
                 />
                 {errors.password && <p>{errors.password.message as string}</p>}
@@ -80,7 +86,10 @@ export default function PasswordSection() {
                     placeholder="Confirmation"
                     register={registerField("passwordBis", {
                         required: true,
-                        minLength: 8,
+                        minLength: {
+                            value: 8,
+                            message: "Password must be at least 8 characters",
+                        },
                     })}
                 />
                 {errors.passwordBis && (

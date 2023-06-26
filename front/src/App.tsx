@@ -11,6 +11,9 @@ const Register = lazy(() => import("./pages/register"));
 const BecomeFreelancer = lazy(() => import("./pages/become-freelancer"));
 const AccountSettings = lazy(() => import("./pages/account/settings"));
 const AccountPrestations = lazy(() => import("./pages/account/prestations"));
+const ManageFreelancerProfile = lazy(
+    () => import("./pages/account/manage-freelancer-profile")
+);
 const CreatePrestation = lazy(
     () => import("./pages/account/prestations/create")
 );
@@ -54,6 +57,12 @@ function App() {
                                         <Route
                                             path="/account/prestations"
                                             element={<AccountPrestations />}
+                                        />
+                                        <Route
+                                            path="/account/manage-freelancer-profile"
+                                            element={
+                                                <ManageFreelancerProfile />
+                                            }
                                         />
                                         <Route
                                             path="/account/requests"

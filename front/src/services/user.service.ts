@@ -140,6 +140,28 @@ class UserService {
         }
         return await res.json();
     }
+
+    async updateFreelancerProfile(description: string) {
+        const res = await fetch(`${API_ENDPOINT}user/freelancer/self`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+            body: JSON.stringify({
+                description,
+            }),
+        });
+        const status = res.status;
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to update freelancer profile");
+        }
+        return true;
+    }
 }
 
 export default new UserService();
