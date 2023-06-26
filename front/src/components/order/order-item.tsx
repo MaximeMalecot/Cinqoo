@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { BillsItemList } from "../../interfaces/bill";
 import { OrderItemList } from "../../interfaces/order";
 import Button from "../button";
@@ -30,7 +31,9 @@ export default function OrderItem({ order, bill }: OrderItemProps) {
                     <p>{new Date(order.date).toLocaleString()}</p>
                 </div>
                 {!invalidStatus.includes(order.status) && (
-                    <Button visual="primary">Manage</Button>
+                    <Link to={`/account/orders/${order._id}`}>
+                        <Button visual="primary">Manage</Button>
+                    </Link>
                 )}
             </div>
             {bill && (

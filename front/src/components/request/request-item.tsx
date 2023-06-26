@@ -28,9 +28,9 @@ export default function RequestItem({ request }: RequestItemProps) {
                 </Link>
                 <p>{new Date(request.date).toLocaleString()}</p>
             </div>
-            <Button visual="primary" className="ml-auto">
-                Manage
-            </Button>
+            <Link className="ml-auto" to={`/account/requests/${request._id}`}>
+                <Button visual="primary">Manage</Button>
+            </Link>
         </div>
     );
 }

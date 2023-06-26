@@ -17,6 +17,8 @@ const ManageFreelancerProfile = lazy(
 const CreatePrestation = lazy(
     () => import("./pages/account/prestations/create")
 );
+const ManageOrder = lazy(() => import("./pages/account/manage-order"));
+const ManageRequest = lazy(() => import("./pages/account/manage-request"));
 const EditPrestation = lazy(() => import("./pages/account/prestations/edit"));
 const Orders = lazy(() => import("./pages/account/orders"));
 const Requests = lazy(() => import("./pages/account/requests"));
@@ -65,6 +67,10 @@ function App() {
                                             }
                                         />
                                         <Route
+                                            path="/account/requests/:id"
+                                            element={<ManageRequest />}
+                                        />
+                                        <Route
                                             path="/account/requests"
                                             element={<Requests />}
                                         />
@@ -73,6 +79,10 @@ function App() {
                                 <Route
                                     path="/account/favorites"
                                     element={<Favorites />}
+                                />
+                                <Route
+                                    path="/account/orders/:id"
+                                    element={<ManageOrder />}
                                 />
                                 <Route
                                     path="/account/orders"
