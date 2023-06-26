@@ -52,4 +52,19 @@ export class AppService {
   async getSelfFavorites(userId: string) {
     return await this.favoriteModel.find({ userId: userId }).exec();
   }
+
+  async getSpecificFavorite(dto: FavoriteRequestDto) {
+    const favorite = await this.favoriteModel.findOne({
+      prestationId: dto.prestationId,
+      userId: dto.userId,
+    });
+    if (favorite) {
+      return {
+        isFavorite: true,
+      };
+    }
+    return {
+      isFavorite: false,
+    };
+  }
 }
