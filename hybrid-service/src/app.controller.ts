@@ -14,6 +14,22 @@ export class AppController {
   constructor(private appService: AppService) {}
 
   @Get()
+  @HttpCode(200)
+  @Public()
+  hello() {
+    return 'Hello World!';
+  }
+
+  @Get('/health')
+  @HttpCode(200)
+  @Public()
+  healthCheck() {
+    return {
+      status: 'UP',
+    };
+  }
+
+  @Get('/sse')
   async getSse(@Req() req, @Res() res: Response, next) {
     try {
       const userId = req.user._id;
@@ -38,15 +54,6 @@ export class AppController {
       console.error(err);
       next();
     }
-  }
-
-  @Get('/health')
-  @HttpCode(200)
-  @Public()
-  healthCheck() {
-    return {
-      status: 'UP',
-    };
   }
 
   @EventPattern('HYBRID.BROADCAST_ALL')
