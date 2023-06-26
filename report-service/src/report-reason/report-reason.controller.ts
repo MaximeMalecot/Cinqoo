@@ -3,14 +3,17 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreateReportReasonDto } from './dto/create-report-reason.dto';
 import { UpdateReportReasonDto } from './dto/update-report-reason.dto';
 import { ReportReasonService } from './report-reason.service';
+import { ReportType } from '../report/enums/report.enum';
 
 @Controller()
 export class ReportReasonController {
   constructor(private readonly reportReasonService: ReportReasonService) {}
 
   @EventPattern('REPORT_REASON.GET_ALL')
-  async getAllReportReasons() {
-    return await this.reportReasonService.getReportReasons();
+  async getAllReportReasons(@Payload() data: { type?: ReportType }) {
+    return await this.reportReasonService.getReportReasons(
+      data.type ? data.type : undefined,
+    );
   }
 
   @EventPattern('REPORT_REASON_USER.CREATE')

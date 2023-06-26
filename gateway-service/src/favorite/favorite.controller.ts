@@ -38,4 +38,16 @@ export class FavoriteController {
       userId: req.user._id,
     });
   }
+
+  @UseGuards(PrestationExistsGuard)
+  @Get(':prestationId')
+  public getFavorite(
+    @Req() req,
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.favoriteService.send('FAVORITE.GET_SPECIFIC', {
+      prestationId,
+      userId: req.user._id,
+    });
+  }
 }

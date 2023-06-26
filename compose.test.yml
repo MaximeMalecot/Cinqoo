@@ -102,9 +102,9 @@ services:
             context: ./report-service
             target: dev
         command: npm run start:dev
-        # volumes:
-        #     - ./report-service:/home/node
-        #     - /home/node/node_modules
+        volumes:
+            - ./report-service:/home/node
+            - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
@@ -132,9 +132,9 @@ services:
             context: ./order-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./order-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./order-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/order?authSource=admin&directConnection=true
         env_file: .env
@@ -188,9 +188,9 @@ services:
             context: ./message-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./message-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./message-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/message?authSource=admin&directConnection=true
         env_file: .env
@@ -203,9 +203,9 @@ services:
             context: ./hybrid-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./hybrid-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./hybrid-service:/home/node
+        #     - /home/node/node_modules
         env_file: .env
         ports:
             - "3001:3001"
