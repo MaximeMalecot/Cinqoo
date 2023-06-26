@@ -1,9 +1,9 @@
 import { API_ENDPOINT } from "../constants/endpoints";
 import authHeader from "./auth.header";
 
-class OrderService {
-    async getOrders() {
-        const res = await fetch(`${API_ENDPOINT}order/self`, {
+class RequestService {
+    async getAllRequests() {
+        const res = await fetch(`${API_ENDPOINT}order/request/all`, {
             method: "GET",
             headers: {
                 ...authHeader(),
@@ -14,13 +14,31 @@ class OrderService {
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
-            throw new Error("Failed to fetch orders");
+            throw new Error("Failed to fetch requests");
         }
 
         return await res.json();
     }
 
-    async getOrder(id: string) {
+    async getPendingRequests() {
+        const res = await fetch(`${API_ENDPOINT}order/request/pending`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch requests");
+        }
+
+        return await res.json();
+    }
+
+    async getRequest(id: string) {
         const res = await fetch(`${API_ENDPOINT}order/${id}`, {
             method: "GET",
             headers: {
@@ -39,4 +57,4 @@ class OrderService {
     }
 }
 
-export default new OrderService();
+export default new RequestService();
