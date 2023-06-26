@@ -10,11 +10,6 @@ import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('getHello')
-  getHello() {
-    return this.appService.getHello();
-  }
-
   @EventPattern('getUsers')
   getUsers() {
     return this.appService.getUsers();
