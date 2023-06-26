@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, HttpCode, Req } from '@nestjs/common';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller()
@@ -7,5 +7,14 @@ export class AppController {
   @Get()
   async getHello(@Req() req): Promise<string> {
     return 'Hello World!';
+  }
+
+  @Get('/health')
+  @HttpCode(200)
+  @Public()
+  healthCheck() {
+    return {
+      status: 'UP',
+    };
   }
 }

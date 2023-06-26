@@ -36,3 +36,19 @@ patches:
       target:
           kind: Service
           name: gateway-service
+    - patch: |-
+          - op: add
+            path: /metadata/annotations
+            value:
+              cloud.google.com/neg: '{"ingress": true}'
+      target:
+          kind: Service
+          name: hybrid-service
+    - patch: |-
+          - op: add
+            path: /metadata/annotations
+            value:
+              cloud.google.com/app-protocols: '{"my-https-port":"HTTPS","my-http-port":"HTTP"}'
+      target:
+          kind: Service
+          name: hybrid-service

@@ -19,14 +19,14 @@ spec:
         - host: api.cinqoo.fr
           http:
               paths:
-                  - pathType: Prefix
+                  - pathType: ImplementationSpecific
                     path: /
                     backend:
                         service:
                             name: gateway-service
                             port:
                                 number: 3000
-                  - pathType: Prefix
+                  - pathType: ImplementationSpecific
                     path: /conversations
                     backend:
                         service:
