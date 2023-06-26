@@ -211,7 +211,6 @@ services:
             - "3001:3001"
 
     front:
-        hostname: "${FRONT}"
         build:
             context: ./front
             target: dev

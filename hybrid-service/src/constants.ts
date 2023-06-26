@@ -1,8 +1,9 @@
+export const FRONT_URL = process.env.FRONT_URL ?? 'http://localhost:8080';
+
 export const SERVICES = {
   AUTH: process.env.AUTH_SERVICE ?? 'auth-service',
   DELIVERABLE: process.env.DELIVERABLE_SERVICE ?? 'deliverable-service',
   FAVORITE: process.env.FAVORITE_SERVICE ?? 'favorite-service',
-  FRONT: process.env.FRONT ?? 'front',
   HYBRID: process.env.HYBRID_SERVICE ?? 'hybrid-service',
   MAILER: process.env.MAILER_SERVICE ?? 'mailer-service',
   MESSAGE: process.env.MESSAGE_SERVICE ?? 'message-service',
@@ -19,7 +20,6 @@ export const PORTS = {
   AUTH: parseInt(process.env.AUTH_PORT) ?? 3000,
   DELIVERABLE: parseInt(process.env.DELIVERABLE_PORT) ?? 3000,
   FAVORITE: parseInt(process.env.FAVORITE_PORT) ?? 3000,
-  FRONT: parseInt(process.env.FRONT_PORT) ?? 8080,
   HYBRID: parseInt(process.env.HYBRID_PORT) ?? 3001,
   HYBRID_MS: parseInt(process.env.HYBRID_MS_PORT) ?? 3000,
   MESSAGE: parseInt(process.env.MESSAGE_PORT) ?? 3000,

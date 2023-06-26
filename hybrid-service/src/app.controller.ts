@@ -1,7 +1,8 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, Req, Res } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { Response } from 'express';
 import { AppService } from './app.service';
+import { Public } from './decorators/public.decorator';
 import {
   BroadcastDto,
   BroadcastOrderDto,
@@ -37,6 +38,15 @@ export class AppController {
       console.error(err);
       next();
     }
+  }
+
+  @Get('/health')
+  @HttpCode(200)
+  @Public()
+  healthCheck() {
+    return {
+      status: 'UP',
+    };
   }
 
   @EventPattern('HYBRID.BROADCAST_ALL')

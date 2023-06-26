@@ -5,6 +5,7 @@ resources:
     - deliverable-service.yaml
     - favorite-service.yaml
     - gateway-service.yaml
+    - hybrid-service.yaml
     - mailer-service.yaml
     - message-service.yaml
     - order-service.yaml
