@@ -20,14 +20,14 @@ export class AppController {
     return 'Welcome to Cinqoo REALTIME-SERVICE';
   }
 
-  @Get('conversation')
+  @Get('conversations')
   @HttpCode(200)
   @Public()
   helloConversation() {
     return 'Welcome to Cinqoo REALTIME-SERVICE';
   }
 
-  @Get('conversation/health')
+  @Get('conversations/health')
   @HttpCode(200)
   @Public()
   healthCheck() {
@@ -36,7 +36,7 @@ export class AppController {
     };
   }
 
-  @Get('conversation/sse')
+  @Get('conversations/sse')
   async getSse(@Req() req, @Res() res: Response, next) {
     try {
       const userId = req.user._id;
