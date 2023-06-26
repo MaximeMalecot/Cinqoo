@@ -132,7 +132,7 @@ class PrestationService {
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
-            throw new Error("Failed to create prestation");
+            throw new Error("Failed to update prestation");
         }
         return await res.json();
     }
@@ -149,7 +149,7 @@ class PrestationService {
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
-            throw new Error("Failed to create prestation");
+            throw new Error("Failed to enable prestation");
         }
         return await res.json();
     }
@@ -166,9 +166,29 @@ class PrestationService {
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
-            throw new Error("Failed to create prestation");
+            throw new Error("Failed to disable prestation");
         }
         return await res.json();
+    }
+
+    async deletePrestation(id: string) {
+        const res = await fetch(`${API_ENDPOINT}prestation/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+        });
+        const status = res.status;
+
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to delete prestation");
+        }
+        return true;
     }
 }
 

@@ -99,13 +99,13 @@ class UserService {
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
-            throw new Error("Failed to update password");
+            throw new Error("Failed to update account");
         }
         return true;
     }
 
     async deleteAccount(id: string) {
-        const res = await fetch(`${API_ENDPOINT}/apps/${id}`, {
+        const res = await fetch(`${API_ENDPOINT}user/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -119,7 +119,7 @@ class UserService {
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
-            throw new Error("Failed to update password");
+            throw new Error("Failed to delete account");
         }
         return true;
     }
