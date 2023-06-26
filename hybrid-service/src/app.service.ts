@@ -75,8 +75,4 @@ export class AppService {
     ];
     return orders;
   }
-
-  logOrders() {
-    console.log('orders', this.orders);
-  }
 }

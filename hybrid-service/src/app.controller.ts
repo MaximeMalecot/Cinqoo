@@ -54,9 +54,6 @@ export class AppController {
       };
       res.writeHead(200, headers);
       res.write(`data: ${JSON.stringify({ type: 'connect', userId })}\n\n`);
-      setInterval(() => {
-        this.appService.logOrders();
-      }, 5000);
     } catch (err) {
       console.error(err);
       next();
@@ -74,6 +71,7 @@ export class AppController {
 
   @EventPattern('HYBRID.BROADCAST_ORDER')
   async broadcastOrder(@Payload() data: BroadcastOrderDto) {
+    console.log('broadcastOrder', data);
     await this.appService.broadcastOrder(data.message, data.orderId);
     return {
       event: 'message_printed',
