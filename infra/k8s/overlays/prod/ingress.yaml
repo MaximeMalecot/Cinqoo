@@ -10,6 +10,11 @@ metadata:
         kubernetes.io/ingress.allow-http: "false"
 
 spec:
+    defaultBackend:
+        service:
+            name: gateway-service
+            port:
+                number: 3000
     rules:
         - http:
               paths:

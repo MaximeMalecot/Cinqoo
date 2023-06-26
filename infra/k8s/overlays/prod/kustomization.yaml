@@ -8,6 +8,7 @@ resources:
     - ../../base
     - ingress.yaml
     - cert.yaml
+    - backend.yaml
 
 configMapGenerator:
     - name: variables
@@ -49,6 +50,23 @@ patches:
             path: /metadata/annotations
             value:
               cloud.google.com/app-protocols: '{"my-https-port":"HTTPS","my-http-port":"HTTP"}'
+      target:
+          kind: Service
+          name: hybrid-service
+    - patch: |-
+          - op: add
+            path: /metadata/annotations
+            value:
+              cloud.google.com/backend-config: '{"ports": {
+                "3000": "sse-backendconfig",
+                "3001": "sse-backendconfig",
+                "443": "sse-backendconfig",
+                "80": "sse-backendconfig",
+                "default": "sse-backendconfig",
+                "my-ms-port": "sse-backendconfig",
+                "my-https-port": "sse-backendconfig",
+                "my-http-port": "sse-backendconfig"
+              }}'
       target:
           kind: Service
           name: hybrid-service
