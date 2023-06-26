@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import Button from "../../components/button";
 import { useAuthContext } from "../../contexts/auth.context";
 import { PrestationItemList } from "../../interfaces/prestation";
 import prestationService from "../../services/prestation.service";
@@ -78,11 +79,30 @@ export default function Prestation() {
                     <div className="divider my-0"></div>
                     <FreelancerPart freelancerId={prestation.owner} />
                     <div className="divider my-0"></div>
-                    <div>
+                    <div className="flex flex-col gap-2">
                         <h3 className="text-xl font-bold">Categories</h3>
                         {prestation?.categories &&
                         prestation.categories.length > 0 ? (
-                            <></>
+                            <div className="flex gap-5 flex-wrap">
+                                {prestation.categories.map(
+                                    (category, index) => (
+                                        <Link
+                                            to={
+                                                "/prestations?category=" +
+                                                category._id
+                                            }
+                                            key={index}
+                                        >
+                                            <Button
+                                                visual="bordered-primary"
+                                                key={index}
+                                            >
+                                                {category.name}
+                                            </Button>
+                                        </Link>
+                                    )
+                                )}
+                            </div>
                         ) : (
                             <p className="text-sm">
                                 This prestation belongs to no category

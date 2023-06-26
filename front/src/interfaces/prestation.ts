@@ -1,3 +1,5 @@
+import { Category } from "./category";
+
 export interface PrestationItemList {
     image: string;
     name: string;
@@ -9,7 +11,7 @@ export interface PrestationItemList {
     createdAt: string;
     isActive: boolean;
     owner: string;
-    categories?: string[];
+    categories?: Category[];
 }
 
 export interface CreatePrestationForm {
