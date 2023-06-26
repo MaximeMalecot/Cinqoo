@@ -210,5 +210,18 @@ services:
         ports:
             - "8080:8080"
 
+    pwa:
+        hostname: "${PWA}"
+        build:
+            context: ./pwa
+            target: dev
+        command: npm run dev
+        # volumes:
+        #     - ./front:/usr/src/app
+        #     - /usr/src/app/node_modules
+        env_file: .env
+        ports:
+            - "8081:8081"
+
 volumes:
     mongo-db:
