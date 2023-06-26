@@ -102,9 +102,9 @@ services:
             context: ./report-service
             target: dev
         command: npm run start:dev
-        # volumes:
-        #     - ./report-service:/home/node
-        #     - /home/node/node_modules
+        volumes:
+            - ./report-service:/home/node
+            - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
@@ -162,9 +162,9 @@ services:
             context: ./favorite-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./favorite-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./favorite-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/favorite?authSource=admin&directConnection=true
         env_file: .env
