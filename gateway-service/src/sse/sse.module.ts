@@ -15,6 +15,14 @@ import { SseService } from './sse.service';
           port: PORTS.ORDER,
         },
       },
+      {
+        name: 'HYBRID_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.HYBRID,
+          port: PORTS.HYBRID_MS,
+        },
+      },
     ]),
   ],
   controllers: [SseController],

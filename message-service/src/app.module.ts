@@ -26,6 +26,14 @@ import { Message, MessageSchema } from './schemas/message.schema';
           port: PORTS.ORDER,
         },
       },
+      {
+        name: 'HYBRID_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.HYBRID,
+          port: PORTS.HYBRID_MS,
+        },
+      },
     ]),
   ],
   controllers: [AppController],

@@ -197,6 +197,19 @@ services:
         depends_on:
             - mongo-db
 
+    hybrid-service:
+        hostname: "${HYBRID_SERVICE}"
+        build:
+            context: ./hybrid-service
+            target: dev
+        command: npm run start:dev
+        volumes:
+            - ./hybrid-service:/home/node
+            - /home/node/node_modules
+        env_file: .env
+        ports:
+            - "3001:3001"
+
     front:
         hostname: "${FRONT}"
         build:

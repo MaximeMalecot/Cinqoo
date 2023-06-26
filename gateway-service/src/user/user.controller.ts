@@ -30,14 +30,8 @@ export class UserController {
   ) {}
 
   @Get()
-  public getUserHello(@Req() req) {
-    return this.userService.send('getHello', {
-      ...req['clientData'],
-    });
-  }
-
-  @Get('test')
-  public getUserTest() {
+  @Roles(ROLE.ADMIN)
+  public getUsers() {
     return this.userService.send('getUsers', {});
   }
 

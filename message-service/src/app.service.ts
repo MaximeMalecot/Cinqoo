@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { BroadcastOrderDto } from './dto/broadcast.dto';
 import { SendMessageDto } from './dto/send-message.dto';
 import { Message } from './schemas/message.schema';
 
@@ -10,6 +11,7 @@ import { Message } from './schemas/message.schema';
 export class AppService {
   constructor(
     @Inject('ORDER_SERVICE') private orderService: ClientProxy,
+    @Inject('HYBRID_SERVICE') private hybridService: ClientProxy,
     @InjectModel(Message.name) private readonly messageModel: Model<Message>,
   ) {}
 
@@ -41,8 +43,14 @@ export class AppService {
         statusCode: 404,
       });
     }
-    const message = new this.messageModel(data);
+    const message = await new this.messageModel(data).save();
+    await firstValueFrom(
+      this.hybridService.send('HYBRID.BROADCAST_ORDER', {
+        message: { type: 'new_message', data: message },
+        orderId,
+      } as BroadcastOrderDto),
+    );
     // REALTIME HERE
-    return await message.save();
+    return message;
   }
 }
