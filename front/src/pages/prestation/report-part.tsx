@@ -12,7 +12,7 @@ export default function ReportPart({ prestationId }: ReportPartProps) {
     const { isConnected } = useAuthContext();
     const [showModal, setShowModal] = useState(false);
 
-    const report = useCallback(async () => {
+    const openReportModal = useCallback(async () => {
         try {
             if (!isConnected) {
                 throw new Error("You must be connected to report a prestation");
@@ -26,13 +26,17 @@ export default function ReportPart({ prestationId }: ReportPartProps) {
 
     return (
         <>
-            <Button onClick={report} visual={"danger"} className="w-full">
+            <Button
+                onClick={openReportModal}
+                visual={"danger"}
+                className="w-full"
+            >
                 Report
             </Button>
             <PromptReportModal
+                prestationId={prestationId}
                 isOpen={showModal}
                 setIsOpen={setShowModal}
-                confirm={report}
             />
         </>
     );

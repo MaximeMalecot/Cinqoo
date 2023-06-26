@@ -7,6 +7,8 @@ import { displayMsg } from "../../utils/toast";
 import FavoritePart from "./favorite-part";
 import FreelancerPart from "./freelancer-part";
 import OrderBox from "./order-box";
+import RatingPart from "./rating-part";
+import Recommandations from "./recommandations";
 import ReportPart from "./report-part";
 
 export default function Prestation() {
@@ -42,7 +44,7 @@ export default function Prestation() {
         );
 
     return (
-        <div className="flex md:flex-col">
+        <div className="flex flex-col">
             <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col md:flex-row gap-5 relative">
                 <div className="w-full md:w-2/3 flex flex-col gap-5">
                     <div className="flex gap-1">
@@ -88,9 +90,7 @@ export default function Prestation() {
                         )}
                     </div>
                     <div className="divider my-0"></div>
-                    <div>
-                        <h3 className="text-xl font-bold">Rating</h3>
-                    </div>
+                    <RatingPart prestationId={prestation._id} />
                     <div className="divider my-0"></div>
                 </div>
                 <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
@@ -107,6 +107,7 @@ export default function Prestation() {
                     <ReportPart prestationId={prestation._id} />
                 </div>
             </section>
+            <Recommandations />
         </div>
     );
 }

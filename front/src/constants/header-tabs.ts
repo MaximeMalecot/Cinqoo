@@ -19,6 +19,10 @@ export const USER_TABS = [
         path: "/account/settings",
     },
     {
+        name: "Favorites",
+        path: "/account/favorites",
+    },
+    {
         name: "orders",
         path: "/account/orders",
     },
