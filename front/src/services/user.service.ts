@@ -123,6 +123,23 @@ class UserService {
         }
         return true;
     }
+
+    async getFreelancerProfile(id: string) {
+        const res = await fetch(`${API_ENDPOINT}user/freelancer/${id}`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to delete account");
+        }
+        return await res.json();
+    }
 }
 
 export default new UserService();

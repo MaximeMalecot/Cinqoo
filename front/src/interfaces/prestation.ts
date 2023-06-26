@@ -9,6 +9,7 @@ export interface PrestationItemList {
     createdAt: string;
     isActive: boolean;
     owner: string;
+    categories?: string[];
 }
 
 export interface CreatePrestationForm {

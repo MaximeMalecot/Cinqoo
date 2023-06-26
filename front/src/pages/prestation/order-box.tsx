@@ -66,8 +66,8 @@ export default function OrderBox({ prestation }: OrderBoxProps) {
                             <path
                                 d="M9.999 9L14 5M14 5L9.999 1M14 5L1 5"
                                 stroke="white"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                         </svg>
                     )}
@@ -86,8 +86,8 @@ export default function OrderBox({ prestation }: OrderBoxProps) {
                             <path
                                 d="M9.999 9L14 5M14 5L9.999 1M14 5L1 5"
                                 stroke="black"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             />
                         </svg>
                     </Button>

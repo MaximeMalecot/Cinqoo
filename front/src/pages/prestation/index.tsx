@@ -5,6 +5,7 @@ import { PrestationItemList } from "../../interfaces/prestation";
 import prestationService from "../../services/prestation.service";
 import { displayMsg } from "../../utils/toast";
 import FavoritePart from "./favorite-part";
+import FreelancerPart from "./freelancer-part";
 import OrderBox from "./order-box";
 import ReportPart from "./report-part";
 
@@ -73,16 +74,24 @@ export default function Prestation() {
                         </p>
                     </div>
                     <div className="divider my-0"></div>
+                    <FreelancerPart freelancerId={prestation.owner} />
+                    <div className="divider my-0"></div>
                     <div>
-                        <h3 className="text-xl font-bold">
-                            About the freelancer
-                        </h3>
-                        <p>{prestation.owner}</p>
+                        <h3 className="text-xl font-bold">Categories</h3>
+                        {prestation?.categories &&
+                        prestation.categories.length > 0 ? (
+                            <></>
+                        ) : (
+                            <p className="text-sm">
+                                This prestation belongs to no category
+                            </p>
+                        )}
                     </div>
                     <div className="divider my-0"></div>
                     <div>
                         <h3 className="text-xl font-bold">Rating</h3>
                     </div>
+                    <div className="divider my-0"></div>
                 </div>
                 <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
                     <OrderBox prestation={prestation} />

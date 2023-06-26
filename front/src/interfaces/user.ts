@@ -12,3 +12,12 @@ export interface AccountData {
     stripeAccountId: string;
     roles: string[];
 }
+
+export interface FreelancerData {
+    _id: string;
+    username: string;
+    email: string;
+    freelancerProfile: {
+        description?: string;
+    };
+}
