@@ -44,12 +44,14 @@ export class AppService {
       });
     }
     const message = await new this.messageModel(data).save();
+    console.log('sending message to hybrid service');
     await firstValueFrom(
-      this.hybridService.send('HYBRID.BROADCAST_ORDER', {
+      this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
         message: { type: 'new_message', data: message },
         orderId,
       } as BroadcastOrderDto),
     );
+    console.log('message sent to hybrid service');
     // REALTIME HERE
     return message;
   }
