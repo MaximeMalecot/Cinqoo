@@ -9,18 +9,25 @@ import {
   BroadcastUserDto,
 } from './dto/broadcast.dto';
 
-@Controller('conversations')
+@Controller()
 export class AppController {
   constructor(private appService: AppService) {}
 
-  @Get()
+  @Get('')
   @HttpCode(200)
   @Public()
   hello() {
     return 'Welcome to Cinqoo REALTIME-SERVICE';
   }
 
-  @Get('/health')
+  @Get('conversation')
+  @HttpCode(200)
+  @Public()
+  helloConversation() {
+    return 'Welcome to Cinqoo REALTIME-SERVICE';
+  }
+
+  @Get('conversation/health')
   @HttpCode(200)
   @Public()
   healthCheck() {
@@ -29,7 +36,7 @@ export class AppController {
     };
   }
 
-  @Get('/sse')
+  @Get('conversation/sse')
   async getSse(@Req() req, @Res() res: Response, next) {
     try {
       const userId = req.user._id;
