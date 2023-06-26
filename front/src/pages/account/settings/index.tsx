@@ -18,7 +18,6 @@ export default function Account() {
     const fetchUser = useCallback(async () => {
         try {
             const user = await userService.getSelf();
-            console.log(user);
             setAccount(user);
         } catch (e: any) {
             console.log(e.message);
@@ -35,7 +34,7 @@ export default function Account() {
             <div className="flex flex-col md:flex-row justify-between">
                 <h1 className="text-2xl">Account settings</h1>
             </div>
-            <AccountSection account={account} />
+            <AccountSection account={account} reload={fetchUser} />
             <div className="divider my-0"></div>
             <PasswordSection />
             <div className="divider my-0"></div>

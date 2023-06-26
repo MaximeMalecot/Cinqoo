@@ -29,7 +29,7 @@ export default function AccountForm({ initData, onSubmit }: AccountFormProps) {
             />
             <Input
                 placeholder="Name"
-                register={registerField("name", {
+                register={registerField("username", {
                     required: true,
                     value: initData.username,
                 })}

@@ -78,6 +78,32 @@ class UserService {
         return true;
     }
 
+    async updateUser(
+        userId: string,
+        { email, username }: { email?: string; username?: string }
+    ): Promise<boolean> {
+        const res = await fetch(`${API_ENDPOINT}user/${userId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+            body: JSON.stringify({
+                email,
+                username,
+            }),
+        });
+        const status = res.status;
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to update password");
+        }
+        return true;
+    }
+
     async deleteAccount(id: string) {
         const res = await fetch(`${API_ENDPOINT}/apps/${id}`, {
             method: "DELETE",
