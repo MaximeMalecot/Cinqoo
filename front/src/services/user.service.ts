@@ -56,7 +56,7 @@ class UserService {
         oldPassword: string,
         password: string
     ): Promise<boolean> {
-        const res = await fetch(`${API_ENDPOINT}user/${userId}`, {
+        const res = await fetch(`${API_ENDPOINT}user/pwd/${userId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
