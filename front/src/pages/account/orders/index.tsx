@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import OrderItem from "../../../components/order/order-item";
 import { BillsItemList } from "../../../interfaces/bill";
-import { OrderItemList } from "../../../interfaces/order";
+import { Order } from "../../../interfaces/order";
 import billService from "../../../services/bill.service";
 import orderService from "../../../services/order.service";
 import { displayMsg } from "../../../utils/toast";
 
 export default function Orders() {
-    const [orders, setOrders] = useState<OrderItemList[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [bills, setBills] = useState<BillsItemList[]>([]);
 
     const fetchOrders = useCallback(async () => {

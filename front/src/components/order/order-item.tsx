@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { BillsItemList } from "../../interfaces/bill";
-import { OrderItemList } from "../../interfaces/order";
+import { Order } from "../../interfaces/order";
 import Button from "../button";
 
 interface OrderItemProps {
-    order: OrderItemList;
+    order: Order;
     bill?: BillsItemList;
 }
 

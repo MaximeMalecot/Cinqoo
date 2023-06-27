@@ -1,6 +1,6 @@
 import { PrestationItemList } from "./prestation";
 
-export interface OrderItemList {
+export interface Order {
     _id: string;
     date: Date;
     status: string;
@@ -9,8 +9,5 @@ export interface OrderItemList {
     currentRevisionNb: number;
     applicant: string;
     billId: string;
-}
-
-export interface SpecificOrder extends OrderItemList {
     prestation: PrestationItemList;
 }
