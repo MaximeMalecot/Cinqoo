@@ -82,7 +82,7 @@ export default function ManageOrder() {
                                 display: activeTab === 0 ? "block" : "none",
                             }}
                         >
-                            <Details order={order} />
+                            <Details reload={fetchOrder} order={order} />
                         </div>
                         <div
                             style={{
@@ -93,7 +93,7 @@ export default function ManageOrder() {
                         </div>
                     </div>
                     <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
-                        <PrestationBox order={order} />
+                        <PrestationBox reload={fetchOrder} order={order} />
                     </div>
                 </div>
             )}

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import Button from "../../../components/button";
+import { ORDER_STATUS } from "../../../constants/status";
 import { Order } from "../../../interfaces/order";
 import requestService from "../../../services/request.service";
 import { displayMsg } from "../../../utils/toast";
@@ -13,10 +13,9 @@ interface OrderBoxProps {
 export default function PrestationBox({ order, reload }: OrderBoxProps) {
     const [loading, setLoading] = useState(false);
 
-    const handleRevision = async () => {
+    const handleAccept = async () => {
         try {
-            setLoading(true);
-            await requestService.startRevision(order._id);
+            await requestService.acceptRequest(order._id);
             reload();
         } catch (e: any) {
             console.log(e);
@@ -26,10 +25,21 @@ export default function PrestationBox({ order, reload }: OrderBoxProps) {
         }
     };
 
-    const handleFinalization = async () => {
+    const handleRefuse = async () => {
         try {
-            setLoading(true);
-            await requestService.confirmFinalizationRequest(order._id);
+            await requestService.refuseRequest(order._id);
+            reload();
+        } catch (e: any) {
+            console.log(e);
+            displayMsg(e.message, "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleMarkAsTerminated = async () => {
+        try {
+            await requestService.terminateRequest(order._id);
             reload();
         } catch (e: any) {
             console.log(e);
@@ -61,35 +71,30 @@ export default function PrestationBox({ order, reload }: OrderBoxProps) {
                 </div>
             </div>
             <div className="divider my-0" />
-            {order.status === "TERMINATED" && (
-                <Button visual="primary" onClick={handleFinalization}>
-                    {loading && (
-                        <span className="loading loading-spinner"></span>
-                    )}
-                    Mark as completed
-                </Button>
-            )}
-            {order.status === "TERMINATED" &&
-                order.currentRevisionNb < order.serviceRevisionNb && (
-                    <Button visual="primary" onClick={handleRevision}>
+            {order.status === ORDER_STATUS.PENDING && (
+                <>
+                    <Button visual="primary" onClick={handleAccept}>
                         {loading && (
                             <span className="loading loading-spinner"></span>
                         )}
-                        Start revision
+                        ACCEPT
                     </Button>
-                )}
-            <Link
-                className="w-full"
-                to={`/prestations/${order.prestation._id}`}
-            >
-                <Button
-                    disabled={!order.prestation.isActive}
-                    visual="primary"
-                    className="w-full"
-                >
-                    Order again
+                    <Button visual="danger" onClick={handleRefuse}>
+                        {loading && (
+                            <span className="loading loading-spinner"></span>
+                        )}{" "}
+                        REFUSE
+                    </Button>
+                </>
+            )}
+            {order.status === ORDER_STATUS.IN_PROGRESS && (
+                <Button visual="primary" onClick={handleMarkAsTerminated}>
+                    {loading && (
+                        <span className="loading loading-spinner"></span>
+                    )}
+                    Mark as terminated
                 </Button>
-            </Link>
+            )}
         </div>
     );
 }

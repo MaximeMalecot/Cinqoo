@@ -3,10 +3,9 @@ import { Order } from "../../../interfaces/order";
 
 interface DetailsProps {
     order: Order;
-    reload: () => void;
 }
 
-export default function Details({ order, reload }: DetailsProps) {
+export default function Details({ order }: DetailsProps) {
     const step = (() => {
         switch (order.status) {
             case ORDER_STATUS.REFUSED:
@@ -42,10 +41,10 @@ export default function Details({ order, reload }: DetailsProps) {
                         : "In progress"}
                 </li>
                 <li className={`step ${step >= 2 ? "step-primary" : ""}`}>
-                    Terminated by the freelancer
+                    Terminated by you
                 </li>
                 <li className={`step ${step >= 3 ? "step-primary" : ""}`}>
-                    Done
+                    Marked as done by the client
                 </li>
             </ul>
         </section>
