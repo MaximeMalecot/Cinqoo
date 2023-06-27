@@ -90,9 +90,18 @@ export default function ManageOrder() {
                                 display: activeTab === 1 ? "block" : "none",
                             }}
                         >
-                            <Deliveries order={order} />{" "}
+                            <Deliveries order={order} />
                         </div>
-                        {activeTab === 2 && <OrderConversation order={order} />}
+                        <div
+                            style={{
+                                display: activeTab === 2 ? "block" : "none",
+                            }}
+                        >
+                            <OrderConversation
+                                isVisible={activeTab === 2}
+                                order={order}
+                            />
+                        </div>
                     </div>
                     <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
                         <PrestationBox reload={fetchOrder} order={order} />
