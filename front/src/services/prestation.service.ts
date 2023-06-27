@@ -1,5 +1,8 @@
 import { API_ENDPOINT } from "../constants/endpoints";
-import { CreatePrestationForm } from "../interfaces/prestation";
+import {
+    CreatePrestationForm,
+    PrestationFilters,
+} from "../interfaces/prestation";
 import authHeader from "./auth.header";
 
 class PrestationService {
@@ -36,7 +39,33 @@ class PrestationService {
         return await res.json();
     }
 
-    async searchPrestation() {}
+    async searchPrestations(filters: PrestationFilters) {
+        const queryFilters = Object.entries(filters).reduce(
+            (acc: any, [key, value]) => {
+                if (value) {
+                    if (key === "categories") {
+                        acc[`categories[]`] = value;
+                    } else {
+                        acc[key] = value;
+                    }
+                }
+                return acc;
+            },
+            {} as any
+        );
+        const query = new URLSearchParams(queryFilters).toString();
+        const res = await fetch(`${API_ENDPOINT}prestation/search?${query}`, {
+            method: "GET",
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to search prestations");
+        }
+        return await res.json();
+    }
 
     async getSelfPrestations() {
         const res = await fetch(`${API_ENDPOINT}prestation/self`, {

@@ -88,7 +88,7 @@ export default function Prestation() {
                                     (category, index) => (
                                         <Link
                                             to={
-                                                "/prestations?category=" +
+                                                "/prestations?categories=" +
                                                 category._id
                                             }
                                             key={index}
