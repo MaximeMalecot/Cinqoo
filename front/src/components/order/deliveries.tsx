@@ -62,8 +62,8 @@ export default function Deliveries({
                 </p>
             ) : (
                 <div className="flex flex-col gap-5 py-5">
-                    {deliverables.map((deliverable) => (
-                        <Deliverable deliverable={deliverable} />
+                    {deliverables.map((deliverable, index) => (
+                        <Deliverable key={index} deliverable={deliverable} />
                     ))}
                 </div>
             )}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import OrderConversation from "../../../components/messaging/order-conversation";
 import Deliveries from "../../../components/order/deliveries";
 import { Order } from "../../../interfaces/order";
 import orderService from "../../../services/order.service";
@@ -91,6 +92,7 @@ export default function ManageOrder() {
                         >
                             <Deliveries order={order} />{" "}
                         </div>
+                        {activeTab === 2 && <OrderConversation order={order} />}
                     </div>
                     <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
                         <PrestationBox reload={fetchOrder} order={order} />

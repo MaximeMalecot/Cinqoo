@@ -80,12 +80,16 @@ export default function PrestationBox({ order, reload }: OrderBoxProps) {
                 )}
             <Link
                 className="w-full"
-                to={`/prestations/${order.prestation._id}`}
+                to={
+                    order.prestation.isActive
+                        ? `/prestations/${order.prestation._id}`
+                        : "#"
+                }
             >
                 <Button
                     disabled={!order.prestation.isActive}
                     visual="primary"
-                    className="w-full"
+                    className={`w-full`}
                 >
                     Order again
                 </Button>
