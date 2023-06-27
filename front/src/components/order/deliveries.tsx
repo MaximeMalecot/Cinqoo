@@ -19,7 +19,7 @@ export default function Deliveries({
     const [loading, setLoading] = useState(false);
     const [deliverables, setDeliverables] = useState<DeliverableI[]>([]);
     const canPublish = (() => {
-        if (isFreelancer) return false;
+        if (!isFreelancer) return false;
         if (order.status === ORDER_STATUS.IN_PROGRESS) return true;
         return false;
     })();
@@ -37,6 +37,16 @@ export default function Deliveries({
         }
     };
 
+    const createDeliverable = async (data: any) => {
+        const { name, file } = data;
+        const res = await delivrableService.publishDeliverable(
+            order._id,
+            name,
+            file
+        );
+        setDeliverables([...deliverables, res]);
+    };
+
     useEffect(() => {
         getDeliverables();
     }, []);
@@ -51,13 +61,13 @@ export default function Deliveries({
                         : "The freelancer hasn't posted anything yet"}
                 </p>
             ) : (
-                <div>
+                <div className="flex flex-col gap-5 py-5">
                     {deliverables.map((deliverable) => (
                         <Deliverable deliverable={deliverable} />
                     ))}
                 </div>
             )}
-            {canPublish && <PublishDeliverable publish={getDeliverables} />}
+            {canPublish && <PublishDeliverable publish={createDeliverable} />}
         </section>
     );
 }
