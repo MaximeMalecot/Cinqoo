@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, EventPattern } from '@nestjs/microservices';
+import { ClientProxy, EventPattern, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
@@ -53,25 +53,35 @@ export class AppService {
   }
 
   async getSelfFavorites(userId: string) {
-    const favorites = await this.favoriteModel.find({ userId: userId }).exec();
-    const favoritesWithPrestation = await Promise.all(
-      favorites.map(async (favorite) => {
-        const prestation = await firstValueFrom(
-          this.prestationService.send(
-            'PRESTATION.GET_ONE',
-            favorite.prestationId,
-          ),
-        );
-        if (prestation.isActive === false) {
-          return;
-        }
-        return {
-          ...favorite.toObject(),
-          prestation,
-        };
-      }),
-    );
-    return favoritesWithPrestation.filter((favorite) => favorite);
+    try {
+      const favorites = await this.favoriteModel.find({ userId: userId });
+      const favoritesWithPrestation = await Promise.all(
+        favorites.map(async (favorite) => {
+          const prestation = await firstValueFrom(
+            this.prestationService.send(
+              'PRESTATION.GET_ONE',
+              favorite.prestationId,
+            ),
+          ).catch(() => null);
+
+          if (!prestation) {
+            return;
+          }
+
+          if (prestation.isActive === false) {
+            return;
+          }
+          return {
+            ...favorite.toObject(),
+            prestation,
+          };
+        }),
+      );
+      return favoritesWithPrestation.filter((favorite) => favorite);
+    } catch (e: any) {
+      console.log(e.message);
+      throw new RpcException({ statusCode: 500, message: e.message });
+    }
   }
 
   async getSpecificFavorite(dto: FavoriteRequestDto) {
