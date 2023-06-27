@@ -21,12 +21,15 @@ export default function RequestItem({ request }: RequestItemProps) {
                 <img src={request.prestation.image} alt="" />
             </div>
             <div className="flex flex-col gap-3">
-                <p className="text-xl">
-                    Request no. <span className="font-bold">{request._id}</span>
-                    <div className="badge badge-primary badge-outline ml-3">
+                <div className="flex gap-3 items-center">
+                    <p className="text-xl">
+                        Request no.{" "}
+                        <span className="font-bold">{request._id}</span>
+                    </p>
+                    <div className="badge badge-primary badge-outline">
                         {request.status}
                     </div>
-                </p>
+                </div>
                 <Link
                     target="_blank"
                     to={`/prestations/${request.prestation._id}`}

@@ -15,7 +15,7 @@ export default function BecomeFreelancer() {
     const redirectToStripe = useCallback(async () => {
         try {
             setLoading(true);
-            const { url } = await userService.getStripeLink();
+            const { url } = await userService.getStripeLinkToBecomeFreelancer();
             window.location = url;
         } catch (e: any) {
             console.log(e.message);

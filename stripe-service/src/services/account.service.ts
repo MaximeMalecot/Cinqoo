@@ -29,4 +29,16 @@ export class AccountService {
       });
     }
   }
+
+  async getAccountLink(accountId: string) {
+    try {
+      const loginLink = await this.stripe.accounts.createLoginLink(accountId);
+      return loginLink;
+    } catch (e: any) {
+      throw new RpcException({
+        message: 'Error while getting account link',
+        statusCode: 500,
+      });
+    }
+  }
 }

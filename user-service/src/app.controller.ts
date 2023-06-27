@@ -64,6 +64,11 @@ export class AppController {
     return this.appService.becomeFreelancer(userId);
   }
 
+  @EventPattern('USER.GET_STRIPE_LINK')
+  async getStripeLink(userId: string) {
+    return this.appService.getStripeLink(userId);
+  }
+
   @EventPattern('USER.GET_FREELANCER_PROFILE')
   async getFreelancerProfile(userId: string) {
     return this.appService.getFreelancerProfile(userId);

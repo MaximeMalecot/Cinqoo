@@ -40,6 +40,7 @@ export default function CategoriesSelector({
 
     return (
         <div className="border border-md border-slate-300 rounded-md p-2 flex flex-col gap-2">
+            <h3>Categories</h3>
             <div className="w-full flex">
                 <select
                     onChange={(e) => setCurrentSelected(e.target.value)}

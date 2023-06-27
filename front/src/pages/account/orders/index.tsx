@@ -40,7 +40,7 @@ export default function Orders() {
                 <div>
                     <h1 className="text-2xl">Orders history</h1>
                 </div>
-                {orders.length < 0 ? (
+                {orders.length === 0 ? (
                     <p>You have no order</p>
                 ) : (
                     <div className="flex flex-col gap-2">
