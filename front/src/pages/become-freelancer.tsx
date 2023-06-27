@@ -43,7 +43,7 @@ export default function BecomeFreelancer() {
                         </p>
                         <div className="divider p-0 m-0"></div>
                         <Link
-                            to={"/account/freelancer"}
+                            to={"/account/manage-freelancer-profile"}
                             className="flex-1 btn btn-primary"
                         >
                             Manage your freelancer profile

@@ -46,15 +46,19 @@ export default function Requests() {
                 <div>
                     <h1 className="text-2xl">Requests</h1>
                 </div>
-                <div className="tabs">
+                <div className="tabs border border-slate-300 border-b-1 border-t-0 border-x-0">
                     <a
-                        className={`tab ${tab === 0 ? "tab-active" : ""}`}
+                        className={`text-xl tab ${
+                            tab === 0 ? "tab-active text-primary" : ""
+                        }`}
                         onClick={() => setTab(0)}
                     >
                         All
                     </a>
                     <a
-                        className={`tab ${tab === 1 ? "tab-active" : ""}`}
+                        className={`text-xl tab ${
+                            tab === 1 ? "tab-active text-primary" : ""
+                        }`}
                         onClick={() => setTab(1)}
                     >
                         Pending
@@ -64,9 +68,13 @@ export default function Requests() {
                     <p>You have no requests</p>
                 ) : (
                     <div className="flex flex-col gap-2">
-                        {requests.map((r, idx) => (
-                            <RequestItem request={r} key={idx} />
-                        ))}
+                        {requests.length > 0 ? (
+                            requests.map((r, idx) => (
+                                <RequestItem request={r} key={idx} />
+                            ))
+                        ) : (
+                            <p>There is no request</p>
+                        )}
                     </div>
                 )}
             </div>
