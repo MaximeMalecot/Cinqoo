@@ -41,31 +41,27 @@ export default function CategoriesSelector({
     return (
         <div className="border border-md border-slate-300 rounded-md p-2 flex flex-col gap-2">
             <div className="w-full flex">
-                {categories.length > 0 && (
-                    <>
-                        <select
-                            onChange={(e) => setCurrentSelected(e.target.value)}
-                            className="flex-1 border border-1 border-slate-300 !outline-none p-2 rounded-md capitalize"
-                        >
-                            {categories.length === 0 ? (
-                                <option disabled>No category available</option>
-                            ) : (
-                                categories.map((r, index) => (
-                                    <option key={index} value={r._id}>
-                                        {r.name}
-                                    </option>
-                                ))
-                            )}
-                        </select>
-                        <Button
-                            visual="secondary"
-                            className="ml-2"
-                            onClick={handleAddCategory}
-                        >
-                            Add
-                        </Button>
-                    </>
-                )}
+                <select
+                    onChange={(e) => setCurrentSelected(e.target.value)}
+                    className="flex-1 border border-1 border-slate-300 !outline-none p-2 rounded-md capitalize"
+                >
+                    {categories.length === 0 ? (
+                        <option disabled>No category available</option>
+                    ) : (
+                        categories.map((r, index) => (
+                            <option key={index} value={r._id}>
+                                {r.name}
+                            </option>
+                        ))
+                    )}
+                </select>
+                <Button
+                    visual="secondary"
+                    className="ml-2"
+                    onClick={handleAddCategory}
+                >
+                    Add
+                </Button>
             </div>
             {selectedCategories.length > 0 && (
                 <div className="flex flex-wrap">

@@ -43,10 +43,9 @@ class PrestationService {
         const queryFilters = Object.entries(filters).reduce(
             (acc: any, [key, value]) => {
                 if (value) {
-                    if (Array.isArray(value) && value.length > 0) {
-                        acc[key] = value;
-                    }
-                    if (!Array.isArray(value)) {
+                    if (key === "categories") {
+                        acc[`categories[]`] = value;
+                    } else {
                         acc[key] = value;
                     }
                 }
@@ -55,7 +54,6 @@ class PrestationService {
             {} as any
         );
         const query = new URLSearchParams(queryFilters).toString();
-        console.log(query);
         const res = await fetch(`${API_ENDPOINT}prestation/search?${query}`, {
             method: "GET",
         });

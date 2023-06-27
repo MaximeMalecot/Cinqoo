@@ -31,5 +31,5 @@ export interface PrestationFilters {
     query?: string | null;
     price_min?: number | null;
     price_max?: number | null;
-    categories?: string[] | null;
+    categories?: string | null;
 }

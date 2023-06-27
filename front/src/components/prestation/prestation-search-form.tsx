@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
+import { Category } from "../../interfaces/category";
 import { PrestationFilters } from "../../interfaces/prestation";
 import Button from "../button";
 import { Input } from "../input";
@@ -7,11 +8,13 @@ import { Input } from "../input";
 interface PrestationSearchFormProps {
     initData?: PrestationFilters;
     handleSearch: (data: any) => void;
+    categories?: Category[];
 }
 
 export default function PrestationSearchForm({
     initData,
     handleSearch,
+    categories,
 }: PrestationSearchFormProps) {
     const {
         register: registerField,
@@ -20,6 +23,9 @@ export default function PrestationSearchForm({
     } = useForm();
 
     const onSubmit = useCallback(async (data: PrestationFilters) => {
+        if (data.categories === "") {
+            delete data.categories;
+        }
         handleSearch(data);
     }, []);
 
@@ -60,6 +66,31 @@ export default function PrestationSearchForm({
                     },
                 })}
             />
+            <select
+                {...registerField("categories", {
+                    value: initData?.categories,
+                    required: false,
+                })}
+                defaultValue={initData?.categories ?? ""}
+                className="select w-full max-w-xs border border-1 border-slate-300 !outline-none p-2 rounded-md"
+            >
+                {!categories || categories.length === 0 ? (
+                    <option disabled>No category available</option>
+                ) : (
+                    <>
+                        <option value="">All categories</option>
+                        {categories.map((r, index) => (
+                            <option
+                                key={index}
+                                value={r._id}
+                                selected={initData?.categories === r._id}
+                            >
+                                {r.name}
+                            </option>
+                        ))}
+                    </>
+                )}
+            </select>
             <Button type="submit" visual="bordered-primary">
                 Search
             </Button>

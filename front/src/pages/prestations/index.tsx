@@ -1,21 +1,36 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ViewPrestationCard from "../../components/prestation/prestation-card/view-prestation-card";
 import PrestationSearchForm from "../../components/prestation/prestation-search-form";
+import { Category } from "../../interfaces/category";
 import {
     PrestationFilters,
     PrestationItemList,
 } from "../../interfaces/prestation";
+import categoryService from "../../services/category.service";
 import prestationService from "../../services/prestation.service";
 import { displayMsg } from "../../utils/toast";
 
 export default function Prestations() {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [prestations, setPrestations] = useState<PrestationItemList[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [currentFilters, setCurrentFilters] = useState<PrestationFilters>({
-        query: "",
+        query: searchParams.get("query") || "",
         price_min: null,
         price_max: null,
-        categories: [],
+        categories: searchParams.get("categories") ?? "",
     });
+
+    const fetchCategories = async () => {
+        try {
+            const res = await categoryService.getCategories();
+            setCategories(res);
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    };
 
     const fetchPrestations = async (data: PrestationFilters) => {
         try {
@@ -28,6 +43,7 @@ export default function Prestations() {
     };
 
     useEffect(() => {
+        fetchCategories();
         fetchPrestations(currentFilters);
     }, []);
 
@@ -39,6 +55,7 @@ export default function Prestations() {
                     <PrestationSearchForm
                         initData={currentFilters}
                         handleSearch={fetchPrestations}
+                        categories={categories}
                     />
                 </div>
             </div>
