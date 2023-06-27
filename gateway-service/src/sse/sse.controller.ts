@@ -1,37 +1,50 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { ROLE } from 'src/auth/enums/role.enum';
+import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { SseService } from './sse.service';
 
 @ApiTags('sse')
 @Controller('sse')
 export class SseController {
-  constructor(private sseService: SseService) {}
+  constructor(private readonly sseService: SseService) {}
 
-  @Get()
-  async getSse(@Req() req, @Res() res: Response, next) {
-    try {
-      const userId = req.user._id;
-      this.sseService.addUser(userId, res, req.user.roles);
+  @Post()
+  @Roles(ROLE.ADMIN)
+  async test() {
+    const res = await this.sseService.broadcastAll({
+      message: {
+        type: 'new_message',
+        data: 'BROADCASTINGALL',
+      },
+    });
+    return res;
+  }
 
-      res.on('close', () => {
-        console.log('close', userId);
-        this.sseService.deleteUser(userId, req.user.roles);
-      });
+  @Post('order/:orderId')
+  @Roles(ROLE.ADMIN)
+  async order(@Param('orderId', CheckObjectIdPipe) orderId: string) {
+    const res = await this.sseService.broadcastOrder({
+      message: {
+        type: 'new_message',
+        data: 'BROADCASTINGORDER',
+      },
+      orderId,
+    });
+    return res;
+  }
 
-      const headers = {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      };
-      res.writeHead(200, headers);
-      res.write(`data: ${JSON.stringify({ type: 'connect', userId })}\n\n`);
-      setInterval(() => {
-        this.sseService.broadcastSpecific({ type: 'connect', userId }, userId);
-      }, 5000);
-    } catch (err) {
-      console.error(err);
-      next();
-    }
+  @Post('user/:userId')
+  @Roles(ROLE.ADMIN)
+  async user(@Param('userId', CheckObjectIdPipe) userId: string) {
+    const res = await this.sseService.broadcastUser({
+      message: {
+        type: 'new_message',
+        data: 'BROADCASTINGUSER',
+      },
+      userId,
+    });
+    return res;
   }
 }

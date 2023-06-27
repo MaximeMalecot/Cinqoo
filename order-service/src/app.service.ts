@@ -48,7 +48,26 @@ export class AppService {
   }
 
   async getOrdersOfUser(userId: string) {
-    return await this.orderModel.find({ applicant: userId }).exec();
+    try {
+      const orders = await this.orderModel.find({ applicant: userId }).exec();
+      const ordersWithPrestations = await Promise.all(
+        orders.map(async (order) => {
+          const prestation = await firstValueFrom(
+            this.prestationService.send('PRESTATION.GET_ONE', order.serviceId),
+          );
+          return { ...order.toObject(), prestation };
+        }),
+      );
+      return ordersWithPrestations;
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    }
   }
 
   async getOrder(orderId: string) {

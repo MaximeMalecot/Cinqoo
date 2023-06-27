@@ -16,6 +16,8 @@ import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { CreateReportReasonDto } from './dto/create-report-reason.dto';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportReasonDto } from './dto/update-report-reason.dto';
+import { ReportType } from './enums/report.enum';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('report')
 @Controller('report')
@@ -24,9 +26,26 @@ export class ReportController {
     @Inject('REPORT_SERVICE') private readonly reportService: ClientProxy,
   ) {}
 
-  @Get('/reason/all')
+  @Public()
+  @Get('/reason')
   public getAllReportReasons() {
     return this.reportService.send('REPORT_REASON.GET_ALL', {});
+  }
+
+  @Public()
+  @Get('/reason/service')
+  public getServiceReportReasons() {
+    return this.reportService.send('REPORT_REASON.GET_ALL', {
+      type: ReportType.SERVICE,
+    });
+  }
+
+  @Public()
+  @Get('/reason/user')
+  public getUserReportReasons() {
+    return this.reportService.send('REPORT_REASON.GET_ALL', {
+      type: ReportType.USER,
+    });
   }
 
   @Get('/')

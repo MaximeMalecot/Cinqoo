@@ -16,7 +16,10 @@ export class ReportReasonService {
     private reportReasonModel: Model<ReportReason>,
   ) {}
 
-  async getReportReasons(): Promise<ReportReason[]> {
+  async getReportReasons(type?: ReportType): Promise<ReportReason[]> {
+    if (type) {
+      return await this.reportReasonModel.find({ type: type });
+    }
     return await this.reportReasonModel.find();
   }
 

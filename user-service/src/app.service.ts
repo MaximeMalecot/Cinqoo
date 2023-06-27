@@ -22,10 +22,6 @@ export class AppService {
     @Inject('MAILER_SERVICE') private readonly mailerService: ClientProxy,
   ) {}
 
-  getHello() {
-    return this.getUsers();
-  }
-
   async getUsers() {
     return this.userModel.find().exec();
   }

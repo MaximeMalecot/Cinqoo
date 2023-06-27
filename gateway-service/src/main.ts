@@ -1,6 +1,7 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as compression from 'compression';
 import helmet from 'helmet';
 import {
   WinstonModule,
@@ -73,6 +74,12 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN ?? '*',
   });
   app.use(helmet({ crossOriginResourcePolicy: false }));
+  app.use(
+    compression({
+      filter: () => true,
+      threshold: 0,
+    }),
+  );
   await app.listen(3000);
 }
 bootstrap();
