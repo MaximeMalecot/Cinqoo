@@ -4,7 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SERVICES } from './constants';
+import { PORTS, SERVICES } from './constants';
 import {
   FreelancerProfile,
   FreelancerProfileSchema,
@@ -32,6 +32,14 @@ import { User, UserSchema } from './schema/user.schema';
         transport: Transport.TCP,
         options: {
           host: SERVICES.MAILER,
+        },
+      },
+      {
+        name: 'PRESTATION_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.PRESTATION,
+          port: PORTS.PRESTATION,
         },
       },
     ]),

@@ -65,6 +65,11 @@ export class PrestationController {
     return await this.appService.disablePrestation(id);
   }
 
+  @EventPattern('PRESTATION.SOFT_DELETE_ALL_BY_USER')
+  async softDeletePrestationsOfUser(userId: string) {
+    return await this.appService.softDeletePrestationsOfUser(userId);
+  }
+
   @EventPattern('PRESTATION.DELETE_ONE')
   async deletePrestation(id: string) {
     return await this.appService.deletePrestation(id);

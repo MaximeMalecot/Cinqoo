@@ -250,6 +250,21 @@ export class PrestationService {
     return disabledPrestation;
   }
 
+  async softDeletePrestationsOfUser(userId: string) {
+    await this.prestationModel.updateMany(
+      {
+        owner: new Types.ObjectId(userId),
+      },
+      {
+        name: 'DELETED',
+        description: 'DELETE',
+        isActive: false,
+        image: '',
+      },
+    );
+    return;
+  }
+
   async enablePrestation(prestationId: string) {
     const prestation = await this.prestationModel.findById(
       new Types.ObjectId(prestationId),

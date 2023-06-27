@@ -20,6 +20,8 @@ export class AppService {
     private freelancerProfileModel: Model<FreelancerProfile>,
     @Inject('STRIPE_SERVICE') private readonly stripeService: ClientProxy,
     @Inject('MAILER_SERVICE') private readonly mailerService: ClientProxy,
+    @Inject('PRESTATION_SERVICE')
+    private readonly prestationService: ClientProxy,
   ) {}
 
   async getUsers() {
@@ -190,8 +192,28 @@ export class AppService {
         statusCode: 404,
       });
     }
+    this.prestationService.emit('PRESTATION.SOFT_DELETE_ALL_BY_USER', id);
 
-    return await this.userModel.deleteOne({ _id: new Types.ObjectId(id) });
+    await this.userModel.updateOne(
+      { _id: new Types.ObjectId(id) },
+      {
+        username: `deleted ${user.username} at ${new Date().getTime()}`,
+        email: `deleted ${user.email} at ${new Date().getTime()}`,
+        password: '',
+        isDeleted: true,
+        deletedAt: new Date(),
+      },
+    );
+
+    if (user.roles.includes(Role.FREELANCER)) {
+      await this.freelancerProfileModel.updateOne(
+        { user: new Types.ObjectId(id) },
+        {
+          description: 'DELETED',
+        },
+      );
+    }
+    return;
   }
 
   async promoteOrDemoteUserWithStripe(

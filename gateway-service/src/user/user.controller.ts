@@ -99,7 +99,7 @@ export class UserController {
   @UseGuards(IsAccountOwnerGuard)
   @Delete(':userId')
   public async deleteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
-    return this.userService.send('deleteUser', userId);
+    return this.userService.emit('deleteUser', userId);
   }
 
   @Post('self/become-freelancer')
