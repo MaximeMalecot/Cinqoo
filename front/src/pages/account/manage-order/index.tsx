@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import Deliveries from "../../../components/order/deliveries";
 import { Order } from "../../../interfaces/order";
 import orderService from "../../../services/order.service";
 import { displayMsg } from "../../../utils/toast";
-import Deliveries from "./deliveries";
 import Details from "./details";
 import PrestationBox from "./prestation-box";
 
