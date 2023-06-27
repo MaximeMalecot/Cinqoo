@@ -2,8 +2,26 @@ import { API_ENDPOINT } from "../constants/endpoints";
 import authHeader from "./auth.header";
 
 class ReportService {
-    async getReasons() {
-        const res = await fetch(`${API_ENDPOINT}report/reason/all`, {
+    async getServiceReasons() {
+        const res = await fetch(`${API_ENDPOINT}report/reason/service`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch report reasons");
+        }
+
+        return await res.json();
+    }
+
+    async getUserReasons() {
+        const res = await fetch(`${API_ENDPOINT}report/reason/user`, {
             method: "GET",
             headers: {
                 ...authHeader(),

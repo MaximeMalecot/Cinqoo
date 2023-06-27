@@ -20,6 +20,24 @@ class FavoriteService {
         return await res.json();
     }
 
+    async getIsLiked(id: string) {
+        const res = await fetch(`${API_ENDPOINT}favorite/${id}`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch favorite");
+        }
+
+        return await res.json();
+    }
+
     async toggleFavorite(prestationId: string) {
         const res = await fetch(`${API_ENDPOINT}favorite/${prestationId}`, {
             method: "PUT",

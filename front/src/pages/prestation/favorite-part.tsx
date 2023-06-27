@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../../components/button";
+import { useAuthContext } from "../../contexts/auth.context";
 import favoriteService from "../../services/favorite.service";
 import { displayMsg } from "../../utils/toast";
 
@@ -8,10 +9,28 @@ interface FavoritePartProps {
 }
 
 export default function FavoritePart({ prestationId }: FavoritePartProps) {
+    const { isConnected } = useAuthContext();
+
     const [isLiked, setIsLiked] = useState(false);
+
+    const fetchIsLiked = useCallback(async () => {
+        if (!isConnected) return;
+
+        try {
+            const { isFavorite } = await favoriteService.getIsLiked(
+                prestationId
+            );
+            setIsLiked(isFavorite);
+        } catch (e: any) {
+            console.error(e.message);
+            displayMsg(e.message, "error");
+        }
+    }, [prestationId]);
 
     const toggleLike = useCallback(async () => {
         try {
+            if (!isConnected)
+                throw new Error("You must be connected to like a prestation");
             const { message } = await favoriteService.toggleFavorite(
                 prestationId
             );
@@ -24,6 +43,10 @@ export default function FavoritePart({ prestationId }: FavoritePartProps) {
             console.error(e.message);
             displayMsg(e.message, "error");
         }
+    }, [prestationId]);
+
+    useEffect(() => {
+        fetchIsLiked();
     }, [prestationId]);
 
     return (

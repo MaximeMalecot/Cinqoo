@@ -10,14 +10,16 @@ export default function useReport({ type }: UseReportProps) {
     const [reasons, setReasons] = useState<ReportReason[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
-    const filteredReason = ["USER", "SERVICE"].includes(type)
-        ? reasons.filter((reason) => reason.type === type)
-        : reasons;
 
     const fetchReasons = useCallback(async () => {
         try {
-            const res = await reportService.getReasons();
-            setReasons(res);
+            if (type === "USER") {
+                const res = await reportService.getUserReasons();
+                setReasons(res);
+            } else if (type === "SERVICE") {
+                const res = await reportService.getServiceReasons();
+                setReasons(res);
+            }
         } catch (e: any) {
             setError(e.message);
         }
@@ -44,5 +46,5 @@ export default function useReport({ type }: UseReportProps) {
         fetchReasons();
     }, []);
 
-    return { reasons: filteredReason, loading, error, report };
+    return { reasons, loading, error, report };
 }
