@@ -32,6 +32,20 @@ export default function Prestations() {
         }
     };
 
+    const handleSubmit = async (data: PrestationFilters) => {
+        const queryFilters = Object.entries(data).reduce(
+            (acc: any, [key, value]) => {
+                if (value) {
+                    acc[key] = value;
+                }
+                return acc;
+            },
+            {} as any
+        );
+        setSearchParams(queryFilters);
+        fetchPrestations(data);
+    };
+
     const fetchPrestations = async (data: PrestationFilters) => {
         try {
             const res = await prestationService.searchPrestations(data);
@@ -54,7 +68,7 @@ export default function Prestations() {
                     <h1 className="text-2xl">Prestations</h1>
                     <PrestationSearchForm
                         initData={currentFilters}
-                        handleSearch={fetchPrestations}
+                        handleSearch={handleSubmit}
                         categories={categories}
                     />
                 </div>
