@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: gateway-service
+    labels:
+        app: gateway-service
+spec:
+    selector:
+        matchLabels:
+            app: gateway-service
+    template:
+        metadata:
+            labels:
+                app: gateway-service
+        spec:
+            containers:
+                - name: gateway-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
+                  volumeMounts:
+                      - name: gateway-storage
+                        mountPath: /home/node/files
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3000"
+                  ports:
+                      - containerPort: 3000
+                  resources:
+                      limits:
+                          cpu: 500m
+                      requests:
+                          cpu: 200m
+            volumes:
+                - name: gateway-storage
+                  persistentVolumeClaim:
+                      claimName: gateway-storage
