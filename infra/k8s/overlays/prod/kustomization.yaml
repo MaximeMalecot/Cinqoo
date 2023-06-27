@@ -5,7 +5,7 @@ namespace: cinqoo
 
 resources:
     - _namespace.yaml
-    - pvc.yaml
+    # - pvc.yaml
     - ../../base
     - ingress.yaml
     - cert.yaml

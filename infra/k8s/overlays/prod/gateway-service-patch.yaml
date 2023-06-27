@@ -16,9 +16,9 @@ spec:
             containers:
                 - name: gateway-service
                   image: europe-west9-docker.pkg.dev/cinqoo/challenge/gateway-service:latest
-                  volumeMounts:
-                      - name: gateway-storage
-                        mountPath: /home/node/files
+                  #   volumeMounts:
+                  #       - name: gateway-storage
+                  #         mountPath: /home/node/files
                   imagePullPolicy: Always
                   env:
                       - name: PORT
@@ -30,7 +30,7 @@ spec:
                           cpu: 500m
                       requests:
                           cpu: 200m
-            volumes:
-                - name: gateway-storage
-                  persistentVolumeClaim:
-                      claimName: gateway-storage
+            # volumes:
+            #     - name: gateway-storage
+            #       persistentVolumeClaim:
+            #           claimName: gateway-storage
