@@ -13,7 +13,9 @@ export default function HomeSearchInput() {
 
     const onSubmit = useCallback(async (data: any) => {
         console.log(data);
-        navigate(`/search?q=${data.typed}`, { state: { typed: data.typed } });
+        navigate(`/prestations?query=${data.typed}`, {
+            state: { typed: data.typed },
+        });
     }, []);
 
     return (
