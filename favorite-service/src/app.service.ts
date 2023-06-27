@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, EventPattern } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 import {
   FavoriteRequestDto,
   FavoriteResultDto,
@@ -13,6 +14,8 @@ export class AppService {
   constructor(
     @InjectModel(Favorite.name)
     private readonly favoriteModel: Model<Favorite>,
+    @Inject('PRESTATION_SERVICE')
+    private readonly prestationService: ClientProxy,
   ) {}
 
   @EventPattern('getHello')
@@ -50,7 +53,25 @@ export class AppService {
   }
 
   async getSelfFavorites(userId: string) {
-    return await this.favoriteModel.find({ userId: userId }).exec();
+    const favorites = await this.favoriteModel.find({ userId: userId }).exec();
+    const favoritesWithPrestation = await Promise.all(
+      favorites.map(async (favorite) => {
+        const prestation = await firstValueFrom(
+          this.prestationService.send(
+            'PRESTATION.GET_ONE',
+            favorite.prestationId,
+          ),
+        );
+        if (prestation.isActive === false) {
+          return;
+        }
+        return {
+          ...favorite.toObject(),
+          prestation,
+        };
+      }),
+    );
+    return favoritesWithPrestation.filter((favorite) => favorite);
   }
 
   async getSpecificFavorite(dto: FavoriteRequestDto) {
