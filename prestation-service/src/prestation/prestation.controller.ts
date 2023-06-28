@@ -77,4 +77,9 @@ export class PrestationController {
   ) {
     return await this.appService.searchPrestations(data);
   }
+
+  @EventPattern('PRESTATION.RANDOM')
+  async getRandomPrestations() {
+    return await this.appService.getRandomPrestations();
+  }
 }
