@@ -27,6 +27,7 @@ import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { SearchPrestationsDto } from './dto/search-prestations.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
+import { AreUserPrestationsAccessibles } from './guards/are-user-prestations-accessible.guard';
 import { IsServiceAccessible } from './guards/is-service-accessible.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
 
@@ -137,7 +138,9 @@ export class PrestationController {
     return this.prestationService.send('PRESTATION.DELETE_ONE', prestationId);
   }
 
-  @Get('user/:userId')
+  @Get('freelancer/:userId')
+  @Public()
+  @UseGuards(AreUserPrestationsAccessibles)
   public getUserPrestations(
     @Param('userId', CheckObjectIdPipe) userId: string,
   ) {
