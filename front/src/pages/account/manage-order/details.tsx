@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
+import PublishReviewInfoModal from "../../../components/order/publish-review-info-modal";
 import { ORDER_STATUS } from "../../../constants/status";
 import { Order } from "../../../interfaces/order";
+import reviewService from "../../../services/review.service";
 
 interface DetailsProps {
     order: Order;
@@ -7,6 +10,23 @@ interface DetailsProps {
 }
 
 export default function Details({ order, reload }: DetailsProps) {
+    const [canPublishReview, setCanPublishReview] = useState<boolean>(false);
+
+    const fetchCanPublish = async () => {
+        try {
+            const res = await reviewService.getCanPublish(order.serviceId);
+            setCanPublishReview(res.canPublish);
+        } catch (e: any) {
+            console.log(e.message);
+        }
+    };
+
+    useEffect(() => {
+        if (order.status === ORDER_STATUS.DONE) {
+            fetchCanPublish();
+        }
+    }, [order]);
+
     const step = (() => {
         switch (order.status) {
             case ORDER_STATUS.REFUSED:
@@ -48,6 +68,7 @@ export default function Details({ order, reload }: DetailsProps) {
                     Done
                 </li>
             </ul>
+            {canPublishReview && <PublishReviewInfoModal order={order} />}
         </section>
     );
 }
