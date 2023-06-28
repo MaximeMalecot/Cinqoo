@@ -92,7 +92,10 @@ export default function RatingPart({ prestationId }: RatingPartProps) {
             {canPublish && (
                 <>
                     <div className="divider my-0" />
-                    <PublishReview prestationId={prestationId} />
+                    <PublishReview
+                        reload={fetchReviews}
+                        prestationId={prestationId}
+                    />
                 </>
             )}
         </div>

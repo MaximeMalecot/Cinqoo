@@ -6,10 +6,7 @@ interface ReviewItemProps {
 
 export default function ReviewItem({ review }: ReviewItemProps) {
     return (
-        <div
-            className="w-full flex flex-col gap-5 p-3 border border-1 border-slate-400 rounded rounded-md"
-            id="publish-review"
-        >
+        <div className="w-full flex flex-col gap-5 p-3 border border-1 border-slate-400 rounded rounded-md">
             <div className="w-full flex gap-3 items-center">
                 <label htmlFor="mark" className="text-slate-500">
                     Mark

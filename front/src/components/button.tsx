@@ -30,7 +30,7 @@ export default function Button({
     return (
         <button
             {...props}
-            className={`${className} ${
+            className={`${className ?? ""} ${
                 visualToClassName[visual] ?? visualToClassName["primary"]
             }`}
         >

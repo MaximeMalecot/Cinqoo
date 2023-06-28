@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 import Button from "../../components/button";
 import { TextArea } from "../../components/text-area";
 import reviewService from "../../services/review.service";
@@ -7,27 +8,31 @@ import { displayMsg } from "../../utils/toast";
 
 interface PublishReviewProps {
     prestationId: string;
+    scrollToPublishReview?: false;
+    reload: () => void;
 }
 
-export default function PublishReview({ prestationId }: PublishReviewProps) {
+export default function PublishReview({
+    prestationId,
+    reload,
+}: PublishReviewProps) {
+    const { state } = useLocation();
     const {
         register: registerField,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm();
 
-    const [rating, setRating] = useState<number>(0);
+    const [rating, setRating] = useState<number>(1);
 
     const onSubmit = useCallback(
         async (data: any) => {
             try {
                 if (rating < 1) throw new Error("You can minimum put 1 star");
-                const res = await reviewService.publish(
-                    prestationId,
-                    rating,
-                    data.comment
-                );
-                console.log(res);
+                await reviewService.publish(prestationId, rating, data.comment);
+                reload();
+                reset();
             } catch (e: any) {
                 console.log(e.message);
                 displayMsg(e.message, "error");
@@ -36,8 +41,16 @@ export default function PublishReview({ prestationId }: PublishReviewProps) {
         [prestationId, rating]
     );
 
+    useEffect(() => {
+        if (state?.scrollToPublishReview) {
+            const el = document.getElementById("publish_review");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [state]);
+
     return (
         <form
+            id="publish_review"
             onSubmit={handleSubmit(onSubmit)}
             className="w-full flex flex-col gap-5 p-3 border border-1 border-slate-400 rounded rounded-md"
         >
@@ -48,7 +61,7 @@ export default function PublishReview({ prestationId }: PublishReviewProps) {
                     {new Array(5).fill(0).map((_, idx) => (
                         <input
                             onClick={() => setRating(idx + 1)}
-                            onChange={() => null}
+                            readOnly
                             key={idx}
                             type="radio"
                             name={`rating-${idx + 1}`}
