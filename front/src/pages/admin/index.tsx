@@ -1,4 +1,6 @@
 import { Route, Routes } from "react-router-dom";
+import AdminPrestations from "./prestations";
+import AdminPrestation from "./prestations/specific";
 
 export default function AdminRouter() {
     return (
@@ -6,8 +8,8 @@ export default function AdminRouter() {
             <Route path="/" element={<div>Admin</div>} />
             <Route path="/users" element={<div>Users</div>} />
             <Route path="/users/:id" element={<div>User</div>} />
-            <Route path="/prestations" element={<div>Prestations</div>} />
-            <Route path="/prestations/:id" element={<div>Prestation</div>} />
+            <Route path="/prestations" element={<AdminPrestations />} />
+            <Route path="/prestations/:id" element={<AdminPrestation />} />
             <Route path="/orders/:id" element={<div>Order</div>} />
             <Route path="/categories" element={<div>Categories</div>} />
             <Route path="/categories/:id" element={<div>Category</div>} />

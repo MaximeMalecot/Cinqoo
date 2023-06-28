@@ -70,6 +70,10 @@ export class AppService {
     }
   }
 
+  async getOrdersOfPrestation(prestationId: string) {
+    return this.orderModel.find({ serviceId: prestationId }).exec();
+  }
+
   async getOrder(orderId: string) {
     const order = await this.orderModel.findById(new Types.ObjectId(orderId));
     if (!order) {
