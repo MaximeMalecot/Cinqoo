@@ -5,13 +5,15 @@ import AdminPrestations from "./prestations";
 import AdminPrestation from "./prestations/specific";
 import AdminReportReasons from "./report_reason";
 import AdminReportReason from "./report_reason/specific";
+import AdminUsers from "./users";
+import AdminUser from "./users/specific";
 
 export default function AdminRouter() {
     return (
         <Routes>
             <Route path="/" element={<div>Admin</div>} />
-            <Route path="/users" element={<div>Users</div>} />
-            <Route path="/users/:id" element={<div>User</div>} />
+            <Route path="/users" element={<AdminUsers />} />
+            <Route path="/users/:id" element={<AdminUser />} />
             <Route path="/prestations" element={<AdminPrestations />} />
             <Route path="/prestations/:id" element={<AdminPrestation />} />
             <Route path="/orders/:id" element={<div>Order</div>} />

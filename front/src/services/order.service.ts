@@ -55,6 +55,24 @@ class OrderService {
 
         return await res.json();
     }
+
+    async getOrdersByUser(id: string) {
+        const res = await fetch(`${API_ENDPOINT}order/user/${id}`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch orders");
+        }
+
+        return await res.json();
+    }
 }
 
 export default new OrderService();

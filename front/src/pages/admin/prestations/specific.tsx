@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import PrestationBills from "../../../components/admin/bills/prestation-bills";
+import PrestationOrders from "../../../components/admin/orders/prestation-orders";
+import PrestationReports from "../../../components/admin/reports/prestation-reports";
 import Button from "../../../components/button";
-import { BillsItemList } from "../../../interfaces/bill";
 import { Category } from "../../../interfaces/category";
-import { Order } from "../../../interfaces/order";
 import { PrestationItemList } from "../../../interfaces/prestation";
 import { Report } from "../../../interfaces/report";
 import { Review } from "../../../interfaces/review";
-import billService from "../../../services/bill.service";
-import orderService from "../../../services/order.service";
 import prestationService from "../../../services/prestation.service";
 import reportService from "../../../services/report.service";
 import reviewService from "../../../services/review.service";
@@ -20,8 +19,6 @@ export default function AdminPrestation() {
     const [prestation, setPrestation] = useState<PrestationItemList | null>(
         null
     );
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [bills, setBills] = useState<BillsItemList[]>([]);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [reports, setReports] = useState<Report[]>([]);
 
@@ -35,32 +32,6 @@ export default function AdminPrestation() {
             displayMsg(e.message, "error");
         }
     }, [id]);
-
-    const fetchOrders = useCallback(async () => {
-        try {
-            if (!prestation) return;
-            const res = await orderService.getOrdersByPrestation(
-                prestation._id
-            );
-            console.log("orders", res);
-            setOrders(res);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
-        }
-    }, [prestation]);
-
-    const fetchBills = useCallback(async () => {
-        try {
-            if (!prestation) return;
-            const res = await billService.getBillsByPrestation(prestation._id);
-            console.log("bills", res);
-            setBills(res);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
-        }
-    }, [prestation]);
 
     const fetchReviews = useCallback(async () => {
         try {
@@ -95,8 +66,6 @@ export default function AdminPrestation() {
     }, []);
 
     useEffect(() => {
-        fetchOrders();
-        fetchBills();
         fetchReviews();
         fetchReports();
     }, [prestation]);
@@ -176,19 +145,19 @@ export default function AdminPrestation() {
                     </div>
                     <div className="divider my-0"></div>
                     <div className="flex ">
-                        <h3 className="text-xl font-bold">Orders</h3>
+                        <PrestationOrders prestationId={prestation._id} />
                     </div>
                     <div className="divider my-0"></div>
                     <div className="flex">
-                        <h3 className="text-xl font-bold">Bills</h3>
+                        <PrestationBills prestationId={prestation._id} />
+                    </div>
+                    <div className="divider my-0"></div>
+                    <div className="flex ">
+                        <PrestationReports prestationId={prestation._id} />
                     </div>
                     <div className="divider my-0"></div>
                     <div className="flex ">
                         <h3 className="text-xl font-bold">Reviews</h3>
-                    </div>
-                    <div className="divider my-0"></div>
-                    <div className="flex ">
-                        <h3 className="text-xl font-bold">Reports</h3>
                     </div>
                 </div>
             </section>

@@ -33,6 +33,11 @@ export class PaymentController {
     );
   }
 
+  @Get('user/:userId')
+  public getPaymentOfUser(@Param('userId') userId: string) {
+    return this.paymentService.send('PAYMENT.GET_BILLS_OF_USER', userId);
+  }
+
   @Get('history/self')
   public getSelfBills(@Req() req: any) {
     return this.paymentService.send('PAYMENT.GET_BILLS_OF_USER', req.user._id);
