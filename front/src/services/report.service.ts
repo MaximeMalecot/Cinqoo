@@ -81,6 +81,24 @@ class ReportService {
 
         return await res.json();
     }
+
+    async getReportReason(id: string) {
+        const res = await fetch(`${API_ENDPOINT}report/reason/${id}`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch report reason");
+        }
+
+        return await res.json();
+    }
 }
 
 export default new ReportService();

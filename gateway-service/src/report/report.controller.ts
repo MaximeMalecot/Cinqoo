@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
@@ -17,7 +18,6 @@ import { CreateReportReasonDto } from './dto/create-report-reason.dto';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportReasonDto } from './dto/update-report-reason.dto';
 import { ReportType } from './enums/report.enum';
-import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('report')
 @Controller('report')
@@ -48,6 +48,14 @@ export class ReportController {
     });
   }
 
+  @Roles(ROLE.ADMIN)
+  @Get('/reason/:reportReasonId')
+  public getReportReason(
+    @Param('reportReasonId', CheckObjectIdPipe) reportReasonId: string,
+  ) {
+    return this.reportService.send('REPORT_REASON.GET_ONE', reportReasonId);
+  }
+
   @Get('/')
   @Roles(ROLE.ADMIN)
   public getAllReports() {
@@ -68,11 +76,19 @@ export class ReportController {
     return this.reportService.send('REPORT.GET_BY_USER', userId);
   }
 
-  @Post()
-  public createReport(@Req() req: any, @Body() body: CreateReportDto) {
-    return this.reportService.send('REPORT.CREATE', {
-      userId: req.user._id,
-      createReport: body,
+  @Post('/user')
+  public createUserReport(@Req() req: any, @Body() body: CreateReportDto) {
+    return this.reportService.send('REPORT.CREATE_ON_USER', {
+      creator: req.user._id,
+      ...body,
+    });
+  }
+
+  @Post('/service')
+  public createServiceReport(@Req() req: any, @Body() body: CreateReportDto) {
+    return this.reportService.send('REPORT.CREATE_ON_SERVICE', {
+      creator: req.user._id,
+      ...body,
     });
   }
 

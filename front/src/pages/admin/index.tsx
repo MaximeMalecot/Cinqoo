@@ -3,6 +3,8 @@ import AdminCategories from "./categories";
 import AdminCategory from "./categories/specific";
 import AdminPrestations from "./prestations";
 import AdminPrestation from "./prestations/specific";
+import AdminReportReasons from "./report_reason";
+import AdminReportReason from "./report_reason/specific";
 
 export default function AdminRouter() {
     return (
@@ -19,11 +21,8 @@ export default function AdminRouter() {
                 path="/categories/create"
                 element={<div>Create category</div>}
             />
-            <Route path="/report_reason" element={<div>Report reasons</div>} />
-            <Route
-                path="/report_reason/:id"
-                element={<div>Report reason</div>}
-            />
+            <Route path="/report_reason" element={<AdminReportReasons />} />
+            <Route path="/report_reason/:id" element={<AdminReportReason />} />
             <Route
                 path="/report_reason/create"
                 element={<div>Create report reason</div>}
