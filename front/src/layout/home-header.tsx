@@ -1,14 +1,37 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function HomeHeader() {
     const { data, isConnected, logout, isFreelancer } = useAuthContext();
-    const menuRef = useRef<HTMLDetailsElement>(null);
+    const headerRef = useRef<HTMLHeadElement>(null);
+    const subMenuRef = useRef<HTMLLIElement>(null);
+
+    useEffect(() => {
+        const cb = (e: any) => {
+            if (!subMenuRef?.current || !headerRef?.current) return;
+            // if (subMenuRef.current.contains(e.target)) return;
+            subMenuRef.current
+                .getElementsByTagName("details")[0]
+                .removeAttribute("open");
+        };
+
+        if (headerRef.current) {
+            document.addEventListener("click", cb);
+
+            return () => {
+                document.removeEventListener("click", cb);
+            };
+        }
+    }, [headerRef]);
 
     return (
-        <header className={`navbar fixed top-0 bg-primary`}>
+        <header
+            ref={headerRef}
+            style={{ zIndex: 10000 }}
+            className={`navbar fixed top-0 bg-primary`}
+        >
             <div className={`container mx-auto text-white `}>
                 <div className="flex-1">
                     <Link
@@ -38,8 +61,8 @@ export default function HomeHeader() {
                         </li>
                         {isConnected ? (
                             <>
-                                <li>
-                                    <details ref={menuRef}>
+                                <li ref={subMenuRef}>
+                                    <details>
                                         <summary className="text-xl bg-transparent border border-white text-white hover:bg-white hover:text-black hover:border-transparent">
                                             {data?.email}
                                         </summary>

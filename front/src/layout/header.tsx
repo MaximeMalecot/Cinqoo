@@ -1,12 +1,34 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
 
 export default function Header() {
     const { data, isConnected, logout, isFreelancer } = useAuthContext();
+    const headerRef = useRef<HTMLHeadElement>(null);
+    const subMenuRef = useRef<HTMLLIElement>(null);
+
+    useEffect(() => {
+        const cb = (e: any) => {
+            if (!subMenuRef?.current || !headerRef?.current) return;
+            // if (subMenuRef.current.contains(e.target)) return;
+            subMenuRef.current
+                .getElementsByTagName("details")[0]
+                .removeAttribute("open");
+        };
+
+        if (headerRef.current) {
+            document.addEventListener("click", cb);
+
+            return () => {
+                document.removeEventListener("click", cb);
+            };
+        }
+    }, [headerRef]);
 
     return (
         <header
+            ref={headerRef}
             style={{ position: "relative", zIndex: 10000 }}
             className={`navbar top-0 relative bg-base-100 border border-b2 border-base-200`}
         >
@@ -33,7 +55,7 @@ export default function Header() {
                         </li>
                         {isConnected ? (
                             <>
-                                <li>
+                                <li ref={subMenuRef}>
                                     <details>
                                         <summary className="text-xl">
                                             {data?.email}
