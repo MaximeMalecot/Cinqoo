@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FreelancerData } from "../../interfaces/user";
 import userService from "../../services/user.service";
 
@@ -36,9 +37,12 @@ export default function FreelancerPart({ freelancerId }: FreelancerPartProps) {
                     </div>
                 </div>
                 <div className="flex flex-col">
-                    <h3 className="capitalize text-md">
+                    <Link
+                        to={`/freelancer/${freelancer._id}`}
+                        className="capitalize text-md hover:underline w-fit"
+                    >
                         {freelancer.username}
-                    </h3>
+                    </Link>
                     <div>
                         <span className="text-sm text-gray-500">
                             {freelancer.freelancerProfile.description ? (

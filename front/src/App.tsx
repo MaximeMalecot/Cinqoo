@@ -26,6 +26,7 @@ const Requests = lazy(() => import("./pages/account/requests"));
 const Prestation = lazy(() => import("./pages/prestation"));
 const Prestations = lazy(() => import("./pages/prestations"));
 const Favorites = lazy(() => import("./pages/favorites"));
+const Freelancer = lazy(() => import("./pages/freelancer"));
 
 function App() {
     const { isConnected, isFreelancer, isAdmin } = useAuthContext();
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/prestations" element={<Prestations />} />
                     <Route path="/prestations/:id" element={<Prestation />} />
+                    <Route path="/freelancer/:id" element={<Freelancer />} />
                     {isConnected && (
                         <>
                             <Route path="/account">
