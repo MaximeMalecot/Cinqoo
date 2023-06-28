@@ -39,6 +39,10 @@ export class AppService {
   }
 
   async getAverageOnPrestation(prestationId: string) {
+    const reviewsCount = await this.reviewModel.countDocuments({
+      prestationId: prestationId,
+    });
+
     const reviews = await this.reviewModel.aggregate([
       {
         $match: {
@@ -55,6 +59,6 @@ export class AppService {
       },
     ]);
 
-    return {averageMark: reviews[0]?.average??0};
+    return {averageMark: reviews[0]?.average??0, reviewsCount: reviewsCount};
   }
 }
