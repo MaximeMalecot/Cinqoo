@@ -32,6 +32,8 @@ const useAuth = () => {
     const isFreelancer =
         isConnected &&
         (userData?.roles.includes(ROLES.FREELANCER) ? true : false);
+    const isAdmin =
+        isConnected && (userData?.roles.includes(ROLES.ADMIN) ? true : false);
     const navigate = useNavigate();
 
     const register = useCallback(
@@ -104,6 +106,7 @@ const useAuth = () => {
         register,
         reload: getUser,
         isFreelancer,
+        isAdmin,
     };
 };
 

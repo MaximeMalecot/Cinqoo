@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { useAuthContext } from "./contexts/auth.context";
 import AppLayout from "./layout/app-layout";
 import HomeLayout from "./layout/home-layout";
+import AdminRoute from "./pages/admin";
 import Home from "./pages/home";
 import NotFound from "./pages/not-found";
 
@@ -27,7 +28,7 @@ const Prestations = lazy(() => import("./pages/prestations"));
 const Favorites = lazy(() => import("./pages/favorites"));
 
 function App() {
-    const { isConnected, isFreelancer } = useAuthContext();
+    const { isConnected, isFreelancer, isAdmin } = useAuthContext();
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
@@ -93,6 +94,12 @@ function App() {
                                     element={<AccountSettings />}
                                 />
                             </Route>
+                            {isAdmin && (
+                                <Route
+                                    path="/admin/*"
+                                    element={<AdminRoute />}
+                                />
+                            )}
                         </>
                     )}
 
