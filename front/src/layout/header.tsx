@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
+import MobileMenu from "./mobile-menu";
 
 export default function Header() {
     const { data, isConnected, logout, isFreelancer } = useAuthContext();
@@ -32,8 +33,9 @@ export default function Header() {
             style={{ position: "relative", zIndex: 10000 }}
             className={`navbar top-0 relative bg-base-100 border border-b2 border-base-200`}
         >
+            <MobileMenu color="black" />
             <div className={`container mx-auto `}>
-                <div className="flex-1">
+                <div className="md:flex-1" style={{ zIndex: 10000 }}>
                     <Link
                         to="/"
                         className="capitalize text-2xl font-bold hover:opacity-75"
