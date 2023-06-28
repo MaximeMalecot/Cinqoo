@@ -57,6 +57,12 @@ export class PrestationController {
     return this.prestationService.send('PRESTATION.SEARCH', query);
   }
 
+  @Get('random')
+  @Public()
+  public randomPrestations() {
+    return this.prestationService.send('PRESTATION.RANDOM', {});
+  }
+
   @Get('self')
   public getSelf(@Req() req: any) {
     return this.prestationService.send('PRESTATION.GET_PRESTATIONS_OF_USER', {

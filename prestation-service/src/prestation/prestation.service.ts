@@ -71,6 +71,13 @@ export class PrestationService {
     return await this.prestationModel.find(filters).populate('categories');
   }
 
+  async getRandomPrestations() {
+    return await this.prestationModel.aggregate([
+      { $match: { isActive: true } },
+      { $sample: { size: 10 } },
+    ]);
+  }
+
   async getPrestationByCategory(categoryId: string) {
     const prestations = await this.prestationModel
       .find({ categories: { $all: new Types.ObjectId(categoryId) } })

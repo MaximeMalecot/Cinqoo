@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PORTS, SERVICES } from 'src/constants';
 import {
   ReportReason,
   ReportReasonSchema,
@@ -16,6 +18,24 @@ import { ReportService } from './report.service';
     MongooseModule.forFeature([{ name: Report.name, schema: ReportSchema }]),
     MongooseModule.forFeature([
       { name: ReportReason.name, schema: ReportReasonSchema },
+    ]),
+    ClientsModule.register([
+      {
+        name: 'USER_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.USER,
+          port: PORTS.USER,
+        },
+      },
+      {
+        name: 'PRESTATION_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.PRESTATION,
+          port: PORTS.PRESTATION,
+        },
+      },
     ]),
   ],
   controllers: [AppController],

@@ -8,9 +8,9 @@ export class Report {
   id?: string;
 
   @Prop({
-    type: Types.ObjectId,
+    type: String,
   })
-  service: string;
+  type: 'SERVICE' | 'USER';
 
   @Prop({
     type: Types.ObjectId,
@@ -29,7 +29,6 @@ export class Report {
 
   @Prop({
     type: Types.ObjectId,
-    ref: 'reports',
   })
   reportReason: string;
 }
