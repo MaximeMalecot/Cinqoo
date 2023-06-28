@@ -35,6 +35,15 @@ export class CategoryController {
     return this.categoryService.send('CATEGORY.GET_ONE', categoryId);
   }
 
+  @Get(':categoryId/prestations')
+  @Public()
+  public getPrestationsByCategory(@Param('categoryId') categoryId: string) {
+    return this.categoryService.send(
+      'CATEGORY.GET_PRESTATION_BY_CATEGORY',
+      categoryId,
+    );
+  }
+
   @Post()
   @Roles(ROLE.ADMIN)
   public createOne(@Body() data: CreateCategoryDto) {
