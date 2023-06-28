@@ -31,7 +31,7 @@ export class ReportReasonService {
       throw new RpcException({ code: 404 });
     }
     const reports = await this.reportModel.find({
-      reportReason: reportReasonId,
+      reportReason: new Types.ObjectId(reportReasonId),
     });
     return { ...reportReason.toJSON(), reports: reports };
   }
