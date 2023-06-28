@@ -212,6 +212,15 @@ export class PaymentService {
     return bills;
   }
 
+  async getBillsOfPrestation(prestationId: string) {
+    const bills = await this.billModel
+      .find({ serviceId: new Types.ObjectId(prestationId) })
+      .select({
+        __v: false,
+      });
+    return bills;
+  }
+
   // Stripe Webhook callbaks
 
   public async updatePaymentIntent(data: UpdatePaymentIntentDto) {
