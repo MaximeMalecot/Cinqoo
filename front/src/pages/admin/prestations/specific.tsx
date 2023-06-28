@@ -7,6 +7,7 @@ import { Order } from "../../../interfaces/order";
 import { PrestationItemList } from "../../../interfaces/prestation";
 import { Report } from "../../../interfaces/report";
 import { Review } from "../../../interfaces/review";
+import billService from "../../../services/bill.service";
 import orderService from "../../../services/order.service";
 import prestationService from "../../../services/prestation.service";
 import { displayMsg } from "../../../utils/toast";
@@ -39,8 +40,20 @@ export default function AdminPrestation() {
             const res = await orderService.getOrdersByPrestation(
                 prestation._id
             );
-            console.log(res);
+            console.log("orders", res);
             setOrders(res);
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    }, [prestation]);
+
+    const fetchBills = useCallback(async () => {
+        try {
+            if (!prestation) return;
+            const res = await billService.getBillsByPrestation(prestation._id);
+            console.log("bills", res);
+            setBills(res);
         } catch (e: any) {
             console.log(e.message);
             displayMsg(e.message, "error");
@@ -50,6 +63,7 @@ export default function AdminPrestation() {
     useEffect(() => {
         fetchPrestation();
         fetchOrders();
+        fetchBills();
     }, []);
 
     if (!prestation)
