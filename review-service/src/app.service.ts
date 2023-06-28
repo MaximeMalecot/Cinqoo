@@ -55,6 +55,6 @@ export class AppService {
       },
     ]);
 
-    return reviews[0].average;
+    return {averageMark: reviews[0]?.average??0};
   }
 }
