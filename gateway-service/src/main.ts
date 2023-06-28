@@ -62,10 +62,6 @@ async function bootstrap() {
     .setVersion(process.env.npm_package_version)
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? '*',
-  });
   SwaggerModule.setup('docs', app, document);
   app.enableVersioning({
     type: VersioningType.URI,

@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-export default function AdminRoute() {
+export default function AdminRouter() {
     return (
         <Routes>
             <Route path="/" element={<div>Admin</div>} />

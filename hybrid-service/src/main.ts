@@ -13,6 +13,9 @@ async function bootstrap() {
     },
   });
 
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN ?? '*',
+  });
   await app.startAllMicroservices();
   await app.listen(PORTS.HYBRID);
 }

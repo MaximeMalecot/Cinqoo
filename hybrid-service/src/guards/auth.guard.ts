@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ClientProxy } from '@nestjs/microservices';
-import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
@@ -30,7 +29,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const token = request.query.token;
     if (!token) {
       throw new UnauthorizedException('Authentication token is required');
     }
@@ -60,10 +59,5 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
     return true;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }

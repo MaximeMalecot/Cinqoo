@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { useAuthContext } from "./contexts/auth.context";
 import AppLayout from "./layout/app-layout";
 import HomeLayout from "./layout/home-layout";
-import AdminRoute from "./pages/admin";
+import AdminRouter from "./pages/admin";
 import Home from "./pages/home";
 import NotFound from "./pages/not-found";
 
@@ -97,7 +97,7 @@ function App() {
                             {isAdmin && (
                                 <Route
                                     path="/admin/*"
-                                    element={<AdminRoute />}
+                                    element={<AdminRouter />}
                                 />
                             )}
                         </>

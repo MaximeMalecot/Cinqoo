@@ -8,10 +8,7 @@ class EventSourceService {
             throw new Error("No token found");
         }
         const eventSource = new EventSource(
-            `${SEE_ENDPOINT}/conversations/sse?token=${token}`,
-            {
-                withCredentials: true,
-            }
+            `${SEE_ENDPOINT}/conversations/sse?token=${token}`
         );
         return eventSource;
     }
