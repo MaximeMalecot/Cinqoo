@@ -3,10 +3,12 @@ import { PrestationItemList } from "../../../interfaces/prestation";
 
 interface ViewPrestationCardProps {
     prestation: PrestationItemList;
+    adminRoute?: boolean;
 }
 
 export default function ViewPrestationCard({
     prestation,
+    adminRoute = false,
 }: ViewPrestationCardProps) {
     const description =
         prestation.description.length > 100
@@ -14,7 +16,11 @@ export default function ViewPrestationCard({
             : prestation.description;
     return (
         <Link
-            to={`/prestations/${prestation._id}`}
+            to={
+                adminRoute === false
+                    ? `/prestations/${prestation._id}`
+                    : `/admin/prestations/${prestation._id}`
+            }
             className="card w-72 bg-base-100 shadow-xl border border-2 overflow-hidden duration-500 hover:opacity-75"
         >
             <figure

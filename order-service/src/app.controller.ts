@@ -48,6 +48,11 @@ export class AppController {
     return await this.appService.getUsers(orderId);
   }
 
+  @EventPattern('ORDER.GET_ORDERS_OF_PRESTATION')
+  async getOrdersByPrestation(prestationId: string) {
+    return await this.appService.getOrdersOfPrestation(prestationId);
+  }
+
   // Requests
 
   @EventPattern('ORDER.GET_ALL_REQUESTS')
