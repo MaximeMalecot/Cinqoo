@@ -19,7 +19,7 @@ export default function Freelancer() {
     const fetchPrestations = async () => {
         try {
             if (!id) throw new Error("No id");
-            const res = await prestationService.getUserPrestations(id);
+            const res = await prestationService.getFreelancerPrestations(id);
             setPrestations(res);
         } catch (e: any) {
             console.log(e);

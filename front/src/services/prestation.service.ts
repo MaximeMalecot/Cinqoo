@@ -103,13 +103,16 @@ class PrestationService {
         return await res.json();
     }
 
-    async getUserPrestations(userId: string) {
-        const res = await fetch(`${API_ENDPOINT}prestation/user/${userId}`, {
-            method: "GET",
-            headers: {
-                ...authHeader(),
-            },
-        });
+    async getFreelancerPrestations(userId: string) {
+        const res = await fetch(
+            `${API_ENDPOINT}prestation/freelancer/${userId}`,
+            {
+                method: "GET",
+                headers: {
+                    ...authHeader(),
+                },
+            }
+        );
         if (res.status !== 200) {
             const jsonRes = await res.json();
             if (jsonRes.message) {
