@@ -17,6 +17,11 @@ export class AppController {
     return await this.appService.getForPrestation(data.prestationId);
   }
 
+  @EventPattern('REVIEW.GET_BY_USER')
+  async getByUser(userId: string) {
+    return await this.appService.getByUser(userId);
+  }
+
   @EventPattern('REVIEW.CREATE')
   async createReview(@Payload() data: CreateReviewDto) {
     return await this.appService.createReview(data);
