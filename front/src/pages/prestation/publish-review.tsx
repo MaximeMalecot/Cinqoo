@@ -9,12 +9,12 @@ import { displayMsg } from "../../utils/toast";
 interface PublishReviewProps {
     prestationId: string;
     scrollToPublishReview?: false;
-    reload: () => void;
+    onReview: () => void;
 }
 
 export default function PublishReview({
     prestationId,
-    reload,
+    onReview,
 }: PublishReviewProps) {
     const { state } = useLocation();
     const {
@@ -31,7 +31,7 @@ export default function PublishReview({
             try {
                 if (rating < 1) throw new Error("You can minimum put 1 star");
                 await reviewService.publish(prestationId, rating, data.comment);
-                reload();
+                onReview();
                 reset();
             } catch (e: any) {
                 console.log(e.message);

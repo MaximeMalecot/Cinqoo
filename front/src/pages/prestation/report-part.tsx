@@ -34,7 +34,7 @@ export default function ReportPart({ prestationId }: ReportPartProps) {
                 Report
             </Button>
             <PromptReportModal
-                type="USER"
+                type="SERVICE"
                 targetId={prestationId}
                 isOpen={showModal}
                 setIsOpen={setShowModal}
