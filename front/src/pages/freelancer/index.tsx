@@ -82,7 +82,7 @@ export default function Freelancer() {
                         </h1>
 
                         {prestations.length > 0 ? (
-                            <div className="flex flex-col items-center gap-5 lg:grid lg:grid-cols-2">
+                            <div className="flex flex-col items-center gap-5 lg:grid lg:grid-cols-2 xl:grid-cols-3">
                                 {prestations.map((p, index) => (
                                     <ViewPrestationCard
                                         prestation={p}
