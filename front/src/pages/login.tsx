@@ -66,12 +66,12 @@ export default function Login() {
                             )}
                             Login
                         </Button>
-                        <Link
+                        {/* <Link
                             to="/password-forgotten"
                             className="text-primary text-sm"
                         >
                             Forgot password?
-                        </Link>
+                        </Link> */}
                     </form>
                     <div className="divider m-0 py-0" />
                     <div className="p-5 py-0 flex gap-2 justify-center">

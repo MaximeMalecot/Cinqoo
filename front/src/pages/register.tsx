@@ -76,7 +76,7 @@ export default function Register() {
                         <p className="text-sm text-slate-500">
                             By joining, you agree to the Cinqoo{" "}
                             <Link
-                                to="/terms_of_service"
+                                to="/terms-of-service"
                                 target="_blank"
                                 className="underline"
                             >
@@ -85,7 +85,7 @@ export default function Register() {
                             and to occasionally receive emails from us. Please
                             read our{" "}
                             <Link
-                                to="/terms_of_service"
+                                to="/terms-of-service"
                                 target="_blank"
                                 className="underline"
                             >
