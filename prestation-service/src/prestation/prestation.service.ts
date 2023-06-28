@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -14,6 +14,7 @@ export class PrestationService {
   constructor(
     @InjectModel(Prestation.name) private prestationModel: Model<Prestation>,
     @Inject('STRIPE_SERVICE') private stripeService: ClientProxy,
+    @Inject(forwardRef(() => CategoryService))
     private categoryService: CategoryService,
   ) {}
 
@@ -68,6 +69,17 @@ export class PrestationService {
     }
 
     return await this.prestationModel.find(filters).populate('categories');
+  }
+
+  async getPrestationByCategory(categoryId: string) {
+    const prestations = await this.prestationModel
+      .find({ categories: { $all: new Types.ObjectId(categoryId) } })
+      .populate('categories')
+      .select({
+        __v: false,
+        stripeId: false,
+      });
+    return prestations;
   }
 
   async create(prestation: CreatePrestationDto, userId: string, file: string) {

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { PrestationService } from 'src/prestation/prestation.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './schemas/category.schema';
@@ -10,6 +11,8 @@ import { Category } from './schemas/category.schema';
 export class CategoryService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @Inject(forwardRef(() => PrestationService))
+    private prestationService: PrestationService,
   ) {}
 
   async getHello(): Promise<string> {
@@ -23,11 +26,9 @@ export class CategoryService {
   }
 
   async getAllPrestations(id: string) {
-    const prestations = await this.categoryModel
-      .findById(new Types.ObjectId(id))
-      .populate('prestations', {
-        __v: false,
-      });
+    const prestations = await this.prestationService.getPrestationByCategory(
+      id,
+    );
 
     return prestations;
   }

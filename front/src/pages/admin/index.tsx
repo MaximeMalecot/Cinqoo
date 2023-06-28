@@ -1,4 +1,6 @@
 import { Route, Routes } from "react-router-dom";
+import AdminCategories from "./categories";
+import AdminCategory from "./categories/specific";
 import AdminPrestations from "./prestations";
 import AdminPrestation from "./prestations/specific";
 
@@ -11,8 +13,8 @@ export default function AdminRouter() {
             <Route path="/prestations" element={<AdminPrestations />} />
             <Route path="/prestations/:id" element={<AdminPrestation />} />
             <Route path="/orders/:id" element={<div>Order</div>} />
-            <Route path="/categories" element={<div>Categories</div>} />
-            <Route path="/categories/:id" element={<div>Category</div>} />
+            <Route path="/categories" element={<AdminCategories />} />
+            <Route path="/categories/:id" element={<AdminCategory />} />
             <Route
                 path="/categories/create"
                 element={<div>Create category</div>}
