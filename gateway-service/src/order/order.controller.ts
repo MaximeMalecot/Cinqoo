@@ -11,6 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
+import { IsInOrderGuard } from './guards/is-in-order.guard';
 import { IsOrderOwner } from './guards/is-order-owner.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
 
@@ -115,7 +116,7 @@ export class OrderController {
   }
 
   //Check if user is admin or owner of the order
-  @UseGuards(IsOrderOwner)
+  @UseGuards(IsInOrderGuard)
   @Get(':orderId')
   public getOrderById(@Param('orderId') orderId: string) {
     return this.orderService.send('ORDER.GET_ORDER_WITH_PRESTATION', orderId);
