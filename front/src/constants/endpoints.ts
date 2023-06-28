@@ -1,5 +1,5 @@
 export const API_ENDPOINT =
-    import.meta.env.VITE_API_ENDPOINT ?? "http://localhost:3000";
+    import.meta.env.VITE_API_ENDPOINT ?? "http://localhost:3000/";
 
-export const SEE_ENDPOINT =
-    import.meta.env.VITE_SSE_ENDPOINT ?? "http://localhost:3001";
+export const SSE_ENDPOINT =
+    import.meta.env.VITE_SSE_ENDPOINT ?? "http://localhost:3001/";
