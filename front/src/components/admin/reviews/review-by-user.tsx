@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Review } from "../../../interfaces/review";
 import reviewService from "../../../services/review.service";
 import { displayMsg } from "../../../utils/toast";
-import ReviewItem from "../../review-item";
+import ReviewItem from "./review-item";
 
 interface UserReviewProps {
     userId: string;

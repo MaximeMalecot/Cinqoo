@@ -61,9 +61,7 @@ export class ReviewController {
   @Roles(ROLE.ADMIN)
   @Get('user/:userId')
   public getReviewsByUser(@Param('userId', CheckObjectIdPipe) userId: string) {
-    return this.reviewService.send('REVIEW.GET_BY_USER', {
-      userId,
-    });
+    return this.reviewService.send('REVIEW.GET_BY_USER', userId);
   }
 
   @UseGuards(PrestationExistsGuard)

@@ -19,6 +19,7 @@ export class AppService {
   }
 
   async getByUser(userId: string): Promise<ReviewDocument[]> {
+    console.log('onéla', userId);
     return await this.reviewModel.find({ userId: userId }).exec();
   }
 

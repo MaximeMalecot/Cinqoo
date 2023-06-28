@@ -11,7 +11,6 @@ import AdminUser from "./users/specific";
 export default function AdminRouter() {
     return (
         <Routes>
-            <Route path="/" element={<div>Admin</div>} />
             <Route path="/users" element={<AdminUsers />} />
             <Route path="/users/:id" element={<AdminUser />} />
             <Route path="/prestations" element={<AdminPrestations />} />
@@ -29,6 +28,8 @@ export default function AdminRouter() {
                 path="/report_reason/create"
                 element={<div>Create report reason</div>}
             />
+            <Route path="*" element={<div>Not found</div>} />
+            <Route path="/" element={<div>Admin</div>} />
         </Routes>
     );
 }

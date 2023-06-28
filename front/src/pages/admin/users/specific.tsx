@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import UserBills from "../../../components/admin/bills/user-bills";
 import UserOrders from "../../../components/admin/orders/user-orders";
+import UserReports from "../../../components/admin/reports/user-reports";
+import UserReviews from "../../../components/admin/reviews/review-by-user";
 import { PrestationItemList } from "../../../interfaces/prestation";
 import { Review } from "../../../interfaces/review";
 import { UserData } from "../../../interfaces/user";
@@ -35,10 +37,12 @@ export default function AdminUser() {
 
     return (
         <div>
-            User
+            User {JSON.stringify(user)}
             <div>
                 <UserOrders userId={user._id} />
                 <UserBills userId={user._id} />
+                <UserReports userId={user._id} />
+                <UserReviews userId={user._id} />
             </div>
         </div>
     );

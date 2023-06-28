@@ -3,14 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import PrestationBills from "../../../components/admin/bills/prestation-bills";
 import PrestationOrders from "../../../components/admin/orders/prestation-orders";
 import PrestationReports from "../../../components/admin/reports/prestation-reports";
+import PrestationReviews from "../../../components/admin/reviews/prestation-reviews";
 import Button from "../../../components/button";
 import { Category } from "../../../interfaces/category";
 import { PrestationItemList } from "../../../interfaces/prestation";
-import { Report } from "../../../interfaces/report";
-import { Review } from "../../../interfaces/review";
 import prestationService from "../../../services/prestation.service";
-import reportService from "../../../services/report.service";
-import reviewService from "../../../services/review.service";
 import { displayMsg } from "../../../utils/toast";
 import FreelancerPart from "../../prestation/freelancer-part";
 
@@ -19,8 +16,6 @@ export default function AdminPrestation() {
     const [prestation, setPrestation] = useState<PrestationItemList | null>(
         null
     );
-    const [reviews, setReviews] = useState<Review[]>([]);
-    const [reports, setReports] = useState<Report[]>([]);
 
     const fetchPrestation = useCallback(async () => {
         try {
@@ -33,42 +28,9 @@ export default function AdminPrestation() {
         }
     }, [id]);
 
-    const fetchReviews = useCallback(async () => {
-        try {
-            if (!prestation) return;
-            const res = await reviewService.getReviewsByPrestation(
-                prestation._id
-            );
-            console.log("reviews", res);
-            setReviews(res);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
-        }
-    }, [prestation]);
-
-    const fetchReports = useCallback(async () => {
-        try {
-            if (!prestation) return;
-            const res = await reportService.getReportsForPrestation(
-                prestation._id
-            );
-            console.log("reports", res);
-            setReports(res);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
-        }
-    }, [prestation]);
-
     useEffect(() => {
         fetchPrestation();
     }, []);
-
-    useEffect(() => {
-        fetchReviews();
-        fetchReports();
-    }, [prestation]);
 
     if (!prestation)
         return (
@@ -157,7 +119,7 @@ export default function AdminPrestation() {
                     </div>
                     <div className="divider my-0"></div>
                     <div className="flex ">
-                        <h3 className="text-xl font-bold">Reviews</h3>
+                        <PrestationReviews prestationId={prestation._id} />
                     </div>
                 </div>
             </section>
