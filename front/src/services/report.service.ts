@@ -61,6 +61,52 @@ class ReportService {
         return await res.json();
     }
 
+    async reportUser(
+        target: string,
+        reportReason: string,
+        description: string
+    ) {
+        const res = await fetch(`${API_ENDPOINT}report/user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+            body: JSON.stringify({ target, reportReason, description }),
+        });
+        if (res.status !== 201) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed report user");
+        }
+        return await res.json();
+    }
+
+    async reportPrestation(
+        target: string,
+        reportReason: string,
+        description: string
+    ) {
+        const res = await fetch(`${API_ENDPOINT}report/service`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+            body: JSON.stringify({ target, reportReason, description }),
+        });
+        if (res.status !== 201) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed report user");
+        }
+        return await res.json();
+    }
+
     async getReportsForPrestation(prestationId: string) {
         const res = await fetch(
             `${API_ENDPOINT}report/service/${prestationId}`,

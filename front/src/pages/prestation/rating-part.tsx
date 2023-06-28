@@ -60,6 +60,11 @@ export default function RatingPart({ prestationId }: RatingPartProps) {
         }
     };
 
+    const onReview = () => {
+        fetchReviews();
+        setCanPublish(false);
+    };
+
     useEffect(() => {
         fetchAverageMark();
         fetchReviews();
@@ -93,7 +98,7 @@ export default function RatingPart({ prestationId }: RatingPartProps) {
                 <>
                     <div className="divider my-0" />
                     <PublishReview
-                        reload={fetchReviews}
+                        onReview={onReview}
                         prestationId={prestationId}
                     />
                 </>

@@ -28,9 +28,24 @@ export default function useReport({ type }: UseReportProps) {
     const report = useCallback(
         async (id: string, reason: string, description: string) => {
             try {
-                console.log(reason, description, id);
                 setLoading(true);
-                await reportService.reportEntity(id, reason, description);
+                switch (type) {
+                    case "SERVICE":
+                        await reportService.reportPrestation(
+                            id,
+                            reason,
+                            description
+                        );
+
+                        break;
+
+                    case "USER":
+                        await reportService.reportUser(id, reason, description);
+
+                        break;
+                    default:
+                        throw new Error("Invalid report type");
+                }
                 setLoading(false);
                 return { success: true, message: null };
             } catch (e: any) {
