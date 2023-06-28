@@ -24,5 +24,5 @@ export default function AdminReportReason() {
         fetchReportReason();
     }, []);
 
-    return <div>Report reason</div>;
+    return <div>Report reason {JSON.stringify(reportReason)}</div>;
 }

@@ -43,11 +43,17 @@ export default function AdminReportReasons() {
             Report reasons
             <div>
                 <h2>Service reasons</h2>
-                {JSON.stringify(serviceReportReasons)}
+                {serviceReportReasons.length > 0 &&
+                    serviceReportReasons.map((reason) => (
+                        <div key={reason._id}>{JSON.stringify(reason)}</div>
+                    ))}
             </div>
             <div>
                 <h2>User reasons</h2>
-                {JSON.stringify(userReportReasons)}
+                {userReportReasons.length > 0 &&
+                    userReportReasons.map((reason) => (
+                        <div key={reason._id}>{JSON.stringify(reason)}</div>
+                    ))}
             </div>
         </div>
     );
