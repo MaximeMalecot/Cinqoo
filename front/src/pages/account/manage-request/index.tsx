@@ -22,7 +22,7 @@ export default function ManageOrder() {
         } catch (e: any) {
             console.log(e.message);
             displayMsg(e.message, "error");
-            navigate("/account/orders");
+            navigate("/account/requests");
         }
     };
 
