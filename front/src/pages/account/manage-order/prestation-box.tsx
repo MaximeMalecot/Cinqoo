@@ -44,18 +44,18 @@ export default function PrestationBox({ order, reload }: OrderBoxProps) {
             <h1 className="text-xl">Prestation details</h1>
             <div className="flex overflow-hidden gap-2">
                 <div
-                    className="object-contain rounded-md rounded overflow-hidden"
+                    className="object-contain rounded-md rounded overflow-hidden bg-slate-300"
                     style={{ height: "60px", width: "60px" }}
                 >
                     <img src={order.prestation.image} alt="" />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col flex-1">
                     <p className="text-xs" title={order.prestation.name}>
                         {order.prestation.name.length > 20
                             ? order.prestation.name.slice(0, 20) + "..."
                             : order.prestation.name}
                     </p>
-                    <button className="cursor-default p-y-1 border border-primary border-1 rounded rounded-md text-primary mt-auto">
+                    <button className="text-xs cursor-default py-1 px-10 w-fit border border-primary border-1 rounded rounded-md text-primary mt-auto">
                         {order.status}
                     </button>
                 </div>

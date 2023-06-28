@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ORDER_STATUS } from "../../constants/status";
 import { useAuthContext } from "../../contexts/auth.context";
 import { MessageI } from "../../interfaces/message";
 import { Request } from "../../interfaces/request";
+import eventSourceService from "../../services/event-source.service";
 import messageService from "../../services/message.service";
 import { displayMsg } from "../../utils/toast";
 import ConversationLayout from "./conversation-layout";
@@ -23,6 +24,7 @@ export default function RequestConversation({
         request.status !== ORDER_STATUS.DONE &&
         request.status !== ORDER_STATUS.CANCELLED &&
         request.status !== ORDER_STATUS.REFUSED;
+    const eventSource = useRef<EventSource | null>(null);
 
     const fetchMessages = useCallback(async () => {
         try {
@@ -37,11 +39,7 @@ export default function RequestConversation({
     const send = useCallback(
         async (content: string) => {
             try {
-                const res = await messageService.sendMessage(
-                    request._id,
-                    content
-                );
-                setMessages((prev) => [...prev, res]);
+                await messageService.sendMessage(request._id, content);
             } catch (e: any) {
                 console.log(e.message);
                 displayMsg(e.message, "error");
@@ -50,8 +48,29 @@ export default function RequestConversation({
         [request]
     );
 
+    const setupEventSource = useCallback(async () => {
+        const sse = await eventSourceService.getOrderSSE(request._id);
+        eventSource.current = sse;
+        sse.addEventListener("new_message", (data: any) => {
+            try {
+                const message = JSON.parse(data.data).data;
+                if (message.orderId === request._id) {
+                    setMessages((prev) => [...prev, message]);
+                }
+            } catch (e: any) {
+                console.log(e.message);
+            }
+        });
+    }, [request]);
+
     useEffect(() => {
         fetchMessages();
+        setupEventSource();
+        return () => {
+            if (eventSource.current) {
+                eventSource.current.close();
+            }
+        };
     }, []);
 
     return (

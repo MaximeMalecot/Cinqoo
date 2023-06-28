@@ -18,8 +18,18 @@ export class AppService {
   ) {}
 
   async getAllDeliverablesForAnOrder(orderId: string) {
-    const deliverables = await this.deliverableModel.find({ orderId: orderId });
-    return deliverables;
+    try {
+      const deliverables = await this.deliverableModel.find({
+        orderId: orderId,
+      });
+      return deliverables;
+    } catch (e: any) {
+      console.log(e);
+      throw new RpcException({
+        statusCode: 404,
+        message: e.message,
+      });
+    }
   }
 
   async publishDeliverable(orderId: string, data: PublishDto) {

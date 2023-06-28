@@ -1,4 +1,4 @@
-import { SEE_ENDPOINT } from "../constants/endpoints";
+import { SSE_ENDPOINT } from "../constants/endpoints";
 import { TOKEN_STORAGE_KEY } from "../constants/keys";
 
 class EventSourceService {
@@ -8,7 +8,7 @@ class EventSourceService {
             throw new Error("No token found");
         }
         const eventSource = new EventSource(
-            `${SEE_ENDPOINT}/conversations/sse?token=${token}`
+            `${SSE_ENDPOINT}conversations/sse?token=${token}`
         );
         return eventSource;
     }

@@ -65,7 +65,7 @@ export default function ConversationLayout({
         >
             <div
                 style={{ height: "10%" }}
-                className="flex flex-col w-full p-5 border border-slate-300 border-b-1 border-t-0 border-x-0"
+                className="flex flex-col items-center justify-center w-full p-5 border border-slate-300 border-b-1 border-t-0 border-x-0"
                 id="header"
             >
                 <h2 className="text-xl">{title}</h2>
@@ -115,11 +115,11 @@ export default function ConversationLayout({
                     className="flex flex-col p-5 gap-3"
                     style={{ height: "25%" }}
                 >
-                    <textarea
+                    <input
                         onChange={(e) => setTyped(e.target.value)}
                         value={typed}
                         placeholder="Type your message here..."
-                        className="bg-white h-full w-full !outline-none border border-slate-300 rounded-md p-5 resize-none"
+                        className="p-5 bg-white h-full w-full !outline-none border border-slate-300 rounded-md resize-none"
                     />
                     <Button
                         type="submit"

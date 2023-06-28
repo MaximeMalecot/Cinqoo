@@ -39,11 +39,7 @@ export default function OrderConversation({
     const send = useCallback(
         async (content: string) => {
             try {
-                const res = await messageService.sendMessage(
-                    order._id,
-                    content
-                );
-                setMessages((prev) => [...prev, res]);
+                await messageService.sendMessage(order._id, content);
             } catch (e: any) {
                 console.log(e.message);
                 displayMsg(e.message, "error");
@@ -52,13 +48,24 @@ export default function OrderConversation({
         [order]
     );
 
-    useEffect(() => {
-        (async () => {
-            const sse = await eventSourceService.getOrderSSE(order._id);
-            eventSource.current = sse;
-        })();
-        fetchMessages();
+    const setupEventSource = useCallback(async () => {
+        const sse = await eventSourceService.getOrderSSE(order._id);
+        eventSource.current = sse;
+        sse.addEventListener("new_message", (data: any) => {
+            try {
+                const message = JSON.parse(data.data).data;
+                if (message.orderId === order._id) {
+                    setMessages((prev) => [...prev, message]);
+                }
+            } catch (e: any) {
+                console.log(e.message);
+            }
+        });
+    }, [order]);
 
+    useEffect(() => {
+        fetchMessages();
+        setupEventSource();
         return () => {
             if (eventSource.current) {
                 eventSource.current.close();
