@@ -8,15 +8,17 @@ import { displayMsg, notify } from "../../utils/toast";
 interface PromptReportModalProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    prestationId: string;
+    targetId: string;
+    type: "SERVICE" | "USER";
 }
 
 export default function PromptReportModal({
-    prestationId,
+    targetId,
     isOpen,
     setIsOpen,
+    type,
 }: PromptReportModalProps) {
-    const { reasons, loading, report } = useReport({ type: "SERVICE" });
+    const { reasons, loading, report } = useReport({ type });
     const { isConnected } = useAuthContext();
 
     const dialogRef = useRef<HTMLDialogElement>(null);
@@ -49,12 +51,7 @@ export default function PromptReportModal({
             if (!isConnected) {
                 throw new Error("You must be connected to report a prestation");
             }
-            console.log(data);
-            const res = await report(
-                prestationId,
-                data.reason,
-                data.description
-            );
+            const res = await report(targetId, data.reason, data.description);
             if (res.success) {
                 setIsOpen(false);
                 notify("Report sent");
@@ -75,7 +72,9 @@ export default function PromptReportModal({
                 className="modal"
             >
                 <div className="modal-box flex flex-col gap-3">
-                    <h3 className="font-bold text-lg">Report a prestation</h3>
+                    <h3 className="font-bold text-lg">
+                        Report a {type === "SERVICE" ? "service" : "prestation"}
+                    </h3>
                     <p className="text-xs">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
                         Consequuntur aperiam, voluptatibus molestiae distinctio
