@@ -60,6 +60,27 @@ class ReportService {
         }
         return await res.json();
     }
+
+    async getReportsForPrestation(prestationId: string) {
+        const res = await fetch(
+            `${API_ENDPOINT}report/service/${prestationId}`,
+            {
+                method: "GET",
+                headers: {
+                    ...authHeader(),
+                },
+            }
+        );
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch reports");
+        }
+
+        return await res.json();
+    }
 }
 
 export default new ReportService();
