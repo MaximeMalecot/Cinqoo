@@ -10,6 +10,8 @@ import { Review } from "../../../interfaces/review";
 import billService from "../../../services/bill.service";
 import orderService from "../../../services/order.service";
 import prestationService from "../../../services/prestation.service";
+import reportService from "../../../services/report.service";
+import reviewService from "../../../services/review.service";
 import { displayMsg } from "../../../utils/toast";
 import FreelancerPart from "../../prestation/freelancer-part";
 
@@ -60,11 +62,44 @@ export default function AdminPrestation() {
         }
     }, [prestation]);
 
+    const fetchReviews = useCallback(async () => {
+        try {
+            if (!prestation) return;
+            const res = await reviewService.getReviewsByPrestation(
+                prestation._id
+            );
+            console.log("reviews", res);
+            setReviews(res);
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    }, [prestation]);
+
+    const fetchReports = useCallback(async () => {
+        try {
+            if (!prestation) return;
+            const res = await reportService.getReportsForPrestation(
+                prestation._id
+            );
+            console.log("reports", res);
+            setReports(res);
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    }, [prestation]);
+
     useEffect(() => {
         fetchPrestation();
+    }, []);
+
+    useEffect(() => {
         fetchOrders();
         fetchBills();
-    }, []);
+        fetchReviews();
+        fetchReports();
+    }, [prestation]);
 
     if (!prestation)
         return (
