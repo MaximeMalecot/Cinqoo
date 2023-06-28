@@ -31,4 +31,12 @@ export class AppController {
   async getAverageOnPrestation(@Payload('prestationId') prestationId: string) {
     return await this.appService.getAverageOnPrestation(prestationId);
   }
+
+  @EventPattern('REVIEW.CAN_PUBLISH')
+  async canPublishReview(@Payload() data: ReviewExistsDto) {
+    return await this.appService.canPublishReview(
+      data.userId,
+      data.prestationId,
+    );
+  }
 }

@@ -2,20 +2,20 @@ import { useCallback, useState } from "react";
 import Button from "../../components/button";
 import { useAuthContext } from "../../contexts/auth.context";
 import { displayMsg } from "../../utils/toast";
-import PromptReportModal from "./prompt-report-modal";
+import PromptReportModal from "../prestation/prompt-report-modal";
 
 interface ReportPartProps {
-    prestationId: string;
+    userId: string;
 }
 
-export default function ReportPart({ prestationId }: ReportPartProps) {
+export default function ReportPart({ userId }: ReportPartProps) {
     const { isConnected } = useAuthContext();
     const [showModal, setShowModal] = useState(false);
 
     const openReportModal = useCallback(async () => {
         try {
             if (!isConnected) {
-                throw new Error("You must be connected to report a prestation");
+                throw new Error("You must be connected to report a user");
             }
             setShowModal(true);
         } catch (e: any) {
@@ -35,7 +35,7 @@ export default function ReportPart({ prestationId }: ReportPartProps) {
             </Button>
             <PromptReportModal
                 type="USER"
-                targetId={prestationId}
+                targetId={userId}
                 isOpen={showModal}
                 setIsOpen={setShowModal}
             />

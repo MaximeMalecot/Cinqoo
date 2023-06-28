@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Button from "../components/button";
-import ViewPrestationCard from "../components/prestation/prestation-card/view-prestation-card";
-import { PrestationItemList } from "../interfaces/prestation";
-import { FreelancerData } from "../interfaces/user";
-import prestationService from "../services/prestation.service";
-import userService from "../services/user.service";
-import { displayMsg } from "../utils/toast";
+import Button from "../../components/button";
+import ViewPrestationCard from "../../components/prestation/prestation-card/view-prestation-card";
+import { PrestationItemList } from "../../interfaces/prestation";
+import { FreelancerData } from "../../interfaces/user";
+import prestationService from "../../services/prestation.service";
+import userService from "../../services/user.service";
+import { displayMsg } from "../../utils/toast";
+import ReportPart from "./report-part";
 
 const IMG =
     "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80";
@@ -56,7 +57,12 @@ export default function Freelancer() {
                         </div>
                         <h3 className="text-2xl">{freelancer.username}</h3>
                         <div className="divider py-0 my-0"></div>
-                        <Button className="w-full">Contact me</Button>
+                        <a
+                            className="w-full"
+                            href={`mailto:${freelancer.email}`}
+                        >
+                            <Button className="w-full">Contact me</Button>
+                        </a>
                     </div>
 
                     <div className="w-full h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full ">
@@ -67,9 +73,7 @@ export default function Freelancer() {
                                 : "I have no description yet"}
                         </p>
                     </div>
-                    <Button visual="danger" className="w-full">
-                        Report
-                    </Button>
+                    <ReportPart userId={freelancer._id} />
                 </div>
                 <div className="w-full md:w-2/3 flex flex-col gap-5">
                     <div className="flex flex-col gap-3">
@@ -78,7 +82,7 @@ export default function Freelancer() {
                         </h1>
 
                         {prestations.length > 0 ? (
-                            <div className="flex flex-col items-center gap-5 lg:grid lg:grid-cols-2">
+                            <div className="flex flex-col items-center gap-5 lg:grid lg:grid-cols-2 xl:grid-cols-3">
                                 {prestations.map((p, index) => (
                                     <ViewPrestationCard
                                         prestation={p}

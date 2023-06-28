@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { HasDoneOrderGuard } from './guards/has-done-order.guard';
@@ -23,6 +24,7 @@ export class ReviewController {
   ) {}
 
   @UseGuards(PrestationExistsGuard)
+  @Public()
   @Get(':prestationId/average')
   public getAverageForPrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
@@ -32,7 +34,19 @@ export class ReviewController {
     });
   }
 
+  @Get(':prestationId/canPublish')
+  public canPublishReview(
+    @Req() req,
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.reviewService.send('REVIEW.CAN_PUBLISH', {
+      prestationId,
+      userId: req.user._id,
+    });
+  }
+
   @UseGuards(PrestationExistsGuard)
+  @Public()
   @Get(':prestationId')
   public getReviewForPrestation(
     @Param('prestationId', CheckObjectIdPipe) prestationId: string,
