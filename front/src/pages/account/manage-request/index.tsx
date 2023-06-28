@@ -92,9 +92,16 @@ export default function ManageOrder() {
                         >
                             <Deliveries order={order} isFreelancer={true} />{" "}
                         </div>
-                        {activeTab === 2 && (
-                            <RequestConversation request={order} />
-                        )}
+                        <div
+                            style={{
+                                display: activeTab === 2 ? "block" : "none",
+                            }}
+                        >
+                            <RequestConversation
+                                request={order}
+                                isVisible={activeTab === 2}
+                            />
+                        </div>
                     </div>
                     <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
                         <PrestationBox reload={fetchOrder} order={order} />

@@ -20,8 +20,7 @@ export default function Deliveries({
     const [deliverables, setDeliverables] = useState<DeliverableI[]>([]);
     const canPublish = (() => {
         if (!isFreelancer) return false;
-        if (order.status === ORDER_STATUS.IN_PROGRESS) return true;
-        return false;
+        return order.status === ORDER_STATUS.IN_PROGRESS;
     })();
 
     const getDeliverables = async () => {
