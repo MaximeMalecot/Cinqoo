@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewExistsDto } from './dto/review-exists.dto';
 import { Review, ReviewDocument } from './schema/review.schema';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectModel(Review.name) private reviewModel: Model<Review>) {}
+  constructor(
+    @InjectModel(Review.name) private reviewModel: Model<Review>,
+    @Inject('ORDER_SERVICE') private orderService: ClientProxy,
+  ) {}
 
   async getForPrestation(prestationId: string): Promise<ReviewDocument[]> {
     return await this.reviewModel.find({ prestationId: prestationId }).exec();
@@ -28,6 +32,30 @@ export class AppService {
       ...data,
     });
     return await review.save();
+  }
+
+  async canPublishReview(userId: string, prestationId: string) {
+    try {
+      const orderDone = await firstValueFrom(
+        this.orderService.send('ORDER.HAS_DONE', {
+          applicant: userId,
+          serviceId: prestationId,
+        }),
+      );
+
+      if (!orderDone) return { canPublish: false };
+
+      const reviewExists = await this.exists({
+        prestationId: prestationId,
+        userId: userId,
+      });
+      if (reviewExists) return { canPublish: false };
+
+      return { canPublish: true };
+    } catch (e: any) {
+      console.log(e);
+      return { canPublish: false };
+    }
   }
 
   async exists(data: ReviewExistsDto) {
@@ -59,6 +87,9 @@ export class AppService {
       },
     ]);
 
-    return {averageMark: reviews[0]?.average??0, reviewsCount: reviewsCount};
+    return {
+      averageMark: reviews[0]?.average ?? 0,
+      reviewsCount: reviewsCount,
+    };
   }
 }

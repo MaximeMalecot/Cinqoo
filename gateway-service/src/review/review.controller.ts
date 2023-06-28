@@ -34,6 +34,17 @@ export class ReviewController {
     });
   }
 
+  @Get(':prestationId/canPublish')
+  public canPublishReview(
+    @Req() req,
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.reviewService.send('REVIEW.CAN_PUBLISH', {
+      prestationId,
+      userId: req.user._id,
+    });
+  }
+
   @UseGuards(PrestationExistsGuard)
   @Public()
   @Get(':prestationId')
