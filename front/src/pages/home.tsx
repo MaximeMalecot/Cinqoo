@@ -75,7 +75,7 @@ export default function Home() {
                                 <div className="flex gap-2">
                                     {categories.slice(0, 5).map((c, index) => (
                                         <Link
-                                            to={`/prestations?category=${c._id}`}
+                                            to={`/prestations?categories=${c._id}`}
                                             key={index}
                                             className="cursor-pointer border border-1 border-white w-fit px-2 rounded-md hover:bg-white hover:text-primary duration-500"
                                         >
