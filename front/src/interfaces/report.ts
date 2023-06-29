@@ -21,10 +21,6 @@ export interface Report {
     reportReason: ReportReason;
 }
 
-export interface ReportReasonCreate {
-    type: ReportReasonType;
-}
-
 export interface ReportReasonFormData {
     name: string;
     description: string;
