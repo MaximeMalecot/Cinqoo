@@ -11,6 +11,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
+import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { IsInOrderGuard } from './guards/is-in-order.guard';
 import { IsOrderOwner } from './guards/is-order-owner.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
 
@@ -33,6 +35,17 @@ export class OrderController {
   @Roles(ROLE.ADMIN)
   public getUserOrders(@Param('userId') userId: string) {
     return this.orderService.send('ORDER.GET_ORDERS_OF_USER', userId);
+  }
+
+  @Get('/prestation/:prestationId')
+  @Roles(ROLE.ADMIN)
+  public getPrestationOrders(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+  ) {
+    return this.orderService.send(
+      'ORDER.GET_ORDERS_OF_PRESTATION',
+      prestationId,
+    );
   }
 
   // User and freelancer specific routes
@@ -115,7 +128,7 @@ export class OrderController {
   }
 
   //Check if user is admin or owner of the order
-  @UseGuards(IsOrderOwner)
+  @UseGuards(IsInOrderGuard)
   @Get(':orderId')
   public getOrderById(@Param('orderId') orderId: string) {
     return this.orderService.send('ORDER.GET_ORDER_WITH_PRESTATION', orderId);

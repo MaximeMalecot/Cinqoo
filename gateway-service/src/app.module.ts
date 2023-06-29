@@ -46,7 +46,7 @@ import { WebhookModule } from './webhook/webhook.module';
     }),
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 15,
+      limit: 80,
     }),
     MessageModule,
     SseModule,

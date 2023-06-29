@@ -4,10 +4,6 @@ import { IsMongoIdObject } from 'src/decorators/mongoId.decorator';
 export class CreateReportDto {
   @IsOptional()
   @IsMongoIdObject()
-  service: string;
-
-  @IsOptional()
-  @IsMongoIdObject()
   target: string;
 
   @IsNotEmpty()
@@ -15,6 +11,6 @@ export class CreateReportDto {
   description: string;
 
   @IsNotEmpty()
-  @IsMongoIdObject()
+  @IsString()
   reportReason: string;
 }

@@ -55,20 +55,11 @@
 - op: add
   path: /spec/template/spec/containers/0/env/-
   value:
-      name: FRONT
+      name: FRONT_URL
       valueFrom:
           configMapKeyRef:
               name: variables
-              key: FRONT
-
-- op: add
-  path: /spec/template/spec/containers/0/env/-
-  value:
-      name: FRONT_PORT
-      valueFrom:
-          configMapKeyRef:
-              name: variables
-              key: FRONT_PORT
+              key: FRONT_URL
 
 - op: add
   path: /spec/template/spec/containers/0/env/-
@@ -204,3 +195,30 @@
           configMapKeyRef:
               name: variables
               key: NODE_OPTIONS
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+      name: HYBRID_SERVICE
+      valueFrom:
+          configMapKeyRef:
+              name: variables
+              key: HYBRID_SERVICE
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+      name: HYBRID_PORT
+      valueFrom:
+          configMapKeyRef:
+              name: variables
+              key: HYBRID_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+      name: HYBRID_MS_PORT
+      valueFrom:
+          configMapKeyRef:
+              name: variables
+              key: HYBRID_MS_PORT

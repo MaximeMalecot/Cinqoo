@@ -1,76 +1,33 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import {
+  BroadcastDto,
+  BroadcastOrderDto,
+  BroadcastUserDto,
+} from './dto/broadcast.dto';
 
 @Injectable()
 export class SseService {
-  private users = [];
-  private orders = {};
   constructor(
-    @Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
+    @Inject('HYBRID_SERVICE') private readonly hybridService: ClientProxy,
   ) {}
 
-  convertMessage = ({ type, ...data }) => {
-    console.log(`event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`);
-    return `event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`;
-  };
+  async broadcastAll(data: BroadcastDto) {
+    return await firstValueFrom(
+      this.hybridService.send('HYBRID.BROADCAST_ALL', data),
+    );
+  }
 
-  broadcastSpecific = (message, userId) => {
-    if (this.users[userId]) {
-      this.users[userId].write(this.convertMessage(message));
-    }
-  };
+  async broadcastOrder(data: BroadcastOrderDto) {
+    return await firstValueFrom(
+      this.hybridService.send('HYBRID.BROADCAST_ORDER', data),
+    );
+  }
 
-  broadcastOrder = (message, orderId) => {
-    if (
-      this.orders[orderId] &&
-      this.orders[orderId].size &&
-      this.orders[orderId].size > 0
-    ) {
-      this.orders[orderId].forEach((userId) => {
-        this.broadcastSpecific(message, userId);
-      });
-    }
-  };
-
-  addUser = async (userId, res, roles = ['USER']) => {
-    this.users[userId] = res;
-    let orders = await this.getOrders(userId, roles);
-    if (orders.length > 0) {
-      orders.map((order) => {
-        if (!this.orders[order._id]) this.orders[order._id] = new Set();
-        this.orders[order._id].add(userId);
-      });
-    }
-  };
-
-  deleteUser = async (userId, roles = ['USER']) => {
-    delete this.users[userId];
-    let orders = await this.getOrders(userId, roles);
-    if (orders.length > 0) {
-      orders.map((order) => {
-        this.orders[order._id].delete(userId);
-      });
-    }
-  };
-
-  getOrders = async (userId, roles = ['USER']) => {
-    let orders = [];
-    if (roles.includes('FREELANCER')) {
-      orders = await firstValueFrom(
-        this.orderService.send('ORDER.GET_ALL_REQUESTS', userId),
-      );
-    }
-    orders = [
-      ...orders,
-      ...(await firstValueFrom(
-        this.orderService.send('ORDER.GET_ORDERS_OF_USER', userId),
-      )),
-    ];
-    return orders;
-  };
-
-  logOrders = () => {
-    console.log('orders', this.orders);
-  };
+  async broadcastUser(data: BroadcastUserDto) {
+    return await firstValueFrom(
+      this.hybridService.send('HYBRID.BROADCAST_USER', data),
+    );
+  }
 }

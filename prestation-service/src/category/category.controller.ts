@@ -23,6 +23,11 @@ export class CategoryController {
     return await this.appService.getOne(id);
   }
 
+  @EventPattern('CATEGORY.GET_PRESTATION_BY_CATEGORY')
+  async getPrestationByCategory(id: string) {
+    return await this.appService.getAllPrestations(id);
+  }
+
   @EventPattern('CATEGORY.CREATE_ONE')
   async createOne(@Payload() data: CreateCategoryDto) {
     return await this.appService.createOne(data);

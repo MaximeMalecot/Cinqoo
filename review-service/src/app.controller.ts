@@ -17,6 +17,11 @@ export class AppController {
     return await this.appService.getForPrestation(data.prestationId);
   }
 
+  @EventPattern('REVIEW.GET_BY_USER')
+  async getByUser(userId: string) {
+    return await this.appService.getByUser(userId);
+  }
+
   @EventPattern('REVIEW.CREATE')
   async createReview(@Payload() data: CreateReviewDto) {
     return await this.appService.createReview(data);
@@ -30,5 +35,13 @@ export class AppController {
   @EventPattern('REVIEW.GET_AVERAGE_ON_PRESTATION')
   async getAverageOnPrestation(@Payload('prestationId') prestationId: string) {
     return await this.appService.getAverageOnPrestation(prestationId);
+  }
+
+  @EventPattern('REVIEW.CAN_PUBLISH')
+  async canPublishReview(@Payload() data: ReviewExistsDto) {
+    return await this.appService.canPublishReview(
+      data.userId,
+      data.prestationId,
+    );
   }
 }

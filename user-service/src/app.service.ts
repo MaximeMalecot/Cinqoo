@@ -22,10 +22,6 @@ export class AppService {
     @Inject('MAILER_SERVICE') private readonly mailerService: ClientProxy,
   ) {}
 
-  getHello() {
-    return this.getUsers();
-  }
-
   async getUsers() {
     return this.userModel.find().exec();
   }
@@ -263,6 +259,20 @@ export class AppService {
         'STRIPE.CREATE_ACCOUNT_LINK',
         user.stripeAccountId,
       ),
+    );
+    return { url: accountLink.url };
+  }
+
+  async getStripeLink(id: string) {
+    const user = await this.userModel.findById(new Types.ObjectId(id));
+    if (!user) {
+      throw new RpcException({
+        message: `User with id ${id} not found`,
+        statusCode: 400,
+      });
+    }
+    const accountLink = await firstValueFrom(
+      this.stripeService.send('STRIPE.GET_ACCOUNT_LINK', user.stripeAccountId),
     );
     return { url: accountLink.url };
   }

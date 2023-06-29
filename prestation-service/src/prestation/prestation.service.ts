@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -14,6 +14,7 @@ export class PrestationService {
   constructor(
     @InjectModel(Prestation.name) private prestationModel: Model<Prestation>,
     @Inject('STRIPE_SERVICE') private stripeService: ClientProxy,
+    @Inject(forwardRef(() => CategoryService))
     private categoryService: CategoryService,
   ) {}
 
@@ -70,60 +71,88 @@ export class PrestationService {
     return await this.prestationModel.find(filters).populate('categories');
   }
 
-  async create(prestation: CreatePrestationDto, userId: string, file: string) {
-    const product = await firstValueFrom(
-      this.stripeService.send('STRIPE.CREATE_PRODUCT', {
-        name: prestation.name,
-      }),
-    );
+  async getRandomPrestations() {
+    return await this.prestationModel.aggregate([
+      { $match: { isActive: true } },
+      { $sample: { size: 10 } },
+    ]);
+  }
 
-    const localCategories = [];
-    if (
-      prestation.categories &&
-      Array.isArray(prestation.categories) &&
-      prestation.categories.length > 0
-    ) {
-      const rawCategories = Array.from(new Set(prestation.categories));
-      await Promise.all(
-        rawCategories.map(async (category: string) => {
-          const exists = await this.categoryService.getOne(category);
-          if (exists) {
-            localCategories.push(exists._id);
-          }
+  async getPrestationByCategory(categoryId: string) {
+    const prestations = await this.prestationModel
+      .find({ categories: { $all: new Types.ObjectId(categoryId) } })
+      .populate('categories')
+      .select({
+        __v: false,
+        stripeId: false,
+      });
+    return prestations;
+  }
+
+  async create(prestation: CreatePrestationDto, userId: string, file: string) {
+    try {
+      const product = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_PRODUCT', {
+          name: prestation.name,
         }),
       );
+
+      const localCategories = [];
+      if (
+        prestation.categories &&
+        Array.isArray(prestation.categories) &&
+        prestation.categories.length > 0
+      ) {
+        const rawCategories = Array.from(new Set(prestation.categories));
+        await Promise.all(
+          rawCategories.map(async (category: string) => {
+            const exists = await this.categoryService.getOne(category);
+            if (exists) {
+              localCategories.push(exists._id);
+            }
+          }),
+        );
+      }
+
+      const newPrestation = {
+        ...prestation,
+        categories: localCategories,
+        stripeId: product.id,
+        owner: new Types.ObjectId(userId),
+        image: file,
+      };
+      const createdPrestation = new this.prestationModel(newPrestation);
+      const savedPrestation = await createdPrestation.save();
+
+      const {
+        image,
+        name,
+        revisionNb,
+        description,
+        price,
+        delay,
+        _id,
+        categories,
+      } = savedPrestation;
+      return {
+        image,
+        name,
+        revisionNb,
+        description,
+        price,
+        delay,
+        _id,
+        categories,
+      };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        statusCode: 500,
+        message: e.message,
+      });
     }
-
-    const newPrestation = {
-      ...prestation,
-      categories: localCategories,
-      stripeId: product.id,
-      owner: new Types.ObjectId(userId),
-      image: file,
-    };
-    const createdPrestation = new this.prestationModel(newPrestation);
-    const savedPrestation = await createdPrestation.save();
-
-    const {
-      image,
-      name,
-      revisionNb,
-      description,
-      price,
-      delay,
-      _id,
-      categories,
-    } = savedPrestation;
-    return {
-      image,
-      name,
-      revisionNb,
-      description,
-      price,
-      delay,
-      _id,
-      categories,
-    };
   }
 
   async getPrestationsOfUser(userId: string, active: boolean) {

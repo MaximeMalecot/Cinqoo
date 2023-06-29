@@ -4,9 +4,9 @@ import Header from "./header";
 
 export default function AppLayout() {
     return (
-        <div className="h-100 w-100">
+        <div className="h-100 w-100 ">
             <Header />
-            <main className="w-full">
+            <main className="w-full min-h-screen">
                 <Outlet />
             </main>
             <Footer />

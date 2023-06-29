@@ -2,6 +2,7 @@ import jwt_decode from "jwt-decode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TOKEN_STORAGE_KEY } from "../constants/keys";
+import { ROLES } from "../constants/roles";
 import { UserData } from "../interfaces/user";
 import authService from "../services/auth.service";
 import userService from "../services/user.service";
@@ -28,11 +29,19 @@ const useAuth = () => {
     const [token, setToken] = useState<string | null>(null);
     const [userData, setUserData] = useState<UserData | null>(null);
     const isConnected = useMemo(() => !!token && !!userData, [token, userData]);
+    const isFreelancer =
+        isConnected &&
+        (userData?.roles.includes(ROLES.FREELANCER) ? true : false);
+    const isAdmin =
+        isConnected && (userData?.roles.includes(ROLES.ADMIN) ? true : false);
     const navigate = useNavigate();
 
-    const register = useCallback(async (mail: string, password: string) => {
-        return await authService.register(mail, password);
-    }, []);
+    const register = useCallback(
+        async (mail: string, password: string, username: string) => {
+            return await authService.register(mail, password, username);
+        },
+        []
+    );
 
     const login = useCallback(async (mail: string, password: string) => {
         const res = await authService.login(mail, password);
@@ -47,15 +56,22 @@ const useAuth = () => {
         localStorage.removeItem(TOKEN_STORAGE_KEY);
         setToken(null);
         setUserData(null);
+        navigate("/");
         return true;
     }, []);
 
     const getUser = useCallback(async () => {
-        if (!token) return;
-        const res = await userService.getSelf();
-        if (res) {
-            setUserData(res);
-        } else {
+        try {
+            if (!token) return;
+            const res = await userService.getSelf();
+            if (res) {
+                setUserData(res);
+            } else {
+                logout();
+                navigate("/login");
+            }
+        } catch (e: any) {
+            console.log(e);
             logout();
             navigate("/login");
         }
@@ -89,6 +105,8 @@ const useAuth = () => {
         isConnected,
         register,
         reload: getUser,
+        isFreelancer,
+        isAdmin,
     };
 };
 

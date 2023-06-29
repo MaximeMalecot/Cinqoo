@@ -10,11 +10,6 @@ import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('getHello')
-  getHello() {
-    return this.appService.getHello();
-  }
-
   @EventPattern('getUsers')
   getUsers() {
     return this.appService.getUsers();
@@ -67,6 +62,11 @@ export class AppController {
   @EventPattern('USER.BECOME_FREELANCER')
   async becomeFreelancer(userId: string) {
     return this.appService.becomeFreelancer(userId);
+  }
+
+  @EventPattern('USER.GET_STRIPE_LINK')
+  async getStripeLink(userId: string) {
+    return this.appService.getStripeLink(userId);
   }
 
   @EventPattern('USER.GET_FREELANCER_PROFILE')
