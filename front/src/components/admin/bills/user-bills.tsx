@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { BillsItemList } from "../../../interfaces/bill";
 import billService from "../../../services/bill.service";
 import { displayMsg } from "../../../utils/toast";
-import BillItem from "./bill-item";
 
 interface Props {
     userId: string;
@@ -11,7 +10,7 @@ interface Props {
 export default function UserBills({ userId }: Props) {
     const [bills, setBills] = useState<BillsItemList[]>([]);
 
-    const fetchOrders = async () => {
+    const fetchBills = async () => {
         try {
             const res = await billService.getBillsByUser(userId);
             console.log(res);
@@ -23,14 +22,13 @@ export default function UserBills({ userId }: Props) {
     };
 
     useEffect(() => {
-        fetchOrders();
+        fetchBills();
     }, [userId]);
 
     return (
-        <div>
+        <div className="w-full">
             <h3 className="text-xl font-bold">Bills</h3>
-            {bills.length > 0 &&
-                bills.map((bill) => <BillItem key={bill._id} bill={bill} />)}
+            {bills.length === 0 && <p>This user has no bill</p>}
         </div>
     );
 }

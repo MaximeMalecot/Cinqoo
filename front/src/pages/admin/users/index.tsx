@@ -44,7 +44,7 @@ export default function AdminUsers() {
                                     <td>{user._id}</td>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.roles}</td>
+                                    <td>{user.roles.join(", ")}</td>
                                     <td>
                                         <Button
                                             onClick={() =>

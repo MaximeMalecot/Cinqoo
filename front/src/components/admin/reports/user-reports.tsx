@@ -27,12 +27,16 @@ export default function UserReports({ userId }: UserReportsProps) {
     }, [userId]);
 
     return (
-        <div>
-            <h3 className="text-xl font-bold">Reports</h3>
-            <h4 className="text-xl font-bold">Reports by User</h4>
-            <div>{JSON.stringify(reportsByUser)}</div>
-            <h4 className="text-xl font-bold">Reports on User</h4>
-            <div>{JSON.stringify(reportsOnUser)}</div>
+        <div className="w-full">
+            <h3 className="text-xl font-bold">Reports</h3>{" "}
+            <div>
+                <h4 className="text-xl font-bold">Reports by User</h4>
+                <div>{JSON.stringify(reportsByUser)}</div>
+            </div>
+            <div>
+                <h4 className="text-xl font-bold">Reports on User</h4>
+                <div>{JSON.stringify(reportsOnUser)}</div>
+            </div>
         </div>
     );
 }
