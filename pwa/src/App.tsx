@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { useAuthContext } from "./contexts/auth.context";
@@ -10,6 +10,9 @@ import Register from "./pages/register";
 
 function App() {
     const { isConnected } = useAuthContext();
+    const Prestation = lazy(() => import("./pages/prestation"));
+    const Prestations = lazy(() => import("./pages/prestations"));
+    const Freelancer = lazy(() => import("./pages/freelancer"));
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
@@ -17,6 +20,9 @@ function App() {
                     {isConnected && <></>}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/prestations" element={<Prestations />} />
+                    <Route path="/prestations/:id" element={<Prestation />} />
+                    <Route path="/freelancer/:id" element={<Freelancer />} />
                     <Route path="/" element={<Home />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
