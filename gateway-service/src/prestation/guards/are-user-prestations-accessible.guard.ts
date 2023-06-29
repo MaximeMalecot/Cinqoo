@@ -6,7 +6,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { ROLE } from 'src/auth/enums/role.enum';
 
@@ -28,10 +27,5 @@ export class AreUserPrestationsAccessibles implements CanActivate {
 
     if (profileOwner.roles.includes(ROLE.FREELANCER)) return true;
     return false;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }
