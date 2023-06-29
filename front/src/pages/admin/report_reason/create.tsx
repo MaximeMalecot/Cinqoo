@@ -17,13 +17,13 @@ export default function CreateReportReason() {
 
     const onSubmit = useCallback(async (data: any) => {
         try {
-            await reportService.createReportReason(data.type, {
+            const res = await reportService.createReportReason(data.type, {
                 name: data.name,
                 description: data.description,
             });
             displayMsg("Report reason created successfully", "success");
             setTimeout(() => {
-                navigate("/admin/report_reason");
+                navigate(`/admin/report_reason/${res._id}`);
             }, 2000);
         } catch (e: any) {
             displayMsg(e.message, "error");
