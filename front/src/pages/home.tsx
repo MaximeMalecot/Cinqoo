@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Button from "../components/button";
 import HomeSearchInput from "../components/home-search-input";
+import PaymentErrorModal from "../components/home/payment-error-modal";
+import PaymentSuccessModal from "../components/home/payment-success-modal";
 import ViewPrestationCard from "../components/prestation/prestation-card/view-prestation-card";
 import { Category } from "../interfaces/category";
 import categoryService from "../services/category.service";
@@ -15,6 +17,19 @@ export default function Home() {
     const [prestations, setPrestations] = useState([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [modalToShow, setModalToShow] = useState<string>("");
+
+    useEffect(() => {
+        const stripeSuccess = searchParams.get("success");
+
+        if (stripeSuccess == "true") {
+            setModalToShow("success");
+            return;
+        } else if (stripeSuccess == "false") {
+            setModalToShow("error");
+        }
+    }, [searchParams]);
 
     const fetchCategories = async () => {
         try {
@@ -102,6 +117,8 @@ export default function Home() {
                     </div>
                 )}
             </section>
+            {modalToShow === "success" && <PaymentSuccessModal />}
+            {modalToShow === "error" && <PaymentErrorModal />}
         </div>
     );
 }
