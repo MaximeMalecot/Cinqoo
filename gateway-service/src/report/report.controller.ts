@@ -72,6 +72,18 @@ export class ReportController {
 
   @Get('/user/:userId')
   @Roles(ROLE.ADMIN)
+  public getReportUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.reportService.send('REPORT.GET_FULL_USER', userId);
+  }
+
+  @Get('/target/:userId')
+  @Roles(ROLE.ADMIN)
+  public getReportOnUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.reportService.send('REPORT.GET_ON_USER', userId);
+  }
+
+  @Get('/creator/:userId')
+  @Roles(ROLE.ADMIN)
   public getReportByUser(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.reportService.send('REPORT.GET_BY_USER', userId);
   }

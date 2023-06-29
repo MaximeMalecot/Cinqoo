@@ -12,7 +12,6 @@ export default function AdminUsers() {
             console.log(res);
             setUsers(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };
@@ -21,5 +20,13 @@ export default function AdminUsers() {
         fetchUsers();
     }, []);
 
-    return <div>Users</div>;
+    return (
+        <div>
+            Users
+            {users.length > 0 &&
+                users.map((user) => (
+                    <div key={user._id}>{JSON.stringify(user)}</div>
+                ))}
+        </div>
+    );
 }

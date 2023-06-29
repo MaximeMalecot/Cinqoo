@@ -18,6 +18,11 @@ export class AppService {
     return await this.reviewModel.find({ prestationId: prestationId }).exec();
   }
 
+  async getByUser(userId: string): Promise<ReviewDocument[]> {
+    console.log('onéla', userId);
+    return await this.reviewModel.find({ userId: userId }).exec();
+  }
+
   async createReview(data: CreateReviewDto) {
     const reviewExists = await this.exists({
       prestationId: data.prestationId,

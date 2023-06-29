@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReportReasonItem from "../../../components/admin/report-reason/report-reason-item";
 import { ReportReason } from "../../../interfaces/report";
 import reportService from "../../../services/report.service";
 import { displayMsg } from "../../../utils/toast";
@@ -14,10 +15,8 @@ export default function AdminReportReasons() {
     const fetchServiceReportReasons = async () => {
         try {
             const res = await reportService.getServiceReasons();
-            console.log(res);
             setServiceReportReasons(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };
@@ -25,10 +24,8 @@ export default function AdminReportReasons() {
     const fecthUserReportReasons = async () => {
         try {
             const res = await reportService.getUserReasons();
-            console.log(res);
             setUserReportReasons(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };
@@ -43,11 +40,23 @@ export default function AdminReportReasons() {
             Report reasons
             <div>
                 <h2>Service reasons</h2>
-                {JSON.stringify(serviceReportReasons)}
+                {serviceReportReasons.length > 0 &&
+                    serviceReportReasons.map((reason) => (
+                        <ReportReasonItem
+                            key={reason._id}
+                            report_reason={reason}
+                        />
+                    ))}
             </div>
             <div>
                 <h2>User reasons</h2>
-                {JSON.stringify(userReportReasons)}
+                {userReportReasons.length > 0 &&
+                    userReportReasons.map((reason) => (
+                        <ReportReasonItem
+                            key={reason._id}
+                            report_reason={reason}
+                        />
+                    ))}
             </div>
         </div>
     );

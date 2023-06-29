@@ -156,6 +156,16 @@ export class PrestationController {
     });
   }
 
+  @Get('user/:userId')
+  @Roles(ROLE.ADMIN)
+  public getPrestationsOfUser(
+    @Param('userId', CheckObjectIdPipe) userId: string,
+  ) {
+    return this.prestationService.send('PRESTATION.GET_PRESTATIONS_OF_USER', {
+      userId,
+    });
+  }
+
   @Post()
   @Roles(ROLE.FREELANCER, ROLE.ADMIN)
   @UseInterceptors(

@@ -203,9 +203,9 @@ services:
             context: ./hybrid-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./hybrid-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./hybrid-service:/home/node
+        #     - /home/node/node_modules
         env_file: .env
         ports:
             - "3001:3001"

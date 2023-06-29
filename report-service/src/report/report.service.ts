@@ -52,13 +52,52 @@ export class ReportService {
   async getReportByUser(userId: string) {
     try {
       const res = await this.reportModel.find({
+        creator: userId,
+      });
+      return res;
+    } catch (error) {
+      throw new RpcException({
+        message: `Error while getting reports by user`,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async getReportsOnUser(userId: string) {
+    try {
+      const res = await this.reportModel.find({
         target: userId,
         type: 'USER',
       });
       return res;
     } catch (error) {
       throw new RpcException({
-        message: `Error while getting reports by user`,
+        message: `Error while getting reports on user`,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async getFullUser(userId: string) {
+    try {
+      const user = await firstValueFrom(
+        this.userServiceClient.send('getUserById', { id: userId }),
+      );
+      if (!user) {
+        throw new RpcException({
+          message: `This user doesn't exist`,
+          statusCode: 400,
+        });
+      }
+      const reportsBy = await this.getReportByUser(userId);
+      const reportsOn = await this.getReportsOnUser(userId);
+      return {
+        reportsBy,
+        reportsOn,
+      };
+    } catch (error) {
+      throw new RpcException({
+        message: `Error while getting full user`,
         statusCode: 400,
       });
     }

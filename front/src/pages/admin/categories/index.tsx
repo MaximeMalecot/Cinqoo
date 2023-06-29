@@ -9,10 +9,8 @@ export default function AdminCategories() {
     const fetchCategories = async () => {
         try {
             const res = await categoryService.getCategories();
-            console.log(res);
             setCategories(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };
