@@ -1,5 +1,11 @@
 import { API_ENDPOINT } from "../constants/endpoints";
-import { Report, ReportReason } from "../interfaces/report";
+import {
+    Report,
+    ReportReason,
+    ReportReasonEnum,
+    ReportReasonFormData,
+    ReportReasonType,
+} from "../interfaces/report";
 import authHeader from "./auth.header";
 
 interface GetOneReportReason extends ReportReason {
@@ -164,6 +170,29 @@ class ReportService {
                 throw new Error(JSON.stringify(jsonRes.message));
             }
             throw new Error("Failed to fetch reports");
+        }
+
+        return await res.json();
+    }
+
+    async createReportReason(
+        type: ReportReasonType,
+        data: ReportReasonFormData
+    ) {
+        const url =
+            type === ReportReasonEnum.USER ? "reasonUser" : "reasonService";
+
+        const res = await fetch(`${API_ENDPOINT}report/${url}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+            body: JSON.stringify(data),
+        });
+        if (res.status !== 201) {
+            const jsonRes = await res.json();
+            throw new Error(JSON.stringify(jsonRes.message));
         }
 
         return await res.json();

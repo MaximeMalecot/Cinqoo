@@ -3,3 +3,8 @@ export interface Category {
     _id: string;
     description: string;
 }
+
+export interface CategoryFormData {
+    name: string;
+    description: string;
+}
