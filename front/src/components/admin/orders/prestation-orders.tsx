@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Order } from "../../../interfaces/order";
 import orderService from "../../../services/order.service";
 import { displayMsg } from "../../../utils/toast";
@@ -11,7 +11,6 @@ interface Props {
 
 export default function PrestationOrders({ prestationId }: Props) {
     const [orders, setOrders] = useState<Order[]>([]);
-    const navigate = useNavigate();
 
     const fetchOrders = async () => {
         try {
