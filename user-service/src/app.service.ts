@@ -32,10 +32,7 @@ export class AppService {
   }
 
   async getUserById(id: string) {
-    const user = await this.userModel
-      .findById(new Types.ObjectId(id))
-      .select('+password')
-      .exec();
+    const user = await this.userModel.findById(new Types.ObjectId(id)).exec();
     if (!user) {
       throw new RpcException({
         message: `User ${id} not found`,
@@ -45,7 +42,7 @@ export class AppService {
     return user;
   }
 
-  async getUserByEmail(email: string) {
+  async authGetUser(email: string) {
     const user = await this.userModel
       .findOne({
         email: email,

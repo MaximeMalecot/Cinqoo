@@ -2,10 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { compareSync } from 'bcrypt';
-import { firstValueFrom } from 'rxjs';
-import { LoginDto } from './dto/login.dto';
-import { secret } from './constants';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import { firstValueFrom } from 'rxjs';
+import { secret } from './constants';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AppService {
@@ -21,7 +21,7 @@ export class AppService {
   async login(data: LoginDto) {
     try {
       const user = await firstValueFrom(
-        this.userService.send('getUserByEmail', {
+        this.userService.send('AUTH.GET_USER_BY_EMAIL', {
           email: data.email,
         }),
       );

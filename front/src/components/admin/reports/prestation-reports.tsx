@@ -95,7 +95,15 @@ function ReportRowItem({
                     {report.creator}
                 </Link>
             </td>
-            <td>{reason?.name ?? report.reportReason}</td>
+            <td className="text-slate-500">
+                <Link
+                    to={`/admin/report_reason/${reason?._id}`}
+                    target={"_blank"}
+                    className="underline"
+                >
+                    {reason?.name ?? report.reportReason}
+                </Link>
+            </td>
             <td>{report.description ?? "There is no description"}</td>
         </tr>
     );

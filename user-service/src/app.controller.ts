@@ -15,9 +15,9 @@ export class AppController {
     return this.appService.getUsers();
   }
 
-  @EventPattern('getUserByEmail')
-  async getUserByEmail(@Payload() data: { email: string }) {
-    return this.appService.getUserByEmail(data.email);
+  @EventPattern('AUTH.GET_USER_BY_EMAIL')
+  async authGetUser(@Payload() data: { email: string }) {
+    return this.appService.authGetUser(data.email);
   }
 
   @EventPattern('getUserById')

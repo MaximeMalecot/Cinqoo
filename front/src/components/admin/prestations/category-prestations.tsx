@@ -30,18 +30,29 @@ export default function CategoryPrestations({
     }, [categoryId]);
 
     return (
-        <div>
+        <div className="w-full">
             <h3 className="text-xl font-bold">Prestations</h3>
-            <h4 className="text-xl font-bold">Prestations by Category</h4>
-            <div>
-                {prestations.length > 0 &&
-                    prestations.map((prestation) => (
-                        <PrestationItem
-                            key={prestation._id}
-                            prestation={prestation}
-                        />
-                    ))}
-            </div>
+            {prestations.length > 0 && (
+                <div className="border-2 rounded rounded-md overflow-x-auto">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Owner</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {prestations.map((prestation) => (
+                                <PrestationItem prestation={prestation} />
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 }
