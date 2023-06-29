@@ -12,7 +12,6 @@ export default function AdminPrestations() {
             const res = await prestationService.adminGetPrestations();
             setPrestations(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };

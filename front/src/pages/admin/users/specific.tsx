@@ -7,8 +7,6 @@ import UserReports from "../../../components/admin/reports/user-reports";
 import UserReviews from "../../../components/admin/reviews/review-by-user";
 import FreelancerProfile from "../../../components/admin/users/freelancer-profile";
 import { ROLES } from "../../../constants/roles";
-import { PrestationItemList } from "../../../interfaces/prestation";
-import { Review } from "../../../interfaces/review";
 import { UserData } from "../../../interfaces/user";
 import userService from "../../../services/user.service";
 import { displayMsg } from "../../../utils/toast";
@@ -16,18 +14,13 @@ import { displayMsg } from "../../../utils/toast";
 export default function AdminUser() {
     const { id } = useParams();
     const [user, setUser] = useState<UserData | null>(null);
-    const [reports, setReports] = useState<Report[]>([]);
-    const [prestations, setPrestations] = useState<PrestationItemList[]>([]);
-    const [reviews, setReviews] = useState<Review[]>([]);
 
     const fetchUser = async () => {
         try {
             if (!id) throw new Error("No id provided");
             const res = await userService.getUser(id);
-            console.log(res);
             setUser(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };

@@ -23,7 +23,6 @@ export default function AdminPrestation() {
             const res = await prestationService.getPrestation(id);
             setPrestation(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     }, [id]);

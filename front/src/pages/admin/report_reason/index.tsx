@@ -15,10 +15,8 @@ export default function AdminReportReasons() {
     const fetchServiceReportReasons = async () => {
         try {
             const res = await reportService.getServiceReasons();
-            console.log(res);
             setServiceReportReasons(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };
@@ -26,10 +24,8 @@ export default function AdminReportReasons() {
     const fecthUserReportReasons = async () => {
         try {
             const res = await reportService.getUserReasons();
-            console.log(res);
             setUserReportReasons(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };

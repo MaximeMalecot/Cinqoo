@@ -12,7 +12,6 @@ export default function AdminUsers() {
             console.log(res);
             setUsers(res);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     };

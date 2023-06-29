@@ -18,7 +18,6 @@ export default function AdminReportReason() {
             setReportReason(reportReason);
             setReports(reports);
         } catch (e: any) {
-            console.log(e.message);
             displayMsg(e.message, "error");
         }
     }, [id]);
