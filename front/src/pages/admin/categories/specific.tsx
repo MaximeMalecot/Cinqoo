@@ -37,8 +37,8 @@ export default function AdminCategory() {
             <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col md:flex-row gap-5 relative">
                 <div className="w-full flex flex-col gap-5">
                     <div className="flex gap-1 items-center flex-col">
-                        <h1 className="text-4xl">{category.name}</h1>
-                        <span>{category.description}</span>
+                        <h1 className="text-4xl">Category : {category.name}</h1>
+                        <span>Description : {category.description}</span>
                     </div>
                     <div className="flex flex-col gap-2">
                         <CategoryPrestations categoryId={category?._id} />
