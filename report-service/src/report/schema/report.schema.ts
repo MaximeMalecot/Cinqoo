@@ -31,6 +31,9 @@ export class Report {
     type: Types.ObjectId,
   })
   reportReason: string;
+
+  @Prop({ type: Date, required: true, default: Date.now })
+  createdAt: Date;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

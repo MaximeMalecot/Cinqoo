@@ -14,11 +14,12 @@ export interface ReportReason {
 
 export interface Report {
     _id: string;
-    service: string;
+    type: string;
     target: string;
     creator: string;
     description: string;
     reportReason: ReportReason;
+    createdAt: string;
 }
 
 export interface ReportAdminI {
