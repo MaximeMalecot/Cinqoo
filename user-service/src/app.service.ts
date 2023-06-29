@@ -23,7 +23,12 @@ export class AppService {
   ) {}
 
   async getUsers() {
-    return this.userModel.find().exec();
+    return this.userModel
+      .find()
+      .sort({
+        createdAt: -1,
+      })
+      .exec();
   }
 
   async getUserById(id: string) {

@@ -1,11 +1,16 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
+import {
+    ADMIN_TABS,
+    FREELANCER_TABS,
+    USER_TABS,
+} from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
 import MobileMenu from "./mobile-menu";
 
 export default function HomeHeader() {
-    const { data, isConnected, logout, isFreelancer } = useAuthContext();
+    const { data, isConnected, logout, isFreelancer, isAdmin } =
+        useAuthContext();
     const headerRef = useRef<HTMLHeadElement>(null);
     const subMenuRef = useRef<HTMLLIElement>(null);
 
@@ -92,6 +97,17 @@ export default function HomeHeader() {
                                                         </li>
                                                     )
                                                 )}
+                                            {isAdmin &&
+                                                ADMIN_TABS.map((tab, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="capitalize"
+                                                    >
+                                                        <Link to={tab.path}>
+                                                            {tab.name}
+                                                        </Link>
+                                                    </li>
+                                                ))}
                                             <li>
                                                 <p onClick={logout}>Logout</p>
                                             </li>
