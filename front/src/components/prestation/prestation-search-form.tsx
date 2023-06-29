@@ -31,7 +31,7 @@ export default function PrestationSearchForm({
 
     return (
         <form
-            className="flex overflow-hidden rounded round-xl w-full"
+            className="flex flex-col gap-2 flex-wrap md:flex-row overflow-hidden rounded round-xl w-full"
             onSubmit={handleSubmit(onSubmit)}
         >
             <Input
@@ -72,7 +72,7 @@ export default function PrestationSearchForm({
                     required: false,
                 })}
                 defaultValue={initData?.categories ?? ""}
-                className="select w-full max-w-xs border border-1 border-slate-300 !outline-none p-2 rounded-md"
+                className="select w-full md:max-w-xs border border-1 border-slate-300 !outline-none p-2 rounded-md"
             >
                 {!categories || categories.length === 0 ? (
                     <option disabled>No category available</option>
@@ -94,6 +94,7 @@ export default function PrestationSearchForm({
             <Button type="submit" visual="bordered-primary">
                 Search
             </Button>
+            <div className="divider my-0" />
         </form>
     );
 }
