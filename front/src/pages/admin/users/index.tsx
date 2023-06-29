@@ -21,5 +21,13 @@ export default function AdminUsers() {
         fetchUsers();
     }, []);
 
-    return <div>Users</div>;
+    return (
+        <div>
+            Users
+            {users.length > 0 &&
+                users.map((user) => (
+                    <div key={user._id}>{JSON.stringify(user)}</div>
+                ))}
+        </div>
+    );
 }

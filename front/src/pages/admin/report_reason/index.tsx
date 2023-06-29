@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReportReasonItem from "../../../components/admin/report-reason/report-reason-item";
 import { ReportReason } from "../../../interfaces/report";
 import reportService from "../../../services/report.service";
 import { displayMsg } from "../../../utils/toast";
@@ -45,14 +46,20 @@ export default function AdminReportReasons() {
                 <h2>Service reasons</h2>
                 {serviceReportReasons.length > 0 &&
                     serviceReportReasons.map((reason) => (
-                        <div key={reason._id}>{JSON.stringify(reason)}</div>
+                        <ReportReasonItem
+                            key={reason._id}
+                            report_reason={reason}
+                        />
                     ))}
             </div>
             <div>
                 <h2>User reasons</h2>
                 {userReportReasons.length > 0 &&
                     userReportReasons.map((reason) => (
-                        <div key={reason._id}>{JSON.stringify(reason)}</div>
+                        <ReportReasonItem
+                            key={reason._id}
+                            report_reason={reason}
+                        />
                     ))}
             </div>
         </div>

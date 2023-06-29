@@ -1,5 +1,10 @@
 import { API_ENDPOINT } from "../constants/endpoints";
+import { Report, ReportReason } from "../interfaces/report";
 import authHeader from "./auth.header";
+
+interface GetOneReportReason extends ReportReason {
+    reports: Report[];
+}
 
 class ReportService {
     async getServiceReasons() {
@@ -128,7 +133,7 @@ class ReportService {
         return await res.json();
     }
 
-    async getReportReason(id: string) {
+    async getReportReason(id: string): Promise<GetOneReportReason> {
         const res = await fetch(`${API_ENDPOINT}report/reason/${id}`, {
             method: "GET",
             headers: {

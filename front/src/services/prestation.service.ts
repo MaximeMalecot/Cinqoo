@@ -103,6 +103,24 @@ class PrestationService {
         return await res.json();
     }
 
+    async getUserPrestations(userId: string) {
+        const res = await fetch(`${API_ENDPOINT}prestation/user/${userId}`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch prestations");
+        }
+
+        return await res.json();
+    }
+
     async getFreelancerPrestations(userId: string) {
         const res = await fetch(
             `${API_ENDPOINT}prestation/freelancer/${userId}`,
