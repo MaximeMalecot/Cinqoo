@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import Button from "../../../components/button";
 import { Input } from "../../../components/input";
 import { ReportReasonEnum } from "../../../interfaces/report";
@@ -12,18 +13,18 @@ export default function CreateReportReason() {
         handleSubmit,
         formState: { errors },
     } = useForm();
+    const navigate = useNavigate();
 
     const onSubmit = useCallback(async (data: any) => {
         try {
-            if (!data.type || data.type === "") {
-                displayMsg("Type is required", "error");
-                return;
-            }
-            const res = await reportService.createReportReason(data.type, {
+            await reportService.createReportReason(data.type, {
                 name: data.name,
                 description: data.description,
             });
-            displayMsg(res.message, "success");
+            displayMsg("Report reason created successfully", "success");
+            setTimeout(() => {
+                navigate("/admin/report_reason");
+            }, 2000);
         } catch (e: any) {
             displayMsg(e.message, "error");
         }
@@ -53,6 +54,11 @@ export default function CreateReportReason() {
                         {ReportReasonEnum.SERVICE}
                     </option>
                 </select>
+                {errors.type && (
+                    <span className="text-xs text-red-500">
+                        This field is required
+                    </span>
+                )}
                 <Input
                     type="text"
                     placeholder="Name"
@@ -60,6 +66,11 @@ export default function CreateReportReason() {
                         required: true,
                     })}
                 />
+                {errors.name && (
+                    <span className="text-xs text-red-500">
+                        This field is required
+                    </span>
+                )}
                 <Input
                     type="text"
                     placeholder="Description"
@@ -67,6 +78,11 @@ export default function CreateReportReason() {
                         required: true,
                     })}
                 />
+                {errors.description && (
+                    <span className="text-xs text-red-500">
+                        This field is required
+                    </span>
+                )}
                 <Button type="submit" visual="primary">
                     Create
                 </Button>
