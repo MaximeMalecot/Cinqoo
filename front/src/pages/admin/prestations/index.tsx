@@ -21,7 +21,7 @@ export default function AdminPrestations() {
     }, []);
 
     return (
-        <div className="container mx-auto flex flex-col p-5 md:p-0 md:py-10 gap-5">
+        <div className=" overflow-x-auto container mx-auto flex flex-col gap-3 p-5">
             <div className="flex flex-col gap-5">
                 <div>
                     <h1 className="text-2xl">Prestations</h1>
