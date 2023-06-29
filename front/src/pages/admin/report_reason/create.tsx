@@ -15,6 +15,10 @@ export default function CreateReportReason() {
 
     const onSubmit = useCallback(async (data: any) => {
         try {
+            if (!data.type || data.type === "") {
+                displayMsg("Type is required", "error");
+                return;
+            }
             const res = await reportService.createReportReason(data.type, {
                 name: data.name,
                 description: data.description,
@@ -26,17 +30,22 @@ export default function CreateReportReason() {
     }, []);
 
     return (
-        <div>
-            Create report reason
+        <div className="overflow-x-auto container mx-auto flex flex-col gap-3 p-5">
+            <h1 className="text-2xl">Create report reason</h1>
             <form
-                className="flex overflow-hidden rounded round-xl w-full"
+                className="flex flex-col gap-5 py-0 overflow-hidden rounded round-xl w-full"
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <select
+                    className="select select-bordered "
                     {...registerField("type", {
                         required: true,
                     })}
+                    defaultValue={""}
                 >
+                    <option disabled value="">
+                        Select a type
+                    </option>
                     <option value={ReportReasonEnum.USER}>
                         {ReportReasonEnum.USER}
                     </option>

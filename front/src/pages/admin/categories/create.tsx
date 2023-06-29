@@ -22,10 +22,10 @@ export default function CreateCategory() {
     }, []);
 
     return (
-        <div>
-            Create category
+        <div className="overflow-x-auto container mx-auto flex flex-col gap-3 p-5">
+            <h1 className="text-2xl">Create category</h1>
             <form
-                className="flex overflow-hidden rounded round-xl w-full"
+                className="flex flex-col gap-5 py-0 overflow-hidden rounded round-xl w-full"
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Input
