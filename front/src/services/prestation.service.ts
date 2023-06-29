@@ -21,6 +21,21 @@ class PrestationService {
         return await res.json();
     }
 
+    async getRandomPrestations() {
+        const res = await fetch(`${API_ENDPOINT}prestation/random`, {
+            method: "GET",
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to fetch prestations");
+        }
+
+        return await res.json();
+    }
+
     async getPrestation(id: string) {
         const res = await fetch(`${API_ENDPOINT}prestation/${id}`, {
             method: "GET",

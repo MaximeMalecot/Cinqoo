@@ -15,13 +15,17 @@ export default function RequestItem({ request }: RequestItemProps) {
             }`}
         >
             <div
-                className="object-cover overflow-hidden rounded-md"
+                className="object-cover overflow-hidden rounded-md bg-slate-400"
                 style={{ height: "100px", width: "100px" }}
             >
-                <img src={request.prestation.image} alt="" />
+                <img
+                    src={request.prestation.image}
+                    alt=""
+                    className="h-full w-full object-cover"
+                />
             </div>
             <div className="flex flex-col gap-3">
-                <div className="flex gap-3 items-center">
+                <div className="flex flex-col md:flex-row gap-3 items-center">
                     <p className="text-xl">
                         Request no.{" "}
                         <span className="font-bold">{request._id}</span>
@@ -38,8 +42,17 @@ export default function RequestItem({ request }: RequestItemProps) {
                     {request.prestation.name}
                 </Link>
                 <p>{new Date(request.date).toLocaleString()}</p>
+                <Link
+                    className="block md:hidden ml-0 md:ml-auto"
+                    to={`/account/requests/${request._id}`}
+                >
+                    <Button visual="primary">Manage</Button>
+                </Link>
             </div>
-            <Link className="ml-auto" to={`/account/requests/${request._id}`}>
+            <Link
+                className="hidden md:block ml-0 md:ml-auto"
+                to={`/account/requests/${request._id}`}
+            >
                 <Button visual="primary">Manage</Button>
             </Link>
         </div>

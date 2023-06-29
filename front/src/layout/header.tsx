@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
     ADMIN_TABS,
     FREELANCER_TABS,
     USER_TABS,
 } from "../constants/header-tabs";
+
 import { useAuthContext } from "../contexts/auth.context";
 import MobileMenu from "./mobile-menu";
 
@@ -36,7 +37,7 @@ export default function Header() {
         <header
             ref={headerRef}
             style={{ position: "relative", zIndex: 10000 }}
-            className={`navbar top-0 relative bg-base-100 border border-b2 border-base-200`}
+            className={`navbar top-0 relative bg-base-100 border border-b2 border-base-300`}
         >
             <MobileMenu color="black" />
             <div className={`container mx-auto `}>
@@ -51,14 +52,26 @@ export default function Header() {
                 <div className="flex-none hidden md:block">
                     <ul className="menu menu-horizontal px-1 flex items-center gap-2">
                         <li>
-                            <Link className="text-xl" to="/prestations">
+                            <NavLink
+                                className={({ isActive }) =>
+                                    "text-xl " +
+                                    (isActive ? "text-primary" : "")
+                                }
+                                to="/prestations"
+                            >
                                 Discover
-                            </Link>
+                            </NavLink>
                         </li>
                         <li>
-                            <Link className="text-xl" to="/become-freelancer">
+                            <NavLink
+                                className={({ isActive }) =>
+                                    "text-xl " +
+                                    (isActive ? "text-primary" : "")
+                                }
+                                to="/become-freelancer"
+                            >
                                 Become freelancer
-                            </Link>
+                            </NavLink>
                         </li>
                         {isConnected ? (
                             <>
