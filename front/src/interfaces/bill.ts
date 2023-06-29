@@ -5,4 +5,5 @@ export interface BillsItemList {
     status: string;
     currency: string;
     createdAt: string;
+    userId?: string;
 }

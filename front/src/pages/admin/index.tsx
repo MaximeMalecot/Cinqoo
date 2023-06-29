@@ -4,8 +4,8 @@ import AdminCategories from "./categories";
 import CreateCategory from "./categories/create";
 import AdminCategory from "./categories/specific";
 import AdminOrder from "./order";
+import AdminPrestation from "./prestation";
 import AdminPrestations from "./prestations";
-import AdminPrestation from "./prestations/specific";
 import AdminReportReasons from "./report_reason";
 import CreateReportReason from "./report_reason/create";
 import AdminReportReason from "./report_reason/specific";
@@ -16,7 +16,7 @@ function AdminLayout() {
     return (
         <div>
             <div className="py-5 border border-b2 border-base-200">
-                <ul className="flex justify-center items-center gap-5">
+                <ul className="flex flex-wrap justify-start md:justify-center items-center gap-5">
                     {ADMIN_HEADER_TABS.map((tab) => (
                         <li
                             key={tab.path}

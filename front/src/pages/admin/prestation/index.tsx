@@ -9,7 +9,7 @@ import { Category } from "../../../interfaces/category";
 import { PrestationItemList } from "../../../interfaces/prestation";
 import prestationService from "../../../services/prestation.service";
 import { displayMsg } from "../../../utils/toast";
-import FreelancerPart from "../../prestation/freelancer-part";
+import AdminFreelancerPart from "./freelancer-part";
 
 export default function AdminPrestation() {
     const { id } = useParams();
@@ -41,9 +41,9 @@ export default function AdminPrestation() {
         );
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full overflow-hidden">
             <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col md:flex-row gap-5 relative">
-                <div className="w-full md:w-2/3 flex flex-col gap-5">
+                <div className="w-full flex flex-col gap-5">
                     <div className="flex gap-1">
                         <h1 className="text-4xl">{prestation.name}</h1>
                     </div>
@@ -72,7 +72,7 @@ export default function AdminPrestation() {
                         </p>
                     </div>
                     <div className="divider my-0"></div>
-                    <FreelancerPart freelancerId={prestation.owner} />
+                    <AdminFreelancerPart userId={prestation.owner} />
                     <div className="divider my-0"></div>
                     <div className="flex flex-col gap-2">
                         <h3 className="text-xl font-bold">Categories</h3>

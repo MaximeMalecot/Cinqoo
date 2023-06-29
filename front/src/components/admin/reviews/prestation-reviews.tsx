@@ -31,12 +31,18 @@ export default function PrestationReviews({
     }, [prestationId]);
 
     return (
-        <div>
+        <div className="w-full">
             <h3 className="text-xl font-bold">Reviews</h3>
-            {reviews.length > 0 &&
-                reviews.map((review) => (
-                    <ReviewItem key={review._id} review={review} />
-                ))}
+            {reviews.length === 0 && (
+                <p>There is no review for tihs prestation</p>
+            )}
+            {
+                <div className="flex flex-col w-full">
+                    {reviews.map((review, idx) => (
+                        <ReviewItem key={idx} review={review} />
+                    ))}
+                </div>
+            }
         </div>
     );
 }

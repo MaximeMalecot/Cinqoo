@@ -21,6 +21,15 @@ export interface Report {
     reportReason: ReportReason;
 }
 
+export interface ReportAdminI {
+    _id: string;
+    service: string;
+    target: string;
+    creator: string;
+    description: string;
+    reportReason: string;
+}
+
 export interface ReportReasonFormData {
     name: string;
     description: string;
