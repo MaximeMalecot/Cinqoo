@@ -26,7 +26,7 @@ export default function AdminUsers() {
     return (
         <div className=" overflow-x-auto container mx-auto flex flex-col gap-3 p-5">
             <h1 className="text-2xl">Users</h1>
-            <div className="border-2 rounded rounded-md overflow-hidden">
+            <div className="border-2 rounded rounded-md overflow-x-auto">
                 <table className="table">
                     <thead>
                         <tr>
@@ -39,12 +39,12 @@ export default function AdminUsers() {
                     </thead>
                     <tbody>
                         {users.length > 0 &&
-                            users.map((user) => (
-                                <tr className="bg-base-200">
+                            users.map((user, index) => (
+                                <tr key={index} className="bg-base-200">
                                     <td>{user._id}</td>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.roles}</td>
+                                    <td>{user.roles.join(", ")}</td>
                                     <td>
                                         <Button
                                             onClick={() =>

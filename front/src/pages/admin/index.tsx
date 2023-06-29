@@ -9,8 +9,8 @@ import AdminPrestations from "./prestations";
 import AdminReportReasons from "./report_reason";
 import CreateReportReason from "./report_reason/create";
 import AdminReportReason from "./report_reason/specific";
+import AdminUser from "./user";
 import AdminUsers from "./users";
-import AdminUser from "./users/specific";
 
 function AdminLayout() {
     return (
