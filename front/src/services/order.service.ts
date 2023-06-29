@@ -1,4 +1,5 @@
 import { API_ENDPOINT } from "../constants/endpoints";
+import { OrderStatusEnum } from "../interfaces/order";
 import authHeader from "./auth.header";
 
 class OrderService {
@@ -72,6 +73,14 @@ class OrderService {
         }
 
         return await res.json();
+    }
+
+    async updateOrderStatus(id: string, status: OrderStatusEnum) {
+        console.log("updateOrderStatus", id, status);
+    }
+
+    async refundOrder(id: string) {
+        console.log("refundOrder", id);
     }
 }
 
