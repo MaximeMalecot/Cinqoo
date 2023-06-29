@@ -85,7 +85,7 @@ export default function Orders() {
                                                     <img
                                                         src={o.prestation.image}
                                                         alt=""
-                                                        className="w-20 h-20 rounded-md bg-slate-300"
+                                                        className="w-20 h-20 rounded-md bg-slate-300 object-cover"
                                                     />
                                                 </div>
                                             </td>

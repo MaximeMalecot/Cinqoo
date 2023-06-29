@@ -32,7 +32,7 @@ export default function ViewPrestationCard({
             >
                 <img
                     src={prestation.image}
-                    className="w-full h-full"
+                    className="w-full h-full object-cover"
                     alt="Shoes"
                 />
             </figure>
