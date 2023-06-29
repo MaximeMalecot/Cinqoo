@@ -1,8 +1,15 @@
+export type ReportReasonType = "USER" | "SERVICE";
+
+export enum ReportReasonEnum {
+    "USER" = "USER",
+    "SERVICE" = "SERVICE",
+}
+
 export interface ReportReason {
     _id: string;
     name: string;
     description: string;
-    type: string;
+    type: ReportReasonType;
 }
 
 export interface Report {
@@ -12,4 +19,13 @@ export interface Report {
     creator: string;
     description: string;
     reportReason: ReportReason;
+}
+
+export interface ReportReasonCreate {
+    type: ReportReasonType;
+}
+
+export interface ReportReasonFormData {
+    name: string;
+    description: string;
 }
