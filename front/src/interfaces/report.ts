@@ -28,6 +28,7 @@ export interface ReportAdminI {
     creator: string;
     description: string;
     reportReason: string;
+    type: "USER" | "SERVICE";
 }
 
 export interface ReportReasonFormData {

@@ -29,6 +29,7 @@ export default function UserReviews({ userId }: UserReviewProps) {
     return (
         <div>
             <h3 className="text-xl font-bold">Reviews</h3>
+            {reviews.length === 0 && <p>This user has never posted a review</p>}
             {reviews.length > 0 &&
                 reviews.map((review) => (
                     <ReviewItem key={review._id} review={review} />

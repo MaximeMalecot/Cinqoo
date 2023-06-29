@@ -11,6 +11,7 @@ export interface AccountData {
     username: string;
     stripeAccountId: string;
     roles: string[];
+    createdAt?: string;
 }
 
 export interface FreelancerData {
