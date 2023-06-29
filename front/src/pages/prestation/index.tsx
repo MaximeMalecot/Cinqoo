@@ -127,7 +127,7 @@ export default function Prestation() {
                     <ReportPart prestationId={prestation._id} />
                 </div>
             </section>
-            <Recommandations />
+            <Recommandations prestationIdToExlude={prestation._id} />
         </div>
     );
 }
