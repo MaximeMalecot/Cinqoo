@@ -62,7 +62,11 @@ export default function PrestationBox({ order, reload }: OrderBoxProps) {
             </div>
             <div className="divider my-0" />
             {order.status === "TERMINATED" && (
-                <Button visual="primary" onClick={handleFinalization}>
+                <Button
+                    visual="primary"
+                    onClick={handleFinalization}
+                    disabled={loading}
+                >
                     {loading && (
                         <span className="loading loading-spinner"></span>
                     )}
@@ -71,7 +75,11 @@ export default function PrestationBox({ order, reload }: OrderBoxProps) {
             )}
             {order.status === "TERMINATED" &&
                 order.currentRevisionNb < order.serviceRevisionNb && (
-                    <Button visual="primary" onClick={handleRevision}>
+                    <Button
+                        visual="primary"
+                        onClick={handleRevision}
+                        disabled={loading}
+                    >
                         {loading && (
                             <span className="loading loading-spinner"></span>
                         )}

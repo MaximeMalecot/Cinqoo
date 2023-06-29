@@ -8,3 +8,5 @@ export const SERVICES = {
 export const PORTS = {
   ORDER: parseInt(process.env.ORDER_PORT) ?? 3000,
 };
+
+export const FRONT_URL = process.env.FRONT_URL ?? 'http://localhost:8080';

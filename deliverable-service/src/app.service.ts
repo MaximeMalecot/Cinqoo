@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { FRONT_URL } from './constants';
 import { PublishDto } from './dto/publish.dto';
 import { Deliverable } from './schemas/deliverable.schema';
 
@@ -58,7 +59,7 @@ export class AppService {
     );
     this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
       targetId: order.applicant,
-      redirectUrl: `http://localhost:3000/orders/${orderId}`,
+      redirectUrl: `${FRONT_URL}/account/orders/${orderId}`,
       label: 'Track order',
       subject: 'New deliverable',
       text: `A new deliverable has been published for your order ${orderId}`,

@@ -10,3 +10,5 @@ export const SERVICES = {
 export const PORTS = {
   PAYMENT: parseInt(process.env.PAYMENT_PORT) ?? 3000,
 };
+
+export const FRONT_URL = process.env.FRONT_URL ?? 'http://localhost:8080';

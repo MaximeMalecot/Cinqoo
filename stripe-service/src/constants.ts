@@ -8,3 +8,5 @@ export const SERVICES = {
 export const PORTS = {
   STRIPE: parseInt(process.env.STRIPE_PORT) ?? 3000,
 };
+
+export const FRONT_URL = process.env.FRONT_URL ?? 'http://localhost:8080';

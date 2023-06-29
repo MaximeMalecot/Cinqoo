@@ -202,7 +202,7 @@ export default function PrestationForm({
                     </svg>
 
                     <p>
-                        Do not forget Cinqoo takes a 10% commission fee on each
+                        Do not forget Cinqoo takes a 20% commission fee on each
                         selling you do, so maybe adapt your prices with that in
                         mind.
                     </p>

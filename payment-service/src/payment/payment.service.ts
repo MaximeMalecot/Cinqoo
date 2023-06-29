@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { FRONT_URL } from 'src/constants';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { UpdatePaymentIntentDto } from './dto/update-payment-intent.dto';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
@@ -10,6 +11,8 @@ import { Bill } from './schemas/bill.schema';
 
 @Injectable()
 export class PaymentService {
+  fees = 0.2;
+
   constructor(
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
     @Inject('PRESTATION_SERVICE')
@@ -57,8 +60,8 @@ export class PaymentService {
       const stripeCheckoutSession = await firstValueFrom(
         this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {
           priceId: price.id,
-          successUrl: 'http://localhost:3000/success',
-          cancelUrl: 'http://localhost:3000/cancel',
+          successUrl: `${FRONT_URL}?success=true`,
+          cancelUrl: `${FRONT_URL}?success=false`,
         }),
       );
 
@@ -179,19 +182,22 @@ export class PaymentService {
         });
       }
 
+      const amount = bill.amount * (1 - this.fees);
+      console.log(bill.amount, amount);
       await firstValueFrom(
         this.stripeService.send('STRIPE.TRANSFER_FUNDS', {
           stripeConnectAccountId: provider.stripeAccountId,
-          amount: bill.amount,
+          amount,
           currency: 'eur',
           description: `Paiement de la prestation ${prestation.title}`,
         }),
       );
 
-      this.sendMoneyTransferedEmail(provider._id, prestation.name, bill.amount);
+      this.sendMoneyTransferedEmail(provider._id, prestation.name, amount);
 
       return { success: true, message: 'Bill payment transfered' };
     } catch (e: any) {
+      console.log(e);
       if (e instanceof RpcException) {
         throw e;
       }

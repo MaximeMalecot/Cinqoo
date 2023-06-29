@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { FRONT_URL } from './constants';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { DoneRequestDto } from './dto/done-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
@@ -414,10 +415,12 @@ export class AppService {
   // Mails
 
   sendOrderPendingEmail(userId: string) {
-    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
       targetId: userId,
       subject: 'Order pending ⚡️',
       text: 'The payment has been successfull and your order is pending, you will be notified when it is accepted or refused by the service provider.',
+      redirectUrl: `${FRONT_URL}/account/orders`,
+      label: 'See your orders',
     });
   }
 
@@ -426,7 +429,7 @@ export class AppService {
       targetId: userId,
       subject: 'Order terminated ✅',
       text: 'Your order has been marked as terminated by the service provider, you can confirm the finalization of the order or ask for a revision if there are any left.',
-      redirectUrl: 'http://localhost:3000/orders',
+      redirectUrl: `${FRONT_URL}/account/orders`,
       label: 'Confirm finalization',
     });
   }
@@ -436,7 +439,7 @@ export class AppService {
       targetId: userId,
       subject: 'Order accepted ✅',
       text: 'Your order has been accepted, you can follow its progress. The service provider will start working on it.',
-      redirectUrl: 'http://localhost:3000/orders',
+      redirectUrl: `${FRONT_URL}/account/orders`,
       label: "Follow your order's progress",
     });
   }
@@ -454,10 +457,12 @@ export class AppService {
       this.prestationService.send('PRESTATION.GET_ONE', serviceId),
     );
 
-    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
       targetId: prestation.owner,
       subject: 'Request pending ⚡️',
       text: 'You have a new request for your service, you can accept or refuse it.',
+      redirectUrl: `${FRONT_URL}/account/requests`,
+      label: 'Manage your requests',
     });
   }
 
@@ -466,10 +471,12 @@ export class AppService {
       this.prestationService.send('PRESTATION.GET_ONE', serviceId),
     );
 
-    this.mailerService.emit('MAILER.SEND_INFORMATIVE_MAIL', {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
       targetId: prestation.owner,
       subject: 'A revision has been started ⚡️',
       text: 'The client has started a revision on your service.',
+      redirectUrl: `${FRONT_URL}/account/requests`,
+      label: 'Manage your requests',
     });
   }
 }
