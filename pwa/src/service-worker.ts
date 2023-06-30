@@ -99,7 +99,9 @@ const putInCache = async (request: Request, response: Response) => {
 const networkFirst = async (request: Request) => {
     try {
         const responseFromNetwork = await fetch(request);
-        putInCache(request.clone(), responseFromNetwork.clone());
+        if (request.method === "GET") {
+            putInCache(request.clone(), responseFromNetwork.clone());
+        }
         return responseFromNetwork;
     } catch (error) {
         const responseFromCache = await caches.match(request);

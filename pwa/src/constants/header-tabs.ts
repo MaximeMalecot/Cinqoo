@@ -23,29 +23,3 @@ export const USER_TABS = [
         path: "/account/favorites",
     },
 ];
-
-export const ADMIN_HEADER_TABS = [
-    {
-        name: "Users",
-        path: "/admin/users",
-    },
-    {
-        name: "Prestations",
-        path: "/admin/prestations",
-    },
-    {
-        name: "Categories",
-        path: "/admin/categories",
-    },
-    {
-        name: "Report reasons",
-        path: "/admin/report_reason",
-    },
-];
-
-export const ADMIN_TABS = [
-    {
-        name: "Admin",
-        path: "/admin",
-    },
-];
