@@ -94,10 +94,6 @@ class OrderService {
 
         return await res.json();
     }
-
-    async refundOrder(id: string) {
-        console.log("refundOrder", id);
-    }
 }
 
 export default new OrderService();

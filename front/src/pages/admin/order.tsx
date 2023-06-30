@@ -4,7 +4,7 @@ import BillItem from "../../components/admin/bills/bill-item";
 import OrderDeliverable from "../../components/admin/deliverables/order-deliverables";
 import PrestionOrder from "../../components/admin/prestations/order-prestation";
 import Button from "../../components/button";
-import { BillsItemList } from "../../interfaces/bill";
+import { BillStatus, BillsItemList } from "../../interfaces/bill";
 import { Order, OrderStatusEnum } from "../../interfaces/order";
 import { PrestationItemList } from "../../interfaces/prestation";
 import billService from "../../services/bill.service";
@@ -55,14 +55,14 @@ export default function AdminOrder() {
 
     const refundOrder = useCallback(async () => {
         try {
-            if (!id) throw new Error("No id provided");
-            await orderService.refundOrder(id);
+            if (!bill) throw new Error("No bill provided");
+            await billService.refundBill(bill._id);
             displayMsg("Order refunded", "success");
             fetchOrder();
         } catch (e: any) {
             displayMsg(e.message, "error");
         }
-    }, [id]);
+    }, [bill]);
 
     useEffect(() => {
         fetchOrder();
@@ -105,7 +105,7 @@ export default function AdminOrder() {
                                         )
                                     )}
                                 </select>
-                                {bill && bill.status === "PAID" && (
+                                {bill && bill.status === BillStatus.PAID && (
                                     <Button onClick={refundOrder}>
                                         Refund
                                     </Button>

@@ -73,6 +73,25 @@ class BillService {
 
         return await res.json();
     }
+
+    async refundBill(id: string) {
+        const res = await fetch(`${API_ENDPOINT}payment/refund/${id}`, {
+            method: "POST",
+            headers: {
+                ...authHeader(),
+            },
+        });
+
+        if (res.status !== 201) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to refund order");
+        }
+
+        return await res.json();
+    }
 }
 
 export default new BillService();

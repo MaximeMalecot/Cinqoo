@@ -8,7 +8,7 @@ export default function BillItem({ bill }: BillItemProps) {
     return (
         <div className="flex flex-col">
             <div className="flex gap-1 justify-between">
-                <h2 className="text-black text-2xl">Bill no.{bill._id}</h2>
+                <h2 className="text-black text-2xl">Bill no. {bill._id}</h2>
             </div>
             <div className="flex flex-col gap-5">
                 <div className="flex gap-5">
