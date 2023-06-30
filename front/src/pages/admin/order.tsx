@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import BillItem from "../../components/admin/bills/bill-item";
 import OrderDeliverable from "../../components/admin/deliverables/order-deliverables";
 import PrestionOrder from "../../components/admin/prestations/order-prestation";
 import Button from "../../components/button";
+import { BillsItemList } from "../../interfaces/bill";
 import { Order, OrderStatusEnum } from "../../interfaces/order";
 import { PrestationItemList } from "../../interfaces/prestation";
+import billService from "../../services/bill.service";
 import orderService from "../../services/order.service";
 import { displayMsg } from "../../utils/toast";
 
 export default function AdminOrder() {
     const { id } = useParams();
     const [order, setOrder] = useState<Order>();
+    const [bill, setBill] = useState<BillsItemList>();
     const [prestation, setPrestation] = useState<PrestationItemList>();
 
     const fetchOrder = useCallback(async () => {
@@ -23,6 +27,16 @@ export default function AdminOrder() {
             displayMsg(e.message, "error");
         }
     }, [id]);
+
+    const fetchBill = useCallback(async () => {
+        try {
+            if (!order) return;
+            const bill = await billService.getBill(order?.billId);
+            setBill(bill);
+        } catch (e: any) {
+            displayMsg(e.message, "error");
+        }
+    }, [order]);
 
     const changeStatus = useCallback(
         async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -53,6 +67,10 @@ export default function AdminOrder() {
     useEffect(() => {
         fetchOrder();
     }, []);
+
+    useEffect(() => {
+        fetchBill();
+    }, [order]);
 
     if (!order)
         return (
@@ -87,7 +105,11 @@ export default function AdminOrder() {
                                         )
                                     )}
                                 </select>
-                                <Button onClick={refundOrder}>Refund</Button>
+                                {bill && bill.status === "PAID" && (
+                                    <Button onClick={refundOrder}>
+                                        Refund
+                                    </Button>
+                                )}
                             </div>
                         </div>
                         <div className="flex gap-5">
@@ -104,6 +126,7 @@ export default function AdminOrder() {
                     </div>
                     {prestation && <PrestionOrder prestation={prestation} />}
                     <OrderDeliverable orderId={order._id} />
+                    {bill && <BillItem bill={bill} />}
                 </div>
             </section>
         </div>

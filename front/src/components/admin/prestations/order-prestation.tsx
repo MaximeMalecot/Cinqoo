@@ -8,7 +8,7 @@ export default function PrestionOrder({ prestation }: PrestationOrderProps) {
     return (
         <div className="flex flex-col">
             <div className="flex gap-1 justify-between">
-                <h2 className="text-2xl">{prestation.name}</h2>
+                <h2 className="text-2xl text-black">{prestation.name}</h2>
             </div>
             <div
                 className="duration-700 bg-slate-200 hover:bg-slate-300 rounded-md p-5 overflow-hidden w-full"

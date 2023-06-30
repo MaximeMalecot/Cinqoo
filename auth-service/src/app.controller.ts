@@ -15,6 +15,7 @@ export class AppController {
 
   @EventPattern('login')
   login(@Payload() data: LoginDto) {
+    console.log("onéla")
     return this.appService.login(data);
   }
 

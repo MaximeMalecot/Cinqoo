@@ -21,7 +21,7 @@ class BillService {
     }
 
     async getBill(id: string) {
-        const res = await fetch(`${API_ENDPOINT}payment/history/${id}`, {
+        const res = await fetch(`${API_ENDPOINT}payment/bill/${id}`, {
             method: "GET",
             headers: {
                 ...authHeader(),
