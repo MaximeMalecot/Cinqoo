@@ -93,4 +93,14 @@ export class AppController {
   async createNoRestrict(@Payload() data: CreateNoRestrictDto) {
     return this.appService.createNoRestrict(data);
   }
+
+  @EventPattern('USER.PROMOTE_ADMIN')
+  async promoteAdmin(userId: string) {
+    return this.appService.promoteAdmin(userId);
+  }
+
+  @EventPattern('USER.DEMOTE_ADMIN')
+  async demoteAdmin(userId: string) {
+    return this.appService.demoteAdmin(userId);
+  }
 }

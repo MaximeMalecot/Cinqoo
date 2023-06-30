@@ -371,6 +371,58 @@ export class AppService {
     }
   }
 
+  async promoteAdmin(id: string) {
+    try {
+      const user = await this.userModel.findById(new Types.ObjectId(id));
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+      if (user.roles.includes(Role.ADMIN)) {
+        throw new RpcException({
+          message: `User is already an admin`,
+          statusCode: 400,
+        });
+      }
+      user.roles.push(Role.ADMIN);
+      await user.save();
+      return { message: 'User promoted' };
+    } catch (e: any) {
+      throw new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async demoteAdmin(id: string) {
+    try {
+      const user = await this.userModel.findById(new Types.ObjectId(id));
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+      if (!user.roles.includes(Role.ADMIN)) {
+        throw new RpcException({
+          message: `User is not an admin`,
+          statusCode: 400,
+        });
+      }
+      user.roles = user.roles.filter((role) => role !== Role.ADMIN);
+      await user.save();
+      return { message: 'User demoted' };
+    } catch (e: any) {
+      throw new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
   //Emails
 
   sendWelcomeFreelancer(id: string) {

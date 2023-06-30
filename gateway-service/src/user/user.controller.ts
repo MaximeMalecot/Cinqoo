@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -59,6 +60,18 @@ export class UserController {
       id: req.user._id,
       freelancerProfileDto: body,
     });
+  }
+
+  @Roles(ROLE.ADMIN)
+  @Put('promote/:userId')
+  public promoteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.userService.send('USER.PROMOTE_ADMIN', userId);
+  }
+
+  @Roles(ROLE.ADMIN)
+  @Put('demote/:userId')
+  public demoteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.userService.send('USER.DEMOTE_ADMIN', userId);
   }
 
   @Get(':userId')
