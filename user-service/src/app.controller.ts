@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { CreateNoRestrictDto } from './dto/create-no-restrict.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -86,5 +87,10 @@ export class AppController {
       data.id,
       data.freelancerProfileDto,
     );
+  }
+
+  @EventPattern('USER.CREATE_NO_RESTRICT')
+  async createNoRestrict(@Payload() data: CreateNoRestrictDto) {
+    return this.appService.createNoRestrict(data);
   }
 }

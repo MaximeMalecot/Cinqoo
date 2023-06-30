@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { CreateNoRestrictDto } from './dto/create-no-restrict.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -342,6 +343,31 @@ export class AppService {
         message: e.message,
         statusCode: 400,
       });
+    }
+  }
+
+  async createNoRestrict(data: CreateNoRestrictDto) {
+    try {
+      data.password = await bcrypt.hash(data.password, 10);
+      const stripeAccountId = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_ACCOUNT', {}),
+      );
+      data['stripeAccountId'] = stripeAccountId.id;
+      const res = new this.userModel(data);
+      await res.save();
+      this.sendWelcomeMail(res._id.toString());
+
+      return res;
+    } catch (error) {
+      if (error.name === 'MongoServerError' || error.name === 'MongoError') {
+        if (error.code === 11000) {
+          throw new RpcException({
+            message: `${Object.keys(error.keyPattern)[0]} already used`,
+            statusCode: 400,
+          });
+        }
+      }
+      throw new RpcException({ code: 500 });
     }
   }
 
