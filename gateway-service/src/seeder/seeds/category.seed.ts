@@ -37,7 +37,7 @@ export class CategorySeed {
       let tmpCategory = await firstValueFrom(
         this.categoryService.send('CATEGORY.CREATE_ONE', categories[i]),
       );
-      console.log(`Created user with id: ${tmpCategory._id}`);
+      console.log(`Created category with id: ${tmpCategory._id}`);
     }
   }
 }

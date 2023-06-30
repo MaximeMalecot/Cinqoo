@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -63,13 +62,13 @@ export class UserController {
   }
 
   @Roles(ROLE.ADMIN)
-  @Put('promote/:userId')
+  @Patch('promote/:userId')
   public promoteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('USER.PROMOTE_ADMIN', userId);
   }
 
   @Roles(ROLE.ADMIN)
-  @Put('demote/:userId')
+  @Patch('demote/:userId')
   public demoteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
     return this.userService.send('USER.DEMOTE_ADMIN', userId);
   }

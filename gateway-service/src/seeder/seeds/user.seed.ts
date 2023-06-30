@@ -26,6 +26,12 @@ export class UserSeed {
         roles: [ROLE.USER],
       },
       {
+        username: 'freelancer-test',
+        email: 'freelancer@test.com',
+        password: 'User123+=',
+        roles: [ROLE.USER],
+      },
+      {
         username: 'admin-test',
         email: 'admin@test.com',
         password: 'Admin123+=',
