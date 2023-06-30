@@ -5,7 +5,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
-import { Role } from '../enums/role.enum';
+import { ROLE } from 'src/auth/enums/role.enum';
 
 export class CreateNoRestrictDto {
   @IsNotEmpty()
@@ -23,5 +23,5 @@ export class CreateNoRestrictDto {
 
   @IsNotEmpty()
   @IsArray()
-  roles: Array<Role>;
+  roles: Array<ROLE>;
 }
