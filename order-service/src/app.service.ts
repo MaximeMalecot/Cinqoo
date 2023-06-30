@@ -60,6 +60,10 @@ export class AppService {
           return { ...order.toObject(), prestation };
         }),
       );
+
+      ordersWithPrestations.sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
       return ordersWithPrestations;
     } catch (e: any) {
       if (e instanceof RpcException) {
