@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import UserBills from "../../../components/admin/bills/user-bills";
 import UserOrders from "../../../components/admin/orders/user-orders";
 import UserPrestations from "../../../components/admin/prestations/user-prestations";
@@ -16,6 +16,7 @@ import DangerZone from "./danger-zone";
 export default function AdminUser() {
     const { id } = useParams();
     const [user, setUser] = useState<AccountData | null>(null);
+    const navigate = useNavigate();
 
     const fetchUser = async () => {
         try {
@@ -24,6 +25,7 @@ export default function AdminUser() {
             setUser(res);
         } catch (e: any) {
             displayMsg(e.message, "error");
+            navigate("/admin/users");
         }
     };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AccountForm from "../../../components/user/account-form";
 import { AccountData } from "../../../interfaces/user";
 import userService from "../../../services/user.service";
@@ -8,6 +8,7 @@ import { displayMsg, notify } from "../../../utils/toast";
 export default function AdminEditUser() {
     const { id } = useParams();
     const [user, setUser] = useState<AccountData | null>(null);
+    const navigate = useNavigate();
 
     const fetchUser = async () => {
         try {
@@ -15,7 +16,9 @@ export default function AdminEditUser() {
             const res = await userService.getUser(id);
             setUser(res);
         } catch (e: any) {
+            console.error("redirect");
             displayMsg(e.message, "error");
+            navigate("/admin/users");
         }
     };
 
