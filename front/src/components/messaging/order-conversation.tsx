@@ -19,7 +19,7 @@ export default function OrderConversation({
 }: OrderConversationProps) {
     const [messages, setMessages] = useState<MessageI[]>([]);
     const { data } = useAuthContext();
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const canSend =
         order.status !== ORDER_STATUS.DONE &&
         order.status !== ORDER_STATUS.CANCELLED &&
@@ -49,7 +49,7 @@ export default function OrderConversation({
     );
 
     const setupEventSource = useCallback(async () => {
-        const sse = await eventSourceService.getOrderSSE(order._id);
+        const sse = await eventSourceService.getOrderSSE();
         eventSource.current = sse;
         sse.addEventListener("new_message", (data: any) => {
             try {

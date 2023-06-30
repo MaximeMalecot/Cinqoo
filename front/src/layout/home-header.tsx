@@ -15,7 +15,7 @@ export default function HomeHeader() {
     const subMenuRef = useRef<HTMLLIElement>(null);
 
     useEffect(() => {
-        const cb = (e: any) => {
+        const cb = () => {
             if (!subMenuRef?.current || !headerRef?.current) return;
             // if (subMenuRef.current.contains(e.target)) return;
             subMenuRef.current

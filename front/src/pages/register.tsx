@@ -37,7 +37,7 @@ export default function Register() {
         <div className="container mx-auto">
             <div className="flex flex justify-center p-5">
                 <div className="flex flex-col gap-5 bg-white border border-1 border-slate-300 drop-shadow-xl rounded rounded-md w-full md:w-2/5 py-10">
-                    <h1 className="text-2xl px-5">Register</h1>
+                    <h1 className="text-2xl px-5 mb-5">Register</h1>
                     <form
                         onSubmit={handleSubmit(onSubmit)}
                         className="flex flex-col gap-5 p-5 py-0"
@@ -49,6 +49,11 @@ export default function Register() {
                                 required: true,
                             })}
                         />
+                        {errors.email && (
+                            <p className="text-xs text-red-500 italic px-3">
+                                This field is required
+                            </p>
+                        )}
                         <Input
                             placeholder="Username"
                             type="text"
@@ -56,6 +61,11 @@ export default function Register() {
                                 required: true,
                             })}
                         />
+                        {errors.username && (
+                            <p className="text-xs text-red-500 italic px-3">
+                                This field is required
+                            </p>
+                        )}
                         <Input
                             placeholder="Password"
                             type="password"
@@ -63,6 +73,11 @@ export default function Register() {
                                 required: true,
                             })}
                         />
+                        {errors.email && (
+                            <p className="text-xs text-red-500 italic px-3">
+                                This field is required
+                            </p>
+                        )}
                         <button
                             className="btn btn-primary"
                             disabled={loading}

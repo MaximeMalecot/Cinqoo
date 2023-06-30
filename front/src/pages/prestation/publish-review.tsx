@@ -17,12 +17,7 @@ export default function PublishReview({
     onReview,
 }: PublishReviewProps) {
     const { state } = useLocation();
-    const {
-        register: registerField,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm();
+    const { register: registerField, handleSubmit, reset } = useForm();
 
     const [rating, setRating] = useState<number>(1);
 

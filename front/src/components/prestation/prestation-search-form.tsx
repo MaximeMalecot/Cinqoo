@@ -16,11 +16,7 @@ export default function PrestationSearchForm({
     handleSearch,
     categories,
 }: PrestationSearchFormProps) {
-    const {
-        register: registerField,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
+    const { register: registerField, handleSubmit } = useForm();
 
     const onSubmit = useCallback(async (data: PrestationFilters) => {
         if (data.categories === "") {

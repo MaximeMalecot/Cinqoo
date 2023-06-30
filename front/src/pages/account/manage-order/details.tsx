@@ -9,7 +9,7 @@ interface DetailsProps {
     reload: () => void;
 }
 
-export default function Details({ order, reload }: DetailsProps) {
+export default function Details({ order }: DetailsProps) {
     const [canPublishReview, setCanPublishReview] = useState<boolean>(false);
 
     const fetchCanPublish = async () => {

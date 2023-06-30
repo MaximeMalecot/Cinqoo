@@ -19,7 +19,7 @@ export default function RequestConversation({
 }: RequestConversationProps) {
     const { data } = useAuthContext();
     const [messages, setMessages] = useState<MessageI[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const canSend =
         request.status !== ORDER_STATUS.DONE &&
         request.status !== ORDER_STATUS.CANCELLED &&
@@ -49,7 +49,7 @@ export default function RequestConversation({
     );
 
     const setupEventSource = useCallback(async () => {
-        const sse = await eventSourceService.getOrderSSE(request._id);
+        const sse = await eventSourceService.getOrderSSE();
         eventSource.current = sse;
         sse.addEventListener("new_message", (data: any) => {
             try {

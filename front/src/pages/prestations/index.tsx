@@ -33,6 +33,7 @@ export default function Prestations() {
     };
 
     const handleSubmit = async (data: PrestationFilters) => {
+        setCurrentFilters(data);
         const queryFilters = Object.entries(data).reduce(
             (acc: any, [key, value]) => {
                 if (value) {

@@ -15,9 +15,8 @@ const IMAGE_LINK =
 
 export default function Home() {
     const [prestations, setPrestations] = useState([]);
-    const [loading, setLoading] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const [modalToShow, setModalToShow] = useState<string>("");
 
     useEffect(() => {
@@ -43,14 +42,11 @@ export default function Home() {
 
     const fetchPrestations = async () => {
         try {
-            setLoading(true);
             const res = await prestationService.getPrestations();
             setPrestations(res);
         } catch (e: any) {
             console.log(e);
             displayMsg(e.message, "error");
-        } finally {
-            setLoading(false);
         }
     };
 

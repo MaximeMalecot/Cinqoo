@@ -8,18 +8,14 @@ import { displayMsg } from "../../../utils/toast";
 
 export default function Prestations() {
     const [prestations, setPrestations] = useState<PrestationItemList[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchPrestations = async () => {
         try {
-            setLoading(true);
             const res = await prestationService.getSelfPrestations();
             setPrestations(res);
         } catch (e: any) {
             console.log(e);
             displayMsg(e.message, "error");
-        } finally {
-            setLoading(false);
         }
     };
 

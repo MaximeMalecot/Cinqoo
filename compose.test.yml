@@ -213,8 +213,7 @@ services:
     front:
         build:
             context: ./front
-            target: dev
-        command: npm run dev
+            target: prod
         # volumes:
         #     - ./front:/usr/src/app
         #     - /usr/src/app/node_modules

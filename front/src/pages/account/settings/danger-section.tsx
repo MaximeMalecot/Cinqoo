@@ -12,7 +12,7 @@ export default function DangerSection({}: DangerSectionProps) {
 
     const deleteAccount = async () => {
         try {
-            const res = await userService.deleteAccount(data!._id);
+            await userService.deleteAccount(data!._id);
             logout();
         } catch (e: any) {
             console.error(e.message);

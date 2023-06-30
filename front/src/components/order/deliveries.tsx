@@ -16,7 +16,6 @@ export default function Deliveries({
     order,
     isFreelancer = false,
 }: DeliveriesProps) {
-    const [loading, setLoading] = useState(false);
     const [deliverables, setDeliverables] = useState<DeliverableI[]>([]);
     const canPublish = (() => {
         if (!isFreelancer) return false;
@@ -25,14 +24,11 @@ export default function Deliveries({
 
     const getDeliverables = async () => {
         try {
-            setLoading(true);
             const res = await delivrableService.getDeliverables(order._id);
             setDeliverables(res);
         } catch (e: any) {
             console.log(e);
             displayMsg(e.message, "error");
-        } finally {
-            setLoading(false);
         }
     };
 

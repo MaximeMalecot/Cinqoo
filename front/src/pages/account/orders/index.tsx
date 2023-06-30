@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/button";
-import { BillsItemList } from "../../../interfaces/bill";
 import { Order } from "../../../interfaces/order";
-import billService from "../../../services/bill.service";
 import orderService from "../../../services/order.service";
 import { displayMsg } from "../../../utils/toast";
 
@@ -11,7 +9,6 @@ const invalidStatus = ["REFUSED", "CANCELLED"];
 
 export default function Orders() {
     const [orders, setOrders] = useState<Order[]>([]);
-    const [bills, setBills] = useState<BillsItemList[]>([]);
 
     const fetchOrders = useCallback(async () => {
         try {
@@ -23,18 +20,8 @@ export default function Orders() {
         }
     }, []);
 
-    const fetchBills = useCallback(async () => {
-        try {
-            const res = await billService.getBills();
-            setBills(res);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
-        }
-    }, []);
-
     useEffect(() => {
-        Promise.all([fetchOrders(), fetchBills()]);
+        fetchOrders();
     }, []);
 
     return (

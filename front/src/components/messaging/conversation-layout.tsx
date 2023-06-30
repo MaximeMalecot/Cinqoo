@@ -20,8 +20,6 @@ const img =
 export default function ConversationLayout({
     send,
     messages,
-    loading,
-    config,
     config: { title },
     allowSend = true,
     ownerId = "",

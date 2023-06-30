@@ -5,11 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function HomeSearchInput() {
     const navigate = useNavigate();
 
-    const {
-        register: registerField,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
+    const { register: registerField, handleSubmit } = useForm();
 
     const onSubmit = useCallback(async (data: any) => {
         console.log(data);

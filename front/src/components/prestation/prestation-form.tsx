@@ -23,11 +23,7 @@ export default function PrestationForm({
     label,
 }: PrestationFormProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const {
-        register: registerField,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
+    const { register: registerField, handleSubmit } = useForm();
     const [imagePreview, setImagePreview] = useState<string>(
         initData?.image || ""
     );

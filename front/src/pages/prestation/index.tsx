@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Button from "../../components/button";
-import { useAuthContext } from "../../contexts/auth.context";
 import { PrestationItemList } from "../../interfaces/prestation";
 import prestationService from "../../services/prestation.service";
 import { displayMsg } from "../../utils/toast";
@@ -13,8 +12,6 @@ import Recommandations from "./recommandations";
 import ReportPart from "./report-part";
 
 export default function Prestation() {
-    const { isConnected } = useAuthContext();
-
     const { id } = useParams();
     const [prestation, setPrestation] = useState<PrestationItemList | null>(
         null

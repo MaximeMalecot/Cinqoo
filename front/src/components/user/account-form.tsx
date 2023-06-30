@@ -9,11 +9,7 @@ interface AccountFormProps {
 }
 
 export default function AccountForm({ initData, onSubmit }: AccountFormProps) {
-    const {
-        register: registerField,
-        handleSubmit,
-        formState: { errors },
-    } = useForm();
+    const { register: registerField, handleSubmit } = useForm();
 
     return (
         <form

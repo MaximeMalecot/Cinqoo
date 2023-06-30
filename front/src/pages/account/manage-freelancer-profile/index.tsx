@@ -47,9 +47,7 @@ export default function ManageFreelancerProfile() {
     const updateProfile = async (data: any) => {
         try {
             setLoading(true);
-            const res = await userService.updateFreelancerProfile(
-                data.description
-            );
+            await userService.updateFreelancerProfile(data.description);
             notify("Profile updated");
         } catch (e: any) {
             console.log(e.message);
