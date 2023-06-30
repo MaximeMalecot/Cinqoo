@@ -114,19 +114,42 @@ export default function AdminOrder() {
                         </div>
                         <div className="flex gap-5">
                             <div className={"flex gap-2 w-fit"}>
-                                <p>Revisions available:</p>
-                                <p>{order.serviceRevisionNb}</p>
+                                <p>
+                                    <span className="text-black font-bold">
+                                        Revisions available:
+                                    </span>
+                                    {` ${order.serviceRevisionNb}`}
+                                </p>
                             </div>
                             <div className={"flex gap-2 w-fit"}>
-                                <p>Current revision:</p>
-                                <p>{order.currentRevisionNb}</p>
+                                <p>
+                                    <span className="text-black font-bold">
+                                        Current revision:
+                                    </span>
+                                    {` ${order.currentRevisionNb}`}
+                                </p>
                             </div>
+                            <p>
+                                <span className="text-black font-bold">
+                                    Created at:
+                                </span>
+                                {` ${new Date(order.date).toLocaleString()}`}
+                            </p>
                         </div>
-                        <p>{new Date(order.date).toLocaleString()}</p>
+                        {bill && (
+                            <>
+                                <BillItem bill={bill} />
+                            </>
+                        )}
                     </div>
-                    {prestation && <PrestionOrder prestation={prestation} />}
+                    {prestation && (
+                        <>
+                            <div className="divider my-0"></div>
+                            <PrestionOrder prestation={prestation} />
+                        </>
+                    )}
+                    <div className="divider my-0"></div>
                     <OrderDeliverable orderId={order._id} />
-                    {bill && <BillItem bill={bill} />}
                 </div>
             </section>
         </div>
