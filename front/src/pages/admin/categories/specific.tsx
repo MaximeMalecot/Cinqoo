@@ -21,7 +21,7 @@ export default function AdminCategory() {
 
     useEffect(() => {
         fetchCategory();
-    }, []);
+    }, [id]);
 
     if (!category)
         return (

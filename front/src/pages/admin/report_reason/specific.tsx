@@ -24,7 +24,7 @@ export default function AdminReportReason() {
 
     useEffect(() => {
         fetchReportReason();
-    }, []);
+    }, [id]);
 
     if (!reportReason)
         return (

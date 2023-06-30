@@ -66,7 +66,7 @@ export default function AdminOrder() {
 
     useEffect(() => {
         fetchOrder();
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         fetchBill();
