@@ -189,6 +189,44 @@ class UserService {
         }
         return true;
     }
+
+    async promoteToAdmin(userId: string) {
+        const res = await fetch(`${API_ENDPOINT}user/promote/${userId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+        });
+        const status = res.status;
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to update user role");
+        }
+        return true;
+    }
+
+    async demoteFromAdmin(userId: string) {
+        const res = await fetch(`${API_ENDPOINT}user/demote/${userId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+        });
+        const status = res.status;
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to update user role");
+        }
+        return true;
+    }
 }
 
 export default new UserService();
