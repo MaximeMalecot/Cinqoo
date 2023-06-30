@@ -45,7 +45,7 @@ export default function Prestation() {
     return (
         <div className="flex flex-col">
             <section className="container mx-auto my-0 md:my-5 p-5 md:p-0 py-10 flex flex-col md:flex-row gap-5 relative">
-                <div className="w-full md:w-2/3 flex flex-col gap-5">
+                <div className="w-full md:w-3/3 flex flex-col gap-5">
                     <div className="flex gap-1">
                         <h1 className="text-4xl">{prestation.name}</h1>
                     </div>
@@ -62,7 +62,14 @@ export default function Prestation() {
                             className="object-contain w-full h-full"
                         />
                     </div>
-                    <FavoritePart prestationId={prestation._id} />
+                    <div className="w-full md:w-3/3 h-fit md:flex justify-between">
+                        <div className="md:w-1/3 mb-2 md:mb-0">
+                            <ReportPart prestationId={prestation._id} />
+                        </div>
+                        <div className="md:w-1/3">
+                            <FavoritePart prestationId={prestation._id} />
+                        </div>
+                    </div>
                     <div className="divider my-0"></div>
                     <div>
                         <h3 className="text-xl font-bold">
@@ -108,18 +115,6 @@ export default function Prestation() {
                         )}
                     </div>
                     <div className="divider my-0"></div>
-                </div>
-                <div className="w-full md:w-1/3 h-fit flex flex-col gap-5">
-                    <div className="w-full h-fit border flex flex-col gap-5 border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full">
-                        <p className="text-xs text-slate-500">
-                            Once the order has been paid, you will have the
-                            opportunity to discuss your request with the
-                            freelancer. It is on the basis of your exchange that
-                            the freelancer will be able to accept or refuse your
-                            request.
-                        </p>
-                    </div>
-                    <ReportPart prestationId={prestation._id} />
                 </div>
             </section>
             <Recommandations />

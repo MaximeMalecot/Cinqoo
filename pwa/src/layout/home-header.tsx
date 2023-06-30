@@ -1,15 +1,14 @@
 import { useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
     ADMIN_TABS,
     FREELANCER_TABS,
     USER_TABS,
 } from "../constants/header-tabs";
-
 import { useAuthContext } from "../contexts/auth.context";
 import MobileMenu from "./mobile-menu";
 
-export default function Header() {
+export default function HomeHeader() {
     const { data, isConnected, logout, isFreelancer, isAdmin } =
         useAuthContext();
     const headerRef = useRef<HTMLHeadElement>(null);
@@ -36,51 +35,45 @@ export default function Header() {
     return (
         <header
             ref={headerRef}
-            style={{ position: "relative", zIndex: 10000 }}
-            className={`navbar top-0 relative bg-base-100 border border-b2 border-base-300`}
+            style={{ zIndex: 10000 }}
+            className={`navbar fixed top-0 bg-primary`}
         >
-            <MobileMenu color="black" />
-            <div className={`container mx-auto `}>
+            <MobileMenu />
+            <div className={`container mx-auto text-white `}>
                 <div className="md:flex-1" style={{ zIndex: 10000 }}>
                     <Link
                         to="/"
                         className="capitalize text-2xl font-bold hover:opacity-75"
                     >
-                        cinqoo
+                        Cinqoo
                     </Link>
                 </div>
                 <div className="flex-none hidden md:block">
                     <ul className="menu menu-horizontal px-1 flex items-center gap-2">
                         <li>
-                            <NavLink
-                                className={({ isActive }) =>
-                                    "text-xl " +
-                                    (isActive ? "text-primary" : "")
-                                }
+                            <Link
+                                className="text-xl hover:text-white"
                                 to="/prestations"
                             >
                                 Discover
-                            </NavLink>
+                            </Link>
                         </li>
                         <li>
-                            <NavLink
-                                className={({ isActive }) =>
-                                    "text-xl " +
-                                    (isActive ? "text-primary" : "")
-                                }
+                            <Link
+                                className="text-xl hover:text-white"
                                 to="/become-freelancer"
                             >
                                 Become freelancer
-                            </NavLink>
+                            </Link>
                         </li>
                         {isConnected ? (
                             <>
                                 <li ref={subMenuRef}>
                                     <details>
-                                        <summary className="text-xl">
+                                        <summary className="text-xl bg-transparent border border-white text-white hover:bg-white hover:text-black hover:border-transparent">
                                             {data?.email}
                                         </summary>
-                                        <ul className="p-2 bg-base-100 w-full">
+                                        <ul className="p-2 bg-transparent w-full text-black">
                                             {USER_TABS.map((tab, index) => (
                                                 <li
                                                     key={index}
@@ -104,7 +97,6 @@ export default function Header() {
                                                         </li>
                                                     )
                                                 )}
-
                                             {isAdmin &&
                                                 ADMIN_TABS.map((tab, index) => (
                                                     <li
@@ -126,14 +118,17 @@ export default function Header() {
                         ) : (
                             <>
                                 <li>
-                                    <Link className="text-xl" to="/login">
+                                    <Link
+                                        className="text-xl hover:text-white"
+                                        to="/login"
+                                    >
                                         Login
                                     </Link>
                                 </li>
                                 <li>
                                     <Link
+                                        className="text-xl bg-transparent border border-white text-white hover:bg-white hover:text-black hover:border-transparent"
                                         to="/register"
-                                        className="text-xl bg-transparent border border-primary text-primary hover:bg-primary hover:text-white hover:border-transparent"
                                     >
                                         Register
                                     </Link>

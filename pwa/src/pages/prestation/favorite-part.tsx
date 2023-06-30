@@ -54,7 +54,7 @@ export default function FavoritePart({ prestationId }: FavoritePartProps) {
             <Button
                 visual={isLiked ? "danger" : "primary"}
                 onClick={toggleLike}
-                className="w-fit ml-auto items-center"
+                className="w-full ml-auto items-center"
             >
                 {!isLiked ? (
                     <>
