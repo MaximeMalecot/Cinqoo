@@ -11,6 +11,10 @@ export default function Footer() {
                     Cinqoo
                 </Link>
                 <p>© 2023</p>
+                <div></div>
+                <Link to="/terms-of-service" className="underline">
+                    Terms of service
+                </Link>
             </div>
         </footer>
     );

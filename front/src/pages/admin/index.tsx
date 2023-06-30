@@ -10,6 +10,7 @@ import AdminReportReasons from "./report_reason";
 import CreateReportReason from "./report_reason/create";
 import AdminReportReason from "./report_reason/specific";
 import AdminUser from "./user";
+import AdminEditUser from "./user_edit";
 import AdminUsers from "./users";
 
 function AdminLayout() {
@@ -44,6 +45,7 @@ export default function AdminRouter() {
         <Routes>
             <Route element={<AdminLayout />}>
                 <Route path="/users" element={<AdminUsers />} />
+                <Route path="/users/:id/edit" element={<AdminEditUser />} />
                 <Route path="/users/:id" element={<AdminUser />} />
                 <Route path="/prestations" element={<AdminPrestations />} />
                 <Route path="/prestations/:id" element={<AdminPrestation />} />
