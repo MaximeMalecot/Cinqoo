@@ -22,10 +22,6 @@ export const USER_TABS = [
         name: "Favorites",
         path: "/account/favorites",
     },
-    {
-        name: "orders",
-        path: "/account/orders",
-    },
 ];
 
 export const ADMIN_HEADER_TABS = [

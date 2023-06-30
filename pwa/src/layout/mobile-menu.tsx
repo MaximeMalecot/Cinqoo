@@ -47,16 +47,6 @@ export default function MobileMenu({
                     className="relative menu menu-vertical flex flex-col items-center gap-2 text-xl text-white capitalize"
                     style={{ zIndex: 10001 }}
                 >
-                    <li>
-                        <Link onClick={closeMenu} to="/prestations">
-                            Discover
-                        </Link>
-                    </li>
-                    <li>
-                        <Link onClick={closeMenu} to="/become-freelancer">
-                            Become freelancer
-                        </Link>
-                    </li>
                     {isConnected &&
                         USER_TABS.map((tab, index) => (
                             <li key={index} className="capitalize">

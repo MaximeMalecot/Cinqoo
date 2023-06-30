@@ -1,17 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
-import {
-    ADMIN_TABS,
-    FREELANCER_TABS,
-    USER_TABS,
-} from "../constants/header-tabs";
+import { Link } from "react-router-dom";
+import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
 
 import { useAuthContext } from "../contexts/auth.context";
 import MobileMenu from "./mobile-menu";
 
 export default function Header() {
-    const { data, isConnected, logout, isFreelancer, isAdmin } =
-        useAuthContext();
+    const { data, isConnected, logout, isFreelancer } = useAuthContext();
     const headerRef = useRef<HTMLHeadElement>(null);
     const subMenuRef = useRef<HTMLLIElement>(null);
 
@@ -51,28 +46,6 @@ export default function Header() {
                 </div>
                 <div className="flex-none hidden md:block">
                     <ul className="menu menu-horizontal px-1 flex items-center gap-2">
-                        <li>
-                            <NavLink
-                                className={({ isActive }) =>
-                                    "text-xl " +
-                                    (isActive ? "text-primary" : "")
-                                }
-                                to="/prestations"
-                            >
-                                Discover
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink
-                                className={({ isActive }) =>
-                                    "text-xl " +
-                                    (isActive ? "text-primary" : "")
-                                }
-                                to="/become-freelancer"
-                            >
-                                Become freelancer
-                            </NavLink>
-                        </li>
                         {isConnected ? (
                             <>
                                 <li ref={subMenuRef}>
@@ -104,18 +77,6 @@ export default function Header() {
                                                         </li>
                                                     )
                                                 )}
-
-                                            {isAdmin &&
-                                                ADMIN_TABS.map((tab, index) => (
-                                                    <li
-                                                        key={index}
-                                                        className="capitalize"
-                                                    >
-                                                        <Link to={tab.path}>
-                                                            {tab.name}
-                                                        </Link>
-                                                    </li>
-                                                ))}
                                             <li>
                                                 <p onClick={logout}>Logout</p>
                                             </li>
