@@ -205,6 +205,10 @@ export class AppService {
         }
       }
 
+      requests.sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
+
       return requests;
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -236,6 +240,10 @@ export class AppService {
           requests.push({ ...request.toObject(), prestation });
         }
       }
+
+      requests.sort((a, b) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
 
       return requests;
     } catch (e: any) {
