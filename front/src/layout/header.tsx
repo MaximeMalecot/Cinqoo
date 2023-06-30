@@ -58,6 +58,7 @@ export default function Header() {
                                     (isActive ? "text-primary" : "")
                                 }
                                 to="/prestations"
+                                end
                             >
                                 Discover
                             </NavLink>
@@ -68,6 +69,7 @@ export default function Header() {
                                     "text-xl " +
                                     (isActive ? "text-primary" : "")
                                 }
+                                end
                                 to="/become-freelancer"
                             >
                                 Become freelancer

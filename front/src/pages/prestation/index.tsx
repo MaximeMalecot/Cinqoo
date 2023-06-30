@@ -33,7 +33,7 @@ export default function Prestation() {
 
     useEffect(() => {
         fetchPrestation();
-    }, []);
+    }, [id]);
 
     if (!prestation)
         return (

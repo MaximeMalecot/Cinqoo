@@ -30,6 +30,15 @@ class UserService {
                 ...authHeader(),
             },
         });
+
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to login");
+        }
+
         return await res.json();
     }
 
