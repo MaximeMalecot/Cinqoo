@@ -76,7 +76,23 @@ class OrderService {
     }
 
     async updateOrderStatus(id: string, status: OrderStatusEnum) {
-        console.log("updateOrderStatus", id, status);
+        const res = await fetch(`${API_ENDPOINT}order/${id}`, {
+            method: "PUT",
+            headers: {
+                ...authHeader(),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status }),
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to update order status");
+        }
+
+        return await res.json();
     }
 
     async refundOrder(id: string) {

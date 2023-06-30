@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { DoneRequestDto } from './dto/done-request.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 
 @Controller()
@@ -88,6 +89,11 @@ export class AppController {
   @EventPattern('ORDER.START_REVISION')
   async startRevision(@Payload() data: UpdateRequestDto) {
     return await this.appService.startRevision(data);
+  }
+
+  @EventPattern('ORDER.UPDATE_STATUS_ORDER')
+  async updateStatusOrder(@Payload() data: UpdateOrderDto) {
+    return await this.appService.updateStatusOrder(data);
   }
 
   @EventPattern('ORDER.HAS_DONE')

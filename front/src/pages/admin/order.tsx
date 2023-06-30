@@ -30,7 +30,8 @@ export default function AdminOrder() {
                 if (!id) throw new Error("No id provided");
                 const status = e.target.value as OrderStatusEnum;
                 await orderService.updateOrderStatus(id, status);
-                // fetchOrder();
+                displayMsg("Status updated", "success");
+                fetchOrder();
             } catch (e: any) {
                 displayMsg(e.message, "error");
             }
@@ -42,7 +43,8 @@ export default function AdminOrder() {
         try {
             if (!id) throw new Error("No id provided");
             await orderService.refundOrder(id);
-            // fetchOrder();
+            displayMsg("Order refunded", "success");
+            fetchOrder();
         } catch (e: any) {
             displayMsg(e.message, "error");
         }

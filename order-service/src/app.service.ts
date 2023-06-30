@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { FRONT_URL } from './constants';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { DoneRequestDto } from './dto/done-request.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { Order, OrderStatus } from './schemas/order.schema';
 
@@ -399,6 +400,21 @@ export class AppService {
         message: 'Internal server error',
       });
     }
+  }
+
+  async updateStatusOrder(data: UpdateOrderDto) {
+    const order = await this.orderModel.findById(
+      new Types.ObjectId(data.orderId),
+    );
+    if (!order) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'Order not found',
+      });
+    }
+    order.status = data.status;
+    await order.save();
+    return { message: 'Order status updated' };
   }
 
   async hasDone(data: DoneRequestDto) {

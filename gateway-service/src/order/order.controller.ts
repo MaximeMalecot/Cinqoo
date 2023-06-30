@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   Inject,
   Param,
   Patch,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { UpdateOrderDto } from './dto/update-order.dto';
 import { IsInOrderGuard } from './guards/is-in-order.guard';
 import { IsOrderOwner } from './guards/is-order-owner.guard';
 import { IsServiceOwner } from './guards/is-service-owner.guard';
@@ -124,6 +127,18 @@ export class OrderController {
     return this.orderService.send('ORDER.START_REVISION', {
       userId: req.user._id,
       orderId,
+    });
+  }
+
+  @Roles(ROLE.ADMIN)
+  @Put(':orderId')
+  async updateOrder(
+    @Param('orderId', CheckObjectIdPipe) orderId: string,
+    @Body() dto: UpdateOrderDto,
+  ) {
+    return this.orderService.send('ORDER.UPDATE_STATUS_ORDER', {
+      orderId,
+      status: dto.status,
     });
   }
 
