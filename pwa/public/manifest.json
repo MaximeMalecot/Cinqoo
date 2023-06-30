@@ -1,6 +1,7 @@
 {
-    "short_name": "React App",
-    "name": "Create React App Sample",
+    "short_name": "Cinqoo",
+    "name": "Cinqoo",
+    "description": "Cinqoo is a platform that allows you to find a service in 5 clicks",
     "icons": [
         {
             "src": "favicon.ico",
@@ -8,12 +9,12 @@
             "type": "image/x-icon"
         },
         {
-            "src": "logo192.png",
+            "src": "icons/icon-192-192.png",
             "type": "image/png",
             "sizes": "192x192"
         },
         {
-            "src": "logo512.png",
+            "src": "icons/icon-512-512.png",
             "type": "image/png",
             "sizes": "512x512",
             "purpose": "any maskable"
