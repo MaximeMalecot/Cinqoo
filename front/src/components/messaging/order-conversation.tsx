@@ -71,7 +71,9 @@ export default function OrderConversation({
                 eventSource.current.close();
             }
         };
-    }, []);
+    }, [order]);
+
+    if (!order._id) return null;
 
     return (
         <ConversationLayout

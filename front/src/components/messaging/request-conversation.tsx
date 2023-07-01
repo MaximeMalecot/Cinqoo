@@ -71,7 +71,9 @@ export default function RequestConversation({
                 eventSource.current.close();
             }
         };
-    }, []);
+    }, [request]);
+
+    if (!request._id) return null;
 
     return (
         <ConversationLayout
