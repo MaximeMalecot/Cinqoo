@@ -51,7 +51,12 @@ export class AppService {
 
   async getOrdersOfUser(userId: string) {
     try {
-      const orders = await this.orderModel.find({ applicant: userId }).exec();
+      const orders = await this.orderModel
+        .find({ applicant: userId })
+        .sort({
+          date: -1,
+        })
+        .exec();
       const ordersWithPrestations = await Promise.all(
         orders.map(async (order) => {
           const prestation = await firstValueFrom(
@@ -60,10 +65,6 @@ export class AppService {
           return { ...order.toObject(), prestation };
         }),
       );
-
-      ordersWithPrestations.sort((a, b) => {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      });
       return ordersWithPrestations;
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -200,12 +201,15 @@ export class AppService {
       const requests = [];
 
       for (const prestation of prestations) {
-        const request = await this.orderModel.findOne({
+        const request = await this.orderModel.find({
           serviceId: prestation._id,
           status: OrderStatus.PENDING,
         });
-        if (request) {
-          requests.push({ ...request.toObject(), prestation });
+        if (!request || request.length === 0) {
+          continue;
+        }
+        for (const req of request) {
+          requests.push({ ...req.toObject(), prestation });
         }
       }
 
@@ -237,11 +241,14 @@ export class AppService {
       const requests = [];
 
       for (const prestation of prestations) {
-        const request = await this.orderModel.findOne({
+        const request = await this.orderModel.find({
           serviceId: prestation._id,
         });
-        if (request) {
-          requests.push({ ...request.toObject(), prestation });
+        if (!request || request.length === 0) {
+          continue;
+        }
+        for (const req of request) {
+          requests.push({ ...req.toObject(), prestation });
         }
       }
 

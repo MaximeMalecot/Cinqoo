@@ -34,7 +34,7 @@ export class Order {
   @Prop({ type: String, required: true })
   billId: string;
 
-  @Prop({ type: Date, required: true, default: Date.now() })
+  @Prop({ type: Date, required: true, default: Date.now })
   date: Date;
 }
 
