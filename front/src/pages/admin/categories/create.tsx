@@ -19,7 +19,7 @@ export default function CreateCategory() {
             const res = await categoryService.createCategory(data);
             displayMsg("Category created succesfully", "success");
             setTimeout(() => {
-                navigate(`/admin/categories/${res._id}`);
+                navigate(`/admin/categories`);
             }, 2000);
         } catch (e: any) {
             displayMsg(e.message, "error");
