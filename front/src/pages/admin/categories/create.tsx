@@ -16,7 +16,7 @@ export default function CreateCategory() {
 
     const onSubmit = useCallback(async (data: any) => {
         try {
-            const res = await categoryService.createCategory(data);
+            await categoryService.createCategory(data);
             displayMsg("Category created succesfully", "success");
             setTimeout(() => {
                 navigate(`/admin/categories`);
