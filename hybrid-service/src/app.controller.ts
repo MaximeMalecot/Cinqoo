@@ -1,5 +1,6 @@
 import { Controller, Get, HttpCode, Logger, Req, Res } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
+import { randomUUID } from 'crypto';
 import { Response } from 'express';
 import { AppService } from './app.service';
 import { Public } from './decorators/public.decorator';
@@ -40,8 +41,9 @@ export class AppController {
   @Get('conversations/sse')
   async getSse(@Req() req, @Res() res: Response, next) {
     try {
+      const sseId = randomUUID();
       const userId = req.user._id;
-      this.appService.addUser(userId, res, req.user.roles);
+      this.appService.addUser(userId, sseId, res, req.user.roles);
 
       req.on('error', (err) => {
         this.logger.error('error on req of client: ' + userId + err, err);
@@ -50,7 +52,7 @@ export class AppController {
       req.on('close', (err) => {
         this.logger.log('closing req of client: ' + userId);
         res.write(this.appService.convertMessage({ type: 'end', err }));
-        this.appService.deleteUser(userId, req.user.roles);
+        this.appService.deleteUser(userId, sseId, req.user.roles);
       });
 
       const headers = {
