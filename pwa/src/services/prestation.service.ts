@@ -54,24 +54,6 @@ class PrestationService {
         return await res.json();
     }
 
-    async adminGetPrestations() {
-        const res = await fetch(`${API_ENDPOINT}prestation/admin/all`, {
-            method: "GET",
-            headers: {
-                ...authHeader(),
-            },
-        });
-        if (res.status !== 200) {
-            const jsonRes = await res.json();
-            if (jsonRes.message) {
-                throw new Error(JSON.stringify(jsonRes.message));
-            }
-            throw new Error("Failed to fetch prestations");
-        }
-
-        return await res.json();
-    }
-
     async searchPrestations(filters: PrestationFilters) {
         const queryFilters = Object.entries(filters).reduce(
             (acc: any, [key, value]) => {
