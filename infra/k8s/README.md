@@ -2,12 +2,16 @@
 
 ## Requirements
 
-Create the namespace before doing any actions.
-Execute this a the root of infra/k8s :
+Before going any further, you'll need to have a cluster on GKE and activate Cloud Filestore api.
+You can use our IaC to create one, find out how to do [here](/infra/pulumi/README.md).
+
+Now active the CSI driver to allow fileStorage
 
 ```
-kubectl apply -f _namespace.yaml
+gcloud container clusters update cinqoo-gke-cluster --update-addons=GcpFilestoreCsiDriver=ENABLED
 ```
+
+If you changed the name of the cluster during the creation, put your name instead of cinqoo-gke-cluster
 
 ## Infra
 
@@ -26,7 +30,7 @@ cp .env.secrets.example .env.secrets;
 
 For production and staging, you'll need to replace all variables written with <> around it
 
-Run at the overlays of your desired environnement of k8s folder (ex : overlays/dev)
+Run your desired environment by going to the matching overlay in k8s folder (ex : overlays/dev)
 
 ```
 kubectl apply -k .

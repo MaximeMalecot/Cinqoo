@@ -16,8 +16,24 @@ export class ReportReasonService {
     private reportReasonModel: Model<ReportReason>,
   ) {}
 
-  async getReportReasons(): Promise<ReportReason[]> {
+  async getReportReasons(type?: ReportType): Promise<ReportReason[]> {
+    if (type) {
+      return await this.reportReasonModel.find({ type: type });
+    }
     return await this.reportReasonModel.find();
+  }
+
+  async getReportReason(reportReasonId: string) {
+    const reportReason = await this.reportReasonModel.findById(
+      new Types.ObjectId(reportReasonId),
+    );
+    if (!reportReason) {
+      throw new RpcException({ code: 404 });
+    }
+    const reports = await this.reportModel.find({
+      reportReason: new Types.ObjectId(reportReasonId),
+    });
+    return { ...reportReason.toJSON(), reports: reports };
   }
 
   async createReportReasonUser(data: CreateReportReasonDto) {

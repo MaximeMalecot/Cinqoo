@@ -83,6 +83,17 @@ export class User {
     type: String,
   })
   stripeAccountId?: string;
+
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isDeleted: boolean;
+
+  @Prop({
+    type: Date,
+  })
+  deletedAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

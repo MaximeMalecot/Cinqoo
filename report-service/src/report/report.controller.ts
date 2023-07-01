@@ -22,13 +22,23 @@ export class AppController {
     return await this.reportService.getReportByUser(userId);
   }
 
-  @EventPattern('REPORT.CREATE')
-  async createReport(
-    @Payload() data: { userId: string; createReport: CreateReportDto },
-  ) {
-    return await this.reportService.createReport(
-      data.userId,
-      data.createReport,
-    );
+  @EventPattern('REPORT.GET_ON_USER')
+  async getReportsOnUser(@Payload() userId: string) {
+    return await this.reportService.getReportsOnUser(userId);
+  }
+
+  @EventPattern('REPORT.GET_FULL_USER')
+  async getFullUser(@Payload() userId: string) {
+    return await this.reportService.getFullUser(userId);
+  }
+
+  @EventPattern('REPORT.CREATE_ON_USER')
+  async createReportOnUser(@Payload() data: CreateReportDto) {
+    return await this.reportService.createReportOnUser(data);
+  }
+
+  @EventPattern('REPORT.CREATE_ON_SERVICE')
+  async createReportOnService(@Payload() data: CreateReportDto) {
+    return await this.reportService.createReportOnService(data);
   }
 }

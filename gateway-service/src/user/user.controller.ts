@@ -61,6 +61,18 @@ export class UserController {
     });
   }
 
+  @Roles(ROLE.ADMIN)
+  @Patch('promote/:userId')
+  public promoteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.userService.send('USER.PROMOTE_ADMIN', userId);
+  }
+
+  @Roles(ROLE.ADMIN)
+  @Patch('demote/:userId')
+  public demoteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
+    return this.userService.send('USER.DEMOTE_ADMIN', userId);
+  }
+
   @Get(':userId')
   @UseGuards(IsAccountOwnerGuard)
   public getUserById(@Param('userId', CheckObjectIdPipe) userId: string) {
@@ -99,12 +111,18 @@ export class UserController {
   @UseGuards(IsAccountOwnerGuard)
   @Delete(':userId')
   public async deleteUser(@Param('userId', CheckObjectIdPipe) userId: string) {
-    return this.userService.send('deleteUser', userId);
+    return this.userService.emit('deleteUser', userId);
   }
 
   @Post('self/become-freelancer')
   public becomeFreelancer(@Req() req: any) {
     return this.userService.send('USER.BECOME_FREELANCER', req.user._id);
+  }
+
+  @Post('self/get-stripe-link')
+  @Roles(ROLE.FREELANCER)
+  public getStripeLink(@Req() req: any) {
+    return this.userService.send('USER.GET_STRIPE_LINK', req.user._id);
   }
 
   @Patch('freelancer/self')

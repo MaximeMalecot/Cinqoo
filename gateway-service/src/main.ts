@@ -69,7 +69,6 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? '*',
   });
-  app.use(helmet());
   app.use(helmet({ crossOriginResourcePolicy: false }));
   app.use(
     compression({

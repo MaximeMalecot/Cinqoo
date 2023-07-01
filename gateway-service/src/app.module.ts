@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CommandModule } from 'nestjs-command';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
@@ -16,12 +18,14 @@ import { PaymentModule } from './payment/payment.module';
 import { PrestationModule } from './prestation/prestation.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';
+import { SeederModule } from './seeder/seeder.module';
 import { SseModule } from './sse/sse.module';
 import { UserModule } from './user/user.module';
 import { WebhookModule } from './webhook/webhook.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     AuthModule,
     UserModule,
     PrestationModule,
@@ -46,10 +50,12 @@ import { WebhookModule } from './webhook/webhook.module';
     }),
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 15,
+      limit: 80,
     }),
     MessageModule,
     SseModule,
+    CommandModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [

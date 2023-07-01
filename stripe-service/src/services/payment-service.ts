@@ -29,7 +29,6 @@ export class PaymentService {
   async createProduct(data: CreateProductDto) {
     try {
       const { name } = data;
-
       const product = await this.stripe.products.create({
         name: name,
       });
@@ -47,7 +46,7 @@ export class PaymentService {
   }
 
   async createCheckoutSession(data: CreateCheckoutSessionDto) {
-    const { priceId, successUrl, cancelUrl } = data;
+    const { priceId, successUrl, cancelUrl, billId } = data;
     const session = await this.stripe.checkout.sessions.create({
       mode: 'payment',
       success_url: successUrl,
@@ -58,8 +57,12 @@ export class PaymentService {
           quantity: 1,
         },
       ],
+      payment_intent_data: {
+        metadata: {
+          billId,
+        },
+      },
     });
-
     return session;
   }
 
@@ -86,15 +89,10 @@ export class PaymentService {
 
   async transferFunds(data: TransferFundsToConnectAccount) {
     try {
-      const {
-        amount: rawAmount,
-        stripeConnectAccountId,
-        description,
-        currency,
-      } = data;
-      const amount = rawAmount * (1 - this.fees);
+      const { amount, stripeConnectAccountId, description, currency } = data;
+      // const amount = rawAmount * (1 - this.fees);
       const transfer = await this.stripe.transfers.create({
-        amount: amount * 100,
+        amount: parseInt((amount * 100).toFixed(1)),
         currency: currency,
         destination: stripeConnectAccountId,
         description: description ?? 'Transfer to connect account',
@@ -102,6 +100,7 @@ export class PaymentService {
 
       return transfer;
     } catch (e: any) {
+      console.log(e.message);
       if (e instanceof RpcException) {
         throw e;
       }

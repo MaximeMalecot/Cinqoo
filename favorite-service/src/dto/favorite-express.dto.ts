@@ -19,3 +19,7 @@ export class FavoriteResultDto {
   status: boolean;
   message: 'ADDED' | 'DELETED';
 }
+
+export class IsFavoriteDto {
+  isFavorite: boolean
+}

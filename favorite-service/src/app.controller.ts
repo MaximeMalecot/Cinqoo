@@ -22,4 +22,9 @@ export class AppController {
   ): Promise<FavoriteResultDto> {
     return await this.appService.addOrDeleteFavorite(data);
   }
+
+  @EventPattern('FAVORITE.GET_SPECIFIC')
+  async getSpecificFavorite(@Payload() data: FavoriteRequestDto) {
+    return await this.appService.getSpecificFavorite(data);
+  }
 }

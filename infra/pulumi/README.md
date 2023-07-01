@@ -14,7 +14,7 @@ Now run these commands ONE BY ONE :
 gcloud auth application-default login
 gcloud projects list
 gcloud config set project PROJECT_ID
-gcloud services enable compute.googleapis.com artifactregistry.googleapis.com container.googleapis.com
+gcloud services enable compute.googleapis.com artifactregistry.googleapis.com container.googleapis.com file.googleapis.com
 pulumi config set gcp:project YOUR_PROJECT_ID
 ```
 
