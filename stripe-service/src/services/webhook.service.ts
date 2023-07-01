@@ -27,9 +27,6 @@ export class WebhookService {
       );
 
       switch (event.type) {
-        case 'checkout.session.completed':
-          return await this.updatePaymentIntent(event);
-
         case 'payment_intent.succeeded':
           return await this.confirmPayment(event);
 
@@ -69,8 +66,8 @@ export class WebhookService {
       );
 
       switch (event.type) {
-        case 'checkout.session.completed':
-          return await this.updatePaymentIntent(event);
+        // case 'checkout.session.completed':
+        //   return await this.updatePaymentIntent(event);
 
         case 'payment_intent.succeeded':
           return await this.confirmPayment(event);
@@ -128,34 +125,45 @@ export class WebhookService {
   }
 
   // Payment
-  private async updatePaymentIntent(event: Stripe.Event) {
-    const sessionId = event.data.object['id'];
-    const paymentIntentId = event.data.object['payment_intent'];
+  // private async updatePaymentIntent(event: Stripe.Event) {
+  //   const sessionId = event.data.object['id'];
+  //   const paymentIntentId = event.data.object['payment_intent'];
 
-    return await firstValueFrom(
-      this.paymentService.send('PAYMENT.UPDATE_PAYMENT_INTENT', {
-        sessionId,
-        paymentIntentId,
-      }),
-    );
-  }
+  //   return await firstValueFrom(
+  //     this.paymentService.send('PAYMENT.UPDATE_PAYMENT_INTENT', {
+  //       sessionId,
+  //       paymentIntentId,
+  //     }),
+  //   );
+  // }
 
   private async confirmPayment(event: Stripe.Event) {
-    const paymentIntentId = event.data.object['id'];
+    console.log(event.data.object?.['metadata']?.['billId']);
+    const billId = event.data.object?.['metadata']?.['billId'];
+    if (!billId)
+      throw new RpcException({
+        message: 'Bill id not found',
+        statusCode: 500,
+      });
 
     return await firstValueFrom(
       this.paymentService.send('PAYMENT.CONFIRM_PAYMENT', {
-        paymentIntentId,
+        billId,
       }),
     );
   }
 
   private async cancelPayment(event: Stripe.Event) {
-    const paymentIntentId = event.data.object['id'];
+    const billId = event.data.object?.['metadata']?.['billId'];
+    if (!billId)
+      throw new RpcException({
+        message: 'Bill id not found',
+        statusCode: 500,
+      });
 
     return await firstValueFrom(
       this.paymentService.send('PAYMENT.CANCEL_PAYMENT', {
-        paymentIntentId,
+        billId,
       }),
     );
   }

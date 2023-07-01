@@ -34,14 +34,6 @@ export class IsInOrderGuard implements CanActivate {
         id: order.serviceId,
       }),
     );
-    console.log(
-      'order.applicant',
-      order.applicant,
-      'user._id',
-      user._id,
-      'prestation.owner',
-      prestation.owner,
-    );
     if (order.applicant !== user._id && prestation.owner !== user._id)
       return false;
     return true;

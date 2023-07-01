@@ -46,7 +46,7 @@ export class PaymentService {
   }
 
   async createCheckoutSession(data: CreateCheckoutSessionDto) {
-    const { priceId, successUrl, cancelUrl } = data;
+    const { priceId, successUrl, cancelUrl, billId } = data;
     const session = await this.stripe.checkout.sessions.create({
       mode: 'payment',
       success_url: successUrl,
@@ -57,8 +57,12 @@ export class PaymentService {
           quantity: 1,
         },
       ],
+      payment_intent_data: {
+        metadata: {
+          billId,
+        },
+      },
     });
-
     return session;
   }
 

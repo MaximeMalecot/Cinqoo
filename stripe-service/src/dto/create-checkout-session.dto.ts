@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateCheckoutSessionDto {
   @IsString()
@@ -9,4 +9,7 @@ export class CreateCheckoutSessionDto {
 
   @IsString()
   cancelUrl: string;
+
+  @IsString()
+  billId: string;
 }
