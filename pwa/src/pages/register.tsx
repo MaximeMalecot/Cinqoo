@@ -49,6 +49,11 @@ export default function Register() {
                                 required: true,
                             })}
                         />
+                        {errors.email && (
+                            <p className={"text-xs text-red-500 italic px-3"}>
+                                This field is required
+                            </p>
+                        )}
                         <Input
                             placeholder="Username"
                             type="text"
@@ -56,6 +61,11 @@ export default function Register() {
                                 required: true,
                             })}
                         />
+                        {errors.username && (
+                            <p className={"text-xs text-red-500 italic px-3"}>
+                                This field is required
+                            </p>
+                        )}
                         <Input
                             placeholder="Password"
                             type="password"
@@ -63,6 +73,11 @@ export default function Register() {
                                 required: true,
                             })}
                         />
+                        {errors.password && (
+                            <p className={"text-xs text-red-500 italic px-3"}>
+                                This field is required
+                            </p>
+                        )}
                         <button
                             className="btn btn-primary"
                             disabled={loading}

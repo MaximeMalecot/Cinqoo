@@ -49,6 +49,11 @@ export default function Login() {
                                 required: true,
                             })}
                         />
+                        {errors.email && (
+                            <p className={"text-xs text-red-500 italic px-3"}>
+                                This field is required
+                            </p>
+                        )}
                         <Input
                             placeholder="Password"
                             type="password"
@@ -56,6 +61,11 @@ export default function Login() {
                                 required: true,
                             })}
                         />
+                        {errors.password && (
+                            <p className={"text-xs text-red-500 italic px-3"}>
+                                This field is required
+                            </p>
+                        )}
                         <Button
                             disabled={loading}
                             visual={"bordered-primary"}
