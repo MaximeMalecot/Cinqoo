@@ -1,8 +1,37 @@
 # challenge-s2-g19
 
+This project is a Fiverr like marketplace using a microservices architecture with CI/CD and IaC deployment.
+
+## Developers
+
+-   Maxime Malécot
+-   Julian Saleix
+-   Sacha Francisco-Leblanc
+
+## Technologies / frameworks / libraries
+
+-   Docker
+-   NestJS
+-   Express
+-   React
+-   MongoDB
+-   Stripe
+-   EventSource/Server-sent events
+-   Tailwind/DaisyUI
+-   Kubernetes
+-   Pulumi
+
+## Urls (dev)
+
+-   http://localhost:3000: Gateway api
+-   http://localhost:3001/conversations/sse: Hybrid-gateway api to handle Server-send events
+-   http://localhost:3000/docs: Api documentation
+-   http://localhost:8080: Front-end
+-   http://localhost:8081: Progressive Web App
+
 ## Prerequisites:
 
-To start the project, you need Docker with (at least) 9gb of memory allocated, otherwise, the containers won't be able to start properly.
+To start the project, you need Docker with a good amount of memory allocated, otherwise, the containers won't be able to start properly.
 Also, you need a Stripe account since we are using it to handle payments and promotion to Freelancer.
 
 ## Get your Stripe secret key
@@ -20,6 +49,12 @@ Once you have it, copy this key and put it in the root .env file as it is:
 ```bash
 STRIPE_SECRET_KEY=<your_stripe_secret_key>
 ```
+
+## Setup Stripe Connect
+
+To manage a marketplace such as Cinqoo or Fiverr, Stripe Connect is the way we are using to integrate payments into the marketplace without managing KYC and customers sensitives informations. Follow the steps available here: [Stripe Connect Settings](https://dashboard.stripe.com/test/settings/connect).
+
+🚨 The new Stripe dashboard is a bit messy, if you encounter issues like "Internal error" when registering or creating a user, it's probably because you haven't finished the Stripe Connect settings yet.
 
 ## Listening Stripe events locally
 
@@ -47,15 +82,39 @@ STRIPE_WH_ACCOUNT_SECRET=<your_webhook_key>
 STRIPE_WH_PAYMENT_SECRET=<your_webhook_key>
 ```
 
-## Starting the project
+## Starting and trying the project
 
-To start the project, run the following command:
+To start and try the project, run the following command:
+
+```
+docker compose -f compose.test.yml up --build -d
+```
+
+If you want to work on it, use the following command, but keep in mind you must have enough resources to run the project:
 
 ```
 docker compose up --build -d
 ```
 
-## Recreate the deployment or infrastructure
+## Seeding the database
+
+Use the following command to run the seeds:
+
+```
+docker compose exec gateway-service npm run db:seed
+```
+
+Only 3 users accounts are created, along with a few categories.
+Both users cannot create any service/prestation since they need to follow the Become a Freelancer workflow that implies to complete the Stripe Connect Account procedure and cannot be automated since it requires a human interaction.
+
+**Accounts credentials:**
+| email | Password | Roles
+|--|--| -- |
+| user@test.com | User123+= | User
+| freelancer@test.com | User123+= | User
+| admin@test.com | Admin123+= | User, Admin
+
+## Recreating the deployment or infrastructure
 
 This project is fully automated, and you can recreate the infrastructure easily on your own.
 
