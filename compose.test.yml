@@ -225,6 +225,8 @@ services:
     pwa:
         hostname: "${PWA}"
         build:
+            args:
+                - REACT_APP_API_ENDPOINT=${REACT_APP_API_ENDPOINT}
             context: ./pwa
             target: prod
         env_file: .env
