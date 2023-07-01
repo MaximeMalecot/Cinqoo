@@ -1,4 +1,4 @@
-import { NavLink, Outlet, Route, Routes } from "react-router-dom";
+import { NavLink, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { ADMIN_HEADER_TABS } from "../../constants/header-tabs";
 import AdminCategories from "./categories";
 import CreateCategory from "./categories/create";
@@ -63,7 +63,7 @@ export default function AdminRouter() {
                     element={<CreateReportReason />}
                 />
                 <Route path="*" element={<div>Not found</div>} />
-                <Route path="/" element={<div>Admin</div>} />
+                <Route path="/" element={<Navigate to={"/admin/users"} />} />
             </Route>
         </Routes>
     );
