@@ -45,8 +45,6 @@ export class AppController {
 
       req.on('error', (err) => {
         this.logger.error('error on req of client: ' + userId + err, err);
-        res.write(this.appService.convertMessage({ type: 'end', err }));
-        this.appService.deleteUser(userId, req.user.roles);
       });
 
       req.on('close', (err) => {
