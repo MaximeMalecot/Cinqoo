@@ -19,7 +19,6 @@ export class AppService {
     if (this.users[userId]) {
       this.logger.log(
         'sending message to client: ' + userId + ', type: ' + message?.type,
-        message,
       );
       this.users[userId].write(this.convertMessage(message));
     }
