@@ -8,9 +8,13 @@ import PromptDeleteModal from "./prompt-delete-modal";
 
 interface SectionProps {
     prestation: PrestationItemList;
+    adminRedirect?: boolean;
 }
 
-export default function DangerSection({ prestation }: SectionProps) {
+export default function DangerSection({
+    prestation,
+    adminRedirect = false,
+}: SectionProps) {
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
@@ -18,7 +22,11 @@ export default function DangerSection({ prestation }: SectionProps) {
         try {
             await prestationService.deletePrestation(prestation._id);
             notify("Prestation deleted");
-            navigate("/account/prestations");
+            if (adminRedirect) {
+                navigate("/admin/prestations");
+            } else {
+                navigate("/account/prestations");
+            }
         } catch (e: any) {
             console.error(e.message);
             displayMsg(e.message, "error");

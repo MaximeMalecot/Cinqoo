@@ -105,11 +105,6 @@ export default function AdminOrder() {
                                         )
                                     )}
                                 </select>
-                                {bill && bill.status === BillStatus.PAID && (
-                                    <Button onClick={refundOrder}>
-                                        Refund
-                                    </Button>
-                                )}
                             </div>
                         </div>
                         <div className="flex gap-5">
@@ -150,6 +145,16 @@ export default function AdminOrder() {
                     )}
                     <div className="divider my-0"></div>
                     <OrderDeliverable orderId={order._id} />
+                    <div className="divider my-0"></div>
+
+                    {bill && bill.status === BillStatus.PAID && (
+                        <div className="flex flex-col gap-5">
+                            <h2 className="text-xl">Danger Zone 🚨</h2>
+                            <Button visual="danger" onClick={refundOrder}>
+                                Refund client
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </section>
         </div>

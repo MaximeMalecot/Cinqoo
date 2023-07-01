@@ -9,6 +9,7 @@ import { Category } from "../../../interfaces/category";
 import { PrestationItemList } from "../../../interfaces/prestation";
 import prestationService from "../../../services/prestation.service";
 import { displayMsg } from "../../../utils/toast";
+import DangerSection from "../../account/prestations/edit/danger-section";
 import AdminFreelancerPart from "./freelancer-part";
 
 export default function AdminPrestation() {
@@ -120,6 +121,11 @@ export default function AdminPrestation() {
                     <div className="flex ">
                         <PrestationReviews prestationId={prestation._id} />
                     </div>
+                    <div className="divider my-0"></div>
+                    <DangerSection
+                        prestation={prestation!}
+                        adminRedirect={true}
+                    />
                 </div>
             </section>
         </div>
