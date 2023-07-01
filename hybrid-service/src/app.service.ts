@@ -5,8 +5,9 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class AppService {
   private readonly logger: Logger = new Logger(AppService.name);
-  private users = [];
+  private users = {};
   private orders = {};
+
   constructor(
     @Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
   ) {}
@@ -43,6 +44,7 @@ export class AppService {
   }
 
   async addUser(userId, res, roles = ['USER']) {
+    console.log('add user', userId);
     this.users[userId] = res;
     let orders = await this.getOrders(userId, roles);
     if (orders.length > 0) {
@@ -54,6 +56,7 @@ export class AppService {
   }
 
   async deleteUser(userId, roles = ['USER']) {
+    console.log('deleting user', userId);
     delete this.users[userId];
     let orders = await this.getOrders(userId, roles);
     if (orders.length > 0) {
