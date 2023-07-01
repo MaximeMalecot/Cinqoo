@@ -52,6 +52,7 @@ export class AppController {
       const headers = {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
+        'Transfer-Encoding': 'chunked',
         Connection: 'keep-alive',
       };
       res.writeHead(200, headers);
