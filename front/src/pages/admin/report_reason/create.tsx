@@ -17,7 +17,7 @@ export default function CreateReportReason() {
 
     const onSubmit = useCallback(async (data: any) => {
         try {
-            const res = await reportService.createReportReason(data.type, {
+            await reportService.createReportReason(data.type, {
                 name: data.name,
                 description: data.description,
             });
