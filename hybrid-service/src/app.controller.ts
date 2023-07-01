@@ -55,6 +55,7 @@ export class AppController {
       };
       res.writeHead(200, headers);
       res.write(`data: ${JSON.stringify({ type: 'connect', userId })}\n\n`);
+      res.setTimeout(0);
     } catch (err) {
       console.error(err);
       next();
