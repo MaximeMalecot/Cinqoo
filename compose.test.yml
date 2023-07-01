@@ -221,5 +221,16 @@ services:
         ports:
             - "8080:80"
 
+    pwa:
+        hostname: "${PWA}"
+        build:
+            args:
+                - REACT_APP_API_ENDPOINT=${REACT_APP_API_ENDPOINT}
+            context: ./pwa
+            target: prod
+        env_file: .env
+        ports:
+            - "8081:80"
+
 volumes:
     mongo-db:
