@@ -1,7 +1,7 @@
 import { Divide } from "hamburger-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FREELANCER_TABS, USER_TABS } from "../constants/header-tabs";
+import { USER_TABS } from "../constants/header-tabs";
 import { useAuthContext } from "../contexts/auth.context";
 
 interface MobileMenuProps {
@@ -14,7 +14,7 @@ export default function MobileMenu({
 }: MobileMenuProps) {
     const [open, setOpen] = useState(false);
     const openClasses = `${bgColorClass} opacity-80`;
-    const { isFreelancer, isConnected, logout } = useAuthContext();
+    const { isConnected, logout } = useAuthContext();
 
     const wrapLogout = () => {
         logout();
@@ -49,14 +49,6 @@ export default function MobileMenu({
                 >
                     {isConnected &&
                         USER_TABS.map((tab, index) => (
-                            <li key={index} className="capitalize">
-                                <Link onClick={closeMenu} to={tab.path}>
-                                    {tab.name}
-                                </Link>
-                            </li>
-                        ))}
-                    {isFreelancer &&
-                        FREELANCER_TABS.map((tab, index) => (
                             <li key={index} className="capitalize">
                                 <Link onClick={closeMenu} to={tab.path}>
                                     {tab.name}
