@@ -44,7 +44,7 @@ export class AppController {
       this.appService.addUser(userId, res, req.user.roles);
 
       req.on('close', () => {
-        this.logger.log('closing connection of client: ' + userId);
+        this.logger.log('closing req of client: ' + userId);
         this.appService.deleteUser(userId, req.user.roles);
         res.end();
       });
