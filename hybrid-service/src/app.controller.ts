@@ -43,38 +43,25 @@ export class AppController {
       const userId = req.user._id;
       this.appService.addUser(userId, res, req.user.roles);
 
-      req.on('close', (err) => {
-        this.logger.log('closing req of client: ' + userId);
-        res.write(`data: ${JSON.stringify({ type: 'end', err })}\n\n`);
-        res.end('closed');
-        res.destroy();
-        this.appService.deleteUser(userId, req.user.roles);
-      });
-
-      res.on('error', (err) => {
-        this.logger.error('error on res of client: ' + userId + err, err);
-        res.write(`data: ${JSON.stringify({ type: 'end', err })}\n\n`);
-        res.end('closed');
-        res.destroy();
-        this.appService.deleteUser(userId, req.user.roles);
-      });
-
       req.on('error', (err) => {
         this.logger.error('error on req of client: ' + userId + err, err);
-        res.write(`data: ${JSON.stringify({ type: 'end', err })}\n\n`);
-        res.end('closed');
-        res.destroy();
+        res.write(this.appService.convertMessage({ type: 'end', err }));
+        this.appService.deleteUser(userId, req.user.roles);
+      });
+
+      req.on('close', (err) => {
+        this.logger.log('closing req of client: ' + userId);
+        res.write(this.appService.convertMessage({ type: 'end', err }));
         this.appService.deleteUser(userId, req.user.roles);
       });
 
       const headers = {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Transfer-Encoding': 'chunked',
         Connection: 'keep-alive',
       };
       res.writeHead(200, headers);
-      res.write(`data: ${JSON.stringify({ type: 'connect', userId })}\n\n`);
+      res.write(this.appService.convertMessage({ type: 'connect', userId }));
       res.setTimeout(0);
     } catch (err) {
       console.error(err);
