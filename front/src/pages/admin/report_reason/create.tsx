@@ -23,7 +23,7 @@ export default function CreateReportReason() {
             });
             displayMsg("Report reason created successfully", "success");
             setTimeout(() => {
-                navigate(`/admin/report_reason/${res._id}`);
+                navigate(`/admin/report_reason`);
             }, 2000);
         } catch (e: any) {
             displayMsg(e.message, "error");
