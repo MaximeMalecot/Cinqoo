@@ -47,7 +47,7 @@ You can also communicate to a distant DB by modifying the variables, as you'll d
 
 In Dev and Staging, we are exposing "gateway-service" through a "LoadBalancer" service, to allow any incoming traffic on GCP.
 
-In Prod, we are keeping the service as a NodePort, to only allow communication inside VPC network, and use GCP LoadBalancer do the proxy, with a managedcertificate.
+In Prod, we are keeping the service as a NodePort, to only allow communication inside VPC network, and use an Ingress specific to GCP that creates a LoadBalancer in the VPC that will do the proxy, connected to a managedcertificate.
 
 This LoadBalancer is connected to a static IP that we created with pulumi. If you change the ressource "gatewayStaticIp" in infrastructure definition, you'll need to change the value of the anotation "kubernetes.io/ingress.global-static-ip-name" in the prod/ingress.yaml according to your new value.
 
