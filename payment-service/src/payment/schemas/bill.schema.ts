@@ -31,7 +31,7 @@ export class Bill {
   @Prop({ type: String, required: true, default: 'USD' })
   currency: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   stripeSessionId: string;
 
   @Prop({ type: String, required: false })

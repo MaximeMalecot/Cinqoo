@@ -2,7 +2,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateReportDto {
   @IsString()
-  service: string;
+  creator: string;
 
   @IsString()
   target: string;

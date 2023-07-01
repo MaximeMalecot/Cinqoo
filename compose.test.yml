@@ -22,9 +22,9 @@ services:
             context: ./gateway-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./gateway-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./gateway-service:/home/node
+        #     - /home/node/node_modules
         env_file: .env
         ports:
             - "3000:3000"
@@ -102,9 +102,9 @@ services:
             context: ./report-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./report-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./report-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/report?authSource=admin&directConnection=true
         env_file: .env
@@ -213,14 +213,13 @@ services:
     front:
         build:
             context: ./front
-            target: dev
-        command: npm run dev
+            target: prod
         # volumes:
         #     - ./front:/usr/src/app
         #     - /usr/src/app/node_modules
         env_file: .env
         ports:
-            - "8080:8080"
+            - "8080:80"
 
 volumes:
     mongo-db:

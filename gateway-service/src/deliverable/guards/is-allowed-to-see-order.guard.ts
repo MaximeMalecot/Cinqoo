@@ -31,7 +31,7 @@ export class IsAllowedToSeeOrder implements CanActivate {
     );
     if (!order) throw new NotFoundException({ message: 'Order not found' });
     if (order.applicant === user._id) return true;
-    if (order.service.owner === user._id) return true;
+    if (order.prestation.owner === user._id) return true;
     return false;
   }
 }

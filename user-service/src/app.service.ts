@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { CreateNoRestrictDto } from './dto/create-no-restrict.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -25,14 +26,16 @@ export class AppService {
   ) {}
 
   async getUsers() {
-    return this.userModel.find().exec();
+    return this.userModel
+      .find()
+      .sort({
+        createdAt: -1,
+      })
+      .exec();
   }
 
   async getUserById(id: string) {
-    const user = await this.userModel
-      .findById(new Types.ObjectId(id))
-      .select('+password')
-      .exec();
+    const user = await this.userModel.findById(new Types.ObjectId(id)).exec();
     if (!user) {
       throw new RpcException({
         message: `User ${id} not found`,
@@ -42,7 +45,7 @@ export class AppService {
     return user;
   }
 
-  async getUserByEmail(email: string) {
+  async authGetUser(email: string) {
     const user = await this.userModel
       .findOne({
         email: email,
@@ -285,6 +288,20 @@ export class AppService {
     return { url: accountLink.url };
   }
 
+  async getStripeLink(id: string) {
+    const user = await this.userModel.findById(new Types.ObjectId(id));
+    if (!user) {
+      throw new RpcException({
+        message: `User with id ${id} not found`,
+        statusCode: 400,
+      });
+    }
+    const accountLink = await firstValueFrom(
+      this.stripeService.send('STRIPE.GET_ACCOUNT_LINK', user.stripeAccountId),
+    );
+    return { url: accountLink.url };
+  }
+
   async getFreelancerProfile(id: string) {
     try {
       const profile = await this.freelancerProfileModel.findOne(
@@ -343,6 +360,83 @@ export class AppService {
       }
 
       return { message: 'Freelancer profile updated' };
+    } catch (e: any) {
+      throw new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async createNoRestrict(data: CreateNoRestrictDto) {
+    try {
+      data.password = await bcrypt.hash(data.password, 10);
+      const stripeAccountId = await firstValueFrom(
+        this.stripeService.send('STRIPE.CREATE_ACCOUNT', {}),
+      );
+      data['stripeAccountId'] = stripeAccountId.id;
+      const res = new this.userModel(data);
+      await res.save();
+      this.sendWelcomeMail(res._id.toString());
+
+      return res;
+    } catch (error) {
+      if (error.name === 'MongoServerError' || error.name === 'MongoError') {
+        if (error.code === 11000) {
+          throw new RpcException({
+            message: `${Object.keys(error.keyPattern)[0]} already used`,
+            statusCode: 400,
+          });
+        }
+      }
+      throw new RpcException({ code: 500 });
+    }
+  }
+
+  async promoteAdmin(id: string) {
+    try {
+      const user = await this.userModel.findById(new Types.ObjectId(id));
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+      if (user.roles.includes(Role.ADMIN)) {
+        throw new RpcException({
+          message: `User is already an admin`,
+          statusCode: 400,
+        });
+      }
+      user.roles.push(Role.ADMIN);
+      await user.save();
+      return { message: 'User promoted' };
+    } catch (e: any) {
+      throw new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async demoteAdmin(id: string) {
+    try {
+      const user = await this.userModel.findById(new Types.ObjectId(id));
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+      if (!user.roles.includes(Role.ADMIN)) {
+        throw new RpcException({
+          message: `User is not an admin`,
+          statusCode: 400,
+        });
+      }
+      user.roles = user.roles.filter((role) => role !== Role.ADMIN);
+      await user.save();
+      return { message: 'User demoted' };
     } catch (e: any) {
       throw new RpcException({
         message: e.message,

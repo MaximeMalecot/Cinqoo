@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { FRONT_URL } from './constants';
 import { PublishDto } from './dto/publish.dto';
 import { Deliverable } from './schemas/deliverable.schema';
 
@@ -18,8 +19,18 @@ export class AppService {
   ) {}
 
   async getAllDeliverablesForAnOrder(orderId: string) {
-    const deliverables = await this.deliverableModel.find({ orderId: orderId });
-    return deliverables;
+    try {
+      const deliverables = await this.deliverableModel.find({
+        orderId: orderId,
+      });
+      return deliverables;
+    } catch (e: any) {
+      console.log(e);
+      throw new RpcException({
+        statusCode: 404,
+        message: e.message,
+      });
+    }
   }
 
   async publishDeliverable(orderId: string, data: PublishDto) {
@@ -48,7 +59,7 @@ export class AppService {
     );
     this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
       targetId: order.applicant,
-      redirectUrl: `http://localhost:3000/orders/${orderId}`,
+      redirectUrl: `${FRONT_URL}/account/orders/${orderId}`,
       label: 'Track order',
       subject: 'New deliverable',
       text: `A new deliverable has been published for your order ${orderId}`,

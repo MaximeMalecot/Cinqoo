@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
 import { firstValueFrom } from 'rxjs';
+import { FRONT_URL } from './constants';
 import { SendInformativeMailDto } from './dto/send-informative-mail.dto';
 import { SendRedirectMailDto } from './dto/send-redirect-mail.dto';
 import { MAIL_CLIENT } from './mailer/constants';
@@ -42,6 +43,7 @@ export class AppService {
         subject: data.subject,
         text: data.text,
         now: new Date().toLocaleDateString(),
+        url: `${FRONT_URL}`,
       });
 
       const res = await this.sendMailClient({

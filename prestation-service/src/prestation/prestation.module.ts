@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -23,9 +23,10 @@ import { Prestation, PrestationSchema } from './schemas/prestation.schema';
     MongooseModule.forFeature([
       { name: Prestation.name, schema: PrestationSchema },
     ]),
-    CategoryModule,
+    forwardRef(() => CategoryModule),
   ],
   controllers: [PrestationController],
   providers: [PrestationService],
+  exports: [PrestationService],
 })
 export class PrestationModule {}

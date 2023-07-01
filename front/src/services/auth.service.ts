@@ -2,7 +2,7 @@ import { API_ENDPOINT } from "../constants/endpoints";
 
 class AuthService {
     async login(email: string, password: string) {
-        const res = await fetch(`${API_ENDPOINT}/login`, {
+        const res = await fetch(`${API_ENDPOINT}login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -13,7 +13,7 @@ class AuthService {
             }),
         });
 
-        if (res.status !== 200) {
+        if (res.status !== 201) {
             const jsonRes = await res.json();
             if (jsonRes.message) {
                 throw new Error(JSON.stringify(jsonRes.message));
@@ -24,8 +24,8 @@ class AuthService {
         return await res.json();
     }
 
-    async register(email: string, password: string) {
-        const res = await fetch(`${API_ENDPOINT}/register`, {
+    async register(email: string, password: string, username: string) {
+        const res = await fetch(`${API_ENDPOINT}register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -33,6 +33,7 @@ class AuthService {
             body: JSON.stringify({
                 email,
                 password,
+                username,
             }),
         });
 

@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { CreateNoRestrictDto } from './dto/create-no-restrict.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,9 +16,9 @@ export class AppController {
     return this.appService.getUsers();
   }
 
-  @EventPattern('getUserByEmail')
-  async getUserByEmail(@Payload() data: { email: string }) {
-    return this.appService.getUserByEmail(data.email);
+  @EventPattern('AUTH.GET_USER_BY_EMAIL')
+  async authGetUser(@Payload() data: { email: string }) {
+    return this.appService.authGetUser(data.email);
   }
 
   @EventPattern('getUserById')
@@ -64,6 +65,11 @@ export class AppController {
     return this.appService.becomeFreelancer(userId);
   }
 
+  @EventPattern('USER.GET_STRIPE_LINK')
+  async getStripeLink(userId: string) {
+    return this.appService.getStripeLink(userId);
+  }
+
   @EventPattern('USER.GET_FREELANCER_PROFILE')
   async getFreelancerProfile(userId: string) {
     return this.appService.getFreelancerProfile(userId);
@@ -81,5 +87,20 @@ export class AppController {
       data.id,
       data.freelancerProfileDto,
     );
+  }
+
+  @EventPattern('USER.CREATE_NO_RESTRICT')
+  async createNoRestrict(@Payload() data: CreateNoRestrictDto) {
+    return this.appService.createNoRestrict(data);
+  }
+
+  @EventPattern('USER.PROMOTE_ADMIN')
+  async promoteAdmin(userId: string) {
+    return this.appService.promoteAdmin(userId);
+  }
+
+  @EventPattern('USER.DEMOTE_ADMIN')
+  async demoteAdmin(userId: string) {
+    return this.appService.demoteAdmin(userId);
   }
 }

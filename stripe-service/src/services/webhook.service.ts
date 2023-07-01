@@ -29,7 +29,6 @@ export class WebhookService {
       switch (event.type) {
         case 'checkout.session.completed':
           return await this.updatePaymentIntent(event);
-
         case 'payment_intent.succeeded':
           return await this.confirmPayment(event);
 
@@ -141,21 +140,32 @@ export class WebhookService {
   }
 
   private async confirmPayment(event: Stripe.Event) {
-    const paymentIntentId = event.data.object['id'];
+    console.log(event.data);
+    const billId = event.data.object?.['metadata']?.['billId'];
+    if (!billId)
+      throw new RpcException({
+        message: 'Bill id not found',
+        statusCode: 500,
+      });
 
     return await firstValueFrom(
       this.paymentService.send('PAYMENT.CONFIRM_PAYMENT', {
-        paymentIntentId,
+        billId,
       }),
     );
   }
 
   private async cancelPayment(event: Stripe.Event) {
-    const paymentIntentId = event.data.object['id'];
+    const billId = event.data.object?.['metadata']?.['billId'];
+    if (!billId)
+      throw new RpcException({
+        message: 'Bill id not found',
+        statusCode: 500,
+      });
 
     return await firstValueFrom(
       this.paymentService.send('PAYMENT.CANCEL_PAYMENT', {
-        paymentIntentId,
+        billId,
       }),
     );
   }

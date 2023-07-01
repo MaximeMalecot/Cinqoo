@@ -72,4 +72,9 @@ export class AppController {
   async createAccountLink(accountId: string) {
     return await this.accountService.createAccountLink(accountId);
   }
+
+  @EventPattern('STRIPE.GET_ACCOUNT_LINK')
+  async getAccountLink(accountId: string) {
+    return await this.accountService.getAccountLink(accountId);
+  }
 }

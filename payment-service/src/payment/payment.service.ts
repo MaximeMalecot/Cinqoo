@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
+import { FRONT_URL } from 'src/constants';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { UpdatePaymentIntentDto } from './dto/update-payment-intent.dto';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
@@ -10,6 +11,8 @@ import { Bill } from './schemas/bill.schema';
 
 @Injectable()
 export class PaymentService {
+  fees = 0.2;
+
   constructor(
     @InjectModel(Bill.name) private readonly billModel: Model<Bill>,
     @Inject('PRESTATION_SERVICE')
@@ -54,11 +57,20 @@ export class PaymentService {
         }),
       );
       //creating stripe checkout session with created price
+
+      const bill = new this.billModel({
+        ...createPaymentIntentDto,
+        amount: serviceExists.price,
+        userId: new Types.ObjectId(createPaymentIntentDto.userId),
+      });
+      await bill.save();
+
       const stripeCheckoutSession = await firstValueFrom(
         this.stripeService.send('STRIPE.CREATE_CHECKOUT_SESSION', {
           priceId: price.id,
-          successUrl: 'http://localhost:3000/success',
-          cancelUrl: 'http://localhost:3000/cancel',
+          successUrl: `${FRONT_URL}?success=true`,
+          cancelUrl: `${FRONT_URL}?success=false`,
+          billId: bill._id,
         }),
       );
 
@@ -68,14 +80,8 @@ export class PaymentService {
           statusCode: 500,
         });
       }
-
-      const bill = new this.billModel({
-        ...createPaymentIntentDto,
-        amount: serviceExists.price,
-        stripeSessionId: stripeCheckoutSession.id,
-        userId: new Types.ObjectId(createPaymentIntentDto.userId),
-      });
-      const newBill = await bill.save();
+      bill.stripeSessionId = stripeCheckoutSession.id;
+      await bill.save();
       return { url: stripeCheckoutSession.url };
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -179,19 +185,21 @@ export class PaymentService {
         });
       }
 
+      const amount = bill.amount * (1 - this.fees);
       await firstValueFrom(
         this.stripeService.send('STRIPE.TRANSFER_FUNDS', {
           stripeConnectAccountId: provider.stripeAccountId,
-          amount: bill.amount,
+          amount,
           currency: 'eur',
           description: `Paiement de la prestation ${prestation.title}`,
         }),
       );
 
-      this.sendMoneyTransferedEmail(provider._id, prestation.name, bill.amount);
+      this.sendMoneyTransferedEmail(provider._id, prestation.name, amount);
 
       return { success: true, message: 'Bill payment transfered' };
     } catch (e: any) {
+      console.log(e);
       if (e instanceof RpcException) {
         throw e;
       }
@@ -210,6 +218,24 @@ export class PaymentService {
         __v: false,
       });
     return bills;
+  }
+
+  async getBillsOfPrestation(prestationId: string) {
+    const bills = await this.billModel
+      .find({ serviceId: new Types.ObjectId(prestationId) })
+      .select({
+        __v: false,
+      });
+    return bills;
+  }
+
+  async getBillById(billId: string) {
+    const bill = await this.billModel
+      .findById(new Types.ObjectId(billId))
+      .select({
+        __v: false,
+      });
+    return bill;
   }
 
   // Stripe Webhook callbaks
@@ -231,11 +257,9 @@ export class PaymentService {
   }
 
   public async confirmPayment(data: UpdatePaymentStatusDto) {
-    const { paymentIntentId } = data;
+    const { billId } = data;
 
-    const bill = await this.billModel.findOne({
-      stripePaymentIntentId: paymentIntentId,
-    });
+    const bill = await this.billModel.findById(new Types.ObjectId(billId));
 
     if (!bill) {
       throw new RpcException({
@@ -271,11 +295,9 @@ export class PaymentService {
   }
 
   public async cancelPayment(data: UpdatePaymentStatusDto) {
-    const { paymentIntentId } = data;
+    const { billId } = data;
 
-    const bill = await this.billModel.findOne({
-      stripePaymentIntentId: paymentIntentId,
-    });
+    const bill = await this.billModel.findById(new Types.ObjectId(billId));
 
     if (!bill) {
       throw new RpcException({

@@ -18,3 +18,5 @@ export const TRANSPORTER = {
 };
 
 export const FROM = process.env.MAILER_CLIENT_FROM ?? 'test@test.com';
+
+export const FRONT_URL = process.env.FRONT_URL ?? 'http://localhost:8080';

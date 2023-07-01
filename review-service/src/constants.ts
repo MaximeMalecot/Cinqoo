@@ -1,5 +1,6 @@
 export const SERVICES = {
   REVIEW: process.env.REVIEW_SERVICE ?? 'review-service',
+  ORDER: process.env.ORDER_SERVICE ?? 'order-service',
 };
 
 export const PORTS = {
