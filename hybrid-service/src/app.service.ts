@@ -1,9 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AppService {
+  private readonly logger: Logger = new Logger(AppService.name);
   private users = [];
   private orders = {};
   constructor(
@@ -11,12 +12,15 @@ export class AppService {
   ) {}
 
   convertMessage({ type, ...data }) {
-    console.log(`event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`);
     return `event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`;
   }
 
   broadcastSpecific(message, userId) {
     if (this.users[userId]) {
+      this.logger.log(
+        'sending message to client: ' + userId + ', type :' + message?.type,
+        message,
+      );
       this.users[userId].write(this.convertMessage(message));
     }
   }

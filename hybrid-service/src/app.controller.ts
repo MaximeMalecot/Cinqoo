@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, Logger, Req, Res } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { Response } from 'express';
 import { AppService } from './app.service';
@@ -11,6 +11,7 @@ import {
 
 @Controller()
 export class AppController {
+  private readonly logger: Logger = new Logger(AppController.name);
   constructor(private appService: AppService) {}
 
   @Get('')
@@ -43,7 +44,7 @@ export class AppController {
       this.appService.addUser(userId, res, req.user.roles);
 
       res.on('close', () => {
-        console.log('close', userId);
+        Logger.log('closing connection', userId);
         this.appService.deleteUser(userId, req.user.roles);
       });
 
@@ -71,7 +72,6 @@ export class AppController {
 
   @EventPattern('HYBRID.BROADCAST_ORDER')
   async broadcastOrder(@Payload() data: BroadcastOrderDto) {
-    console.log('broadcastOrder', data);
     await this.appService.broadcastOrder(data.message, data.orderId);
     return {
       event: 'message_printed',
