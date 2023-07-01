@@ -50,7 +50,6 @@ export default function OrderConversation({
 
     const setupEventSource = useCallback(async () => {
         const sse = await eventSourceService.getOrderSSE();
-        eventSource.current = sse;
         sse.addEventListener("new_message", (data: any) => {
             try {
                 const message = JSON.parse(data.data).data;
@@ -61,6 +60,16 @@ export default function OrderConversation({
                 console.log(e.message);
             }
         });
+
+        sse.onerror = (e: any) => {
+            console.log("error", e);
+            displayMsg(
+                "Error while connecting to the SSE service, please refresh the page",
+                "error"
+            );
+        };
+
+        eventSource.current = sse;
     }, [order]);
 
     useEffect(() => {
