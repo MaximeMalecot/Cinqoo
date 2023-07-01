@@ -27,6 +27,8 @@ export class WebhookService {
       );
 
       switch (event.type) {
+        case 'checkout.session.completed':
+          return await this.updatePaymentIntent(event);
         case 'payment_intent.succeeded':
           return await this.confirmPayment(event);
 
@@ -66,8 +68,8 @@ export class WebhookService {
       );
 
       switch (event.type) {
-        // case 'checkout.session.completed':
-        //   return await this.updatePaymentIntent(event);
+        case 'checkout.session.completed':
+          return await this.updatePaymentIntent(event);
 
         case 'payment_intent.succeeded':
           return await this.confirmPayment(event);
@@ -125,20 +127,20 @@ export class WebhookService {
   }
 
   // Payment
-  // private async updatePaymentIntent(event: Stripe.Event) {
-  //   const sessionId = event.data.object['id'];
-  //   const paymentIntentId = event.data.object['payment_intent'];
+  private async updatePaymentIntent(event: Stripe.Event) {
+    const sessionId = event.data.object['id'];
+    const paymentIntentId = event.data.object['payment_intent'];
 
-  //   return await firstValueFrom(
-  //     this.paymentService.send('PAYMENT.UPDATE_PAYMENT_INTENT', {
-  //       sessionId,
-  //       paymentIntentId,
-  //     }),
-  //   );
-  // }
+    return await firstValueFrom(
+      this.paymentService.send('PAYMENT.UPDATE_PAYMENT_INTENT', {
+        sessionId,
+        paymentIntentId,
+      }),
+    );
+  }
 
   private async confirmPayment(event: Stripe.Event) {
-    console.log(event.data.object?.['metadata']?.['billId']);
+    console.log(event.data);
     const billId = event.data.object?.['metadata']?.['billId'];
     if (!billId)
       throw new RpcException({
