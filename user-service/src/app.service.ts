@@ -236,11 +236,12 @@ export class AppService {
       }
 
       if (promote == false) {
-        if (user.roles.includes(Role.FREELANCER)) {
-          user.roles = user.roles.filter((role) => role !== Role.FREELANCER);
-          await user.save();
-          return { message: 'User demoted' };
-        }
+        return { message: 'User demoted' };
+        // if (user.roles.includes(Role.FREELANCER)) {
+        //   user.roles = user.roles.filter((role) => role !== Role.FREELANCER);
+        //   await user.save();
+        //   return { message: 'User demoted' };
+        // }
       } else {
         if (!user.roles.includes(Role.FREELANCER)) {
           user.roles.push(Role.FREELANCER);

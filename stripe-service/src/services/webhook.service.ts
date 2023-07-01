@@ -26,6 +26,8 @@ export class WebhookService {
         process.env.STRIPE_WH_ACCOUNT_SECRET,
       );
 
+      console.log(event.type);
+
       switch (event.type) {
         case 'checkout.session.completed':
           return await this.updatePaymentIntent(event);
@@ -140,7 +142,6 @@ export class WebhookService {
   }
 
   private async confirmPayment(event: Stripe.Event) {
-    console.log(event.data);
     const billId = event.data.object?.['metadata']?.['billId'];
     if (!billId)
       throw new RpcException({
