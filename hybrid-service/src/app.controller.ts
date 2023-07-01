@@ -46,7 +46,19 @@ export class AppController {
       req.on('close', () => {
         this.logger.log('closing req of client: ' + userId);
         this.appService.deleteUser(userId, req.user.roles);
-        res.end();
+        res.end('closed');
+      });
+
+      res.on('error', (err) => {
+        this.logger.error('error on res of client: ' + userId + err, err);
+        this.appService.deleteUser(userId, req.user.roles);
+        res.end('error');
+      });
+
+      req.on('error', (err) => {
+        this.logger.error('error on req of client: ' + userId + err, err);
+        this.appService.deleteUser(userId, req.user.roles);
+        res.end('error');
       });
 
       const headers = {
