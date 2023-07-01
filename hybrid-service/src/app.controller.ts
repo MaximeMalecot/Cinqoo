@@ -43,9 +43,10 @@ export class AppController {
       const userId = req.user._id;
       this.appService.addUser(userId, res, req.user.roles);
 
-      res.on('close', () => {
+      req.on('close', () => {
         this.logger.log('closing connection of client: ' + userId);
         this.appService.deleteUser(userId, req.user.roles);
+        res.end();
       });
 
       const headers = {
