@@ -3,7 +3,7 @@ FROM node:18-alpine as dev
 WORKDIR /usr/src/app
 
 
-ARG REACT_APP_API_ENDPOINT=http://localhost:3100/
+ARG REACT_APP_API_ENDPOINT=http://localhost:3000/
 
 ENV REACT_APP_API_ENDPOINT=$REACT_APP_API_ENDPOINT
 COPY --chown=node:node package*.json ./
