@@ -212,14 +212,13 @@ services:
 
     front:
         build:
+            args:
+                - VITE_API_ENDPOINT=${VITE_API_ENDPOINT}
+                - VITE_SSE_ENDPOINT=${VITE_SSE_ENDPOINT}
             context: ./front
-            target: prod
-        # volumes:
-        #     - ./front:/usr/src/app
-        #     - /usr/src/app/node_modules
         env_file: .env
         ports:
-            - "8080:80"
+            - "8080:8080"
 
     pwa:
         hostname: "${PWA}"
