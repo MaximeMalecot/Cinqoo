@@ -52,7 +52,7 @@ export default function RequestConversation({
         const sse = await eventSourceService.getOrderSSE();
         sse.addEventListener("new_message", (data: any) => {
             try {
-                const message = JSON.parse(data.data).data;
+                const message = JSON.parse(data.data);
                 if (message.orderId === request._id) {
                     setMessages((prev) => [...prev, message]);
                 }
