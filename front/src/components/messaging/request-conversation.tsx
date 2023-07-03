@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { SSE_EVENTS } from "../../constants/sse-events";
 import { ORDER_STATUS } from "../../constants/status";
 import { useAuthContext } from "../../contexts/auth.context";
 import { MessageI } from "../../interfaces/message";
 import { Request } from "../../interfaces/request";
 import eventSourceService from "../../services/event-source.service";
 import messageService from "../../services/message.service";
-import { displayMsg } from "../../utils/toast";
+import { displayMsg, notify } from "../../utils/toast";
 import ConversationLayout from "./conversation-layout";
 
 interface RequestConversationProps {
@@ -50,11 +51,23 @@ export default function RequestConversation({
 
     const setupEventSource = useCallback(async () => {
         const sse = await eventSourceService.getOrderSSE();
-        sse.addEventListener("new_message", (data: any) => {
+        sse.addEventListener(SSE_EVENTS.NEW_MESSAGE, (data: any) => {
             try {
                 const message = JSON.parse(data.data);
                 if (message.orderId === request._id) {
                     setMessages((prev) => [...prev, message]);
+                }
+            } catch (e: any) {
+                console.log(e.message);
+            }
+        });
+
+        sse.addEventListener(SSE_EVENTS.ORDER_UPDATED, (data: any) => {
+            try {
+                notify("Order updated");
+                const message = JSON.parse(data.data);
+                if (message.orderId === request._id) {
+                    fetchMessages();
                 }
             } catch (e: any) {
                 console.log(e.message);
