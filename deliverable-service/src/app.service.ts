@@ -4,7 +4,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { FRONT_URL } from './constants';
+import { BroadcastOrderDto } from './dto/broadcast.dto';
 import { PublishDto } from './dto/publish.dto';
+import { MessageType } from './enums/message.enum';
 import { Deliverable } from './schemas/deliverable.schema';
 
 @Injectable()
@@ -16,6 +18,8 @@ export class AppService {
     private readonly orderService: ClientProxy,
     @Inject('MAILER_SERVICE')
     private readonly mailerService: ClientProxy,
+    @Inject('HYBRID_SERVICE')
+    private readonly hybridService: ClientProxy,
   ) {}
 
   async getAllDeliverablesForAnOrder(orderId: string) {
@@ -43,6 +47,11 @@ export class AppService {
 
       await deliverable.save();
       this.sendNewDeliverableEmail(orderId);
+      this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
+        message: { type: MessageType.ORDER_UPDATED, data: {} },
+        orderId,
+      } as BroadcastOrderDto);
+
       return deliverable;
     } catch (err: any) {
       throw new RpcException({

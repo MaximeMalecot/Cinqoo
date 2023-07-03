@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { BroadcastOrderDto } from './dto/broadcast.dto';
 import { SendMessageDto } from './dto/send-message.dto';
+import { MessageType } from './enums/message.enum';
 import { Message } from './schemas/message.schema';
 
 @Injectable()
@@ -45,12 +46,10 @@ export class AppService {
     }
     const message = await new this.messageModel(data).save();
     console.log('sending message to hybrid service');
-    await firstValueFrom(
-      this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
-        message: { type: 'new_message', data: message },
-        orderId,
-      } as BroadcastOrderDto),
-    );
+    this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
+      message: { type: MessageType.NEW_MESSAGE, data: message },
+      orderId,
+    } as BroadcastOrderDto);
     console.log('message sent to hybrid service');
     // REALTIME HERE
     return message;

@@ -4,7 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SERVICES } from './constants';
+import { PORTS, SERVICES } from './constants';
 import { Deliverable, DeliverableSchema } from './schemas/deliverable.schema';
 
 @Module({
@@ -23,6 +23,14 @@ import { Deliverable, DeliverableSchema } from './schemas/deliverable.schema';
         transport: Transport.TCP,
         options: {
           host: SERVICES.ORDER,
+        },
+      },
+      {
+        name: 'HYBRID_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: SERVICES.HYBRID,
+          port: PORTS.HYBRID_MS,
         },
       },
     ]),
