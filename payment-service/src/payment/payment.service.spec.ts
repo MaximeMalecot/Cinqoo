@@ -6,9 +6,11 @@ import { Connection, Model, Types, connect } from 'mongoose';
 import { PaymentService } from './payment.service';
 import { Bill, BillSchema } from './schemas/bill.schema';
 import {
+  MockMailerService,
   MockOrderService,
   MockPrestationService,
   MockStripeService,
+  MockUserService,
 } from './tests/client-proxies';
 
 const TMP_USER_ID = '507f1f77bcf86cd799439011';
@@ -32,6 +34,8 @@ describe('AppService', () => {
         { provide: 'PRESTATION_SERVICE', useValue: MockPrestationService },
         { provide: 'ORDER_SERVICE', useValue: MockOrderService },
         { provide: 'STRIPE_SERVICE', useValue: MockStripeService },
+        { provide: 'MAILER_SERVICE', useValue: { MockMailerService } },
+        { provide: 'USER_SERVICE', useValue: MockUserService },
       ],
     }).compile();
 
@@ -198,7 +202,7 @@ describe('AppService', () => {
             status: 'PAID',
           });
           const r = service.confirmPayment({
-            paymentIntentId: PAYMENT_INTENT_ID,
+            billId: BILL_ID,
           });
           await expect(r).resolves.toEqual({
             success: true,
@@ -208,7 +212,7 @@ describe('AppService', () => {
 
         it('Should work', async () => {
           const r = service.confirmPayment({
-            paymentIntentId: PAYMENT_INTENT_ID,
+            billId: BILL_ID,
           });
           await expect(r).resolves.toEqual({
             success: true,
@@ -225,7 +229,7 @@ describe('AppService', () => {
             status: 'PAID',
           });
           const r = service.confirmPayment({
-            paymentIntentId: PAYMENT_INTENT_ID,
+            billId: BILL_ID,
           });
           await expect(r).resolves.toEqual({
             success: true,
@@ -235,7 +239,7 @@ describe('AppService', () => {
 
         it('Should work', async () => {
           const r = service.cancelPayment({
-            paymentIntentId: PAYMENT_INTENT_ID,
+            billId: BILL_ID,
           });
           await expect(r).resolves.toEqual({
             success: true,

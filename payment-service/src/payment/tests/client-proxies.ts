@@ -89,6 +89,26 @@ class PrestationService extends ClientProxyMock {
   }
 }
 
+class UserService extends ClientProxyMock {
+  public send(pattern: string, data: any): any {
+    switch (pattern) {
+      default:
+        return super.send(pattern, data);
+    }
+  }
+}
+
+class MailerService extends ClientProxyMock {
+  public send(pattern: string, data: any): any {
+    switch (pattern) {
+      default:
+        return super.send(pattern, data);
+    }
+  }
+}
+
 export const MockPrestationService = new PrestationService();
 export const MockOrderService = new OrderService();
 export const MockStripeService = new StripeService();
+export const MockUserService = new UserService();
+export const MockMailerService = new MailerService();
