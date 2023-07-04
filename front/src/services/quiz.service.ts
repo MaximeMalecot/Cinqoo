@@ -10,7 +10,7 @@ class QuizService {
         ];
     }
 
-    async getQuiz(id: string) {
+    async getQuiz(_: string) {
         return {
             _id: "12323",
             name: "Quiz 1",
@@ -19,7 +19,7 @@ class QuizService {
         };
     }
 
-    async getFullQuiz(id: string) {
+    async getFullQuiz(_: string) {
         return {
             _id: "12323",
             name: "Quiz 1",
@@ -28,7 +28,7 @@ class QuizService {
         };
     }
 
-    async create(name: string, duration: number) {
+    async create(_: string, __: number) {
         return {
             _id: "12323",
         };
