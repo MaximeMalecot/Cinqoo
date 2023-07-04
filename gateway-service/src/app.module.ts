@@ -16,6 +16,7 @@ import { MessageModule } from './message/message.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrestationModule } from './prestation/prestation.module';
+import { QuizModule } from './quiz/quiz.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';
 import { SeederModule } from './seeder/seeder.module';
@@ -53,6 +54,7 @@ import { WebhookModule } from './webhook/webhook.module';
       limit: 80,
     }),
     MessageModule,
+    QuizModule,
     SseModule,
     CommandModule,
     SeederModule,

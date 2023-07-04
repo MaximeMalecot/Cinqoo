@@ -3,6 +3,10 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHello(): string {
-    return 'Hello from Quiz Service!';
+    return 'Hello from Quiz WS Service!';
+  }
+
+  getMsHello(): string {
+    return 'Hello from Quiz MS!';
   }
 }
