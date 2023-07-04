@@ -117,6 +117,8 @@ function EditQuizDataForm() {
 
 function QuestionsPart() {
     const { quiz, reload } = useAdminQuizContext();
+    const [activeTab, setActiveTab] = useState(-1);
+    const activeQuestion = quiz?.questions[activeTab] ?? null;
 
     const addQuestion = async (question: any) => {
         try {
@@ -156,22 +158,47 @@ function QuestionsPart() {
                 </p>
             )}
             {quiz && quiz?.questions?.length > 0 && (
-                <div className="flex flex-col gap-3">
-                    {quiz.questions.map((question, index) => (
-                        <QuestionForm
-                            type="edit"
-                            submitAction={(data: any) =>
-                                editQuestion(question._id, data)
-                            }
-                            initData={question}
-                            key={index}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="tabs tabs-boxed">
+                        <p
+                            className={`tab ${
+                                -1 === activeTab ? "tab-active" : ""
+                            }`}
+                            onClick={() => setActiveTab(-1)}
+                        >
+                            New question
+                        </p>
+                        {quiz.questions.map((question, index) => (
+                            <p
+                                key={index}
+                                onClick={() => setActiveTab(index)}
+                                className={`tab ${
+                                    index === activeTab ? "tab-active" : ""
+                                }`}
+                            >
+                                {question.label}
+                            </p>
+                        ))}
+                    </div>
+                    <div className="flex flex-col gap-3 border border-1 p-3 rounded rounded-md">
+                        {activeQuestion ? (
+                            <QuestionForm
+                                type="edit"
+                                submitAction={(data: any) =>
+                                    editQuestion(activeQuestion._id, data)
+                                }
+                                initData={activeQuestion}
+                            />
+                        ) : (
+                            <QuestionForm
+                                type="create"
+                                submitAction={addQuestion}
+                                initData={null}
+                            />
+                        )}
+                    </div>
+                </>
             )}
-            <div className="border border-2 p-2 flex flex-col gap-3 rounded-md">
-                <QuestionForm type="create" submitAction={addQuestion} />
-            </div>
         </>
     );
 }

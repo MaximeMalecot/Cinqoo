@@ -42,9 +42,18 @@ export default function QuestionForm({
         setAnswers([...answers, { ...answer, label: answer.label.trim() }]);
     };
 
+    // useEffect(() => {
+    //     if (initData) {
+    //         setAnswers(initData.answers);
+    //     }
+    // }, [initData]);
+
     useEffect(() => {
+        reset();
         if (initData) {
             setAnswers(initData.answers);
+        } else {
+            setAnswers([]);
         }
     }, [initData]);
 
