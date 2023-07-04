@@ -12,8 +12,8 @@ export const FREELANCER_TABS = [
         path: "/account/requests",
     },
     {
-        name: "Evaluate your skills",
-        path: "/account/evaluate-skills",
+        name: "Evaluate your skills 🚀",
+        path: "/account/skills-assessments",
     },
 ];
 

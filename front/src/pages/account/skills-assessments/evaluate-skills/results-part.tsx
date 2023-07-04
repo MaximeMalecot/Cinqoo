@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { displayMsg } from "../../../utils/toast";
+import { displayMsg } from "../../../../utils/toast";
 
 export default function ResultsPart() {
     const [results, setResults] = useState<any[]>([]);
@@ -30,7 +30,7 @@ export default function ResultsPart() {
                     </tr>
                 </thead>
                 <tbody>
-                    {results.map((result, index) => (
+                    {results.map((_, index) => (
                         <tr key={index} className="bg-base-200"></tr>
                     ))}
                 </tbody>

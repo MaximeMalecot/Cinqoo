@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "../../../components/button";
-import { QuizListItem } from "../../../interfaces/quiz";
-import quizService from "../../../services/quiz.service";
-import { displayMsg } from "../../../utils/toast";
+import Button from "../../../../components/button";
+import { QuizListItem } from "../../../../interfaces/quiz";
+import quizService from "../../../../services/quiz.service";
+import { displayMsg } from "../../../../utils/toast";
 
 export default function QuizzesPart() {
     const [quizzes, setQuizzes] = useState<QuizListItem[]>([]);
@@ -43,7 +43,7 @@ export default function QuizzesPart() {
                             <td>{quiz.duration} minute(s)</td>
                             <td>
                                 <Link
-                                    to={`/account/evaluate-skills/${quiz._id}`}
+                                    to={`/account/skills-assessments/${quiz._id}`}
                                 >
                                     <Button>See</Button>
                                 </Link>

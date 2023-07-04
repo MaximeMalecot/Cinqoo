@@ -49,9 +49,9 @@ class QuizService {
         if (res.status !== 200) {
             const jsonRes = await res.json();
             if (jsonRes.message) {
-                throw new Error(JSON.stringify(jsonRes.message));
+                throw new Error(jsonRes.message);
             }
-            throw new Error("Failed to fetch quizzes");
+            throw new Error("Failed to fetch quiz");
         }
 
         return await res.json();
