@@ -8,10 +8,7 @@ class Answer {
   isRight: boolean;
 }
 
-export class RequestQuestionUpdateDto {
-  @IsString()
-  questionId: string;
-
+export class QuestionUpdateDto {
   @IsString()
   label: string;
 
@@ -19,10 +16,7 @@ export class RequestQuestionUpdateDto {
   answers: Array<Answer>;
 }
 
-export class QuestionUpdateDto {
+export class RequestQuestionUpdateDto extends QuestionUpdateDto {
   @IsString()
-  label: string;
-
-  @IsArray()
-  answers: Array<Answer>;
+  questionId: string;
 }

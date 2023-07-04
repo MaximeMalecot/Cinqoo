@@ -15,3 +15,8 @@ export class QuestionUpdateDto {
   @IsArray()
   answers: Array<Answer>;
 }
+
+export class RequestQuestionUpdateDto extends QuestionUpdateDto {
+  @IsString()
+  questionId: string;
+}

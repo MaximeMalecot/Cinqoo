@@ -3,6 +3,7 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { QuestionCreateDto } from './dto/question-create.dto';
 import { RequestQuestionUpdateDto } from './dto/question-update.dto';
 import { QuizCreateDto } from './dto/quiz-create.dto';
+import { RequestQuizUpdateDto } from './dto/quiz-update.dto';
 import { QuizService } from './quiz.service';
 
 @Controller()
@@ -17,6 +18,12 @@ export class QuizController {
   @EventPattern('QUIZ.CREATE')
   async createQuiz(@Payload() data: QuizCreateDto) {
     return await this.quizService.createQuiz(data);
+  }
+
+  @EventPattern('QUIZ.UPDATE')
+  async updateQuiz(@Payload() data: RequestQuizUpdateDto) {
+    const { quizId, ...rest } = data;
+    return await this.quizService.updateQuiz(quizId, rest);
   }
 
   @EventPattern('QUIZ.CREATE_QUESTION')

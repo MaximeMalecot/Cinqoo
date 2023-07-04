@@ -5,6 +5,7 @@ import { Model, Types } from 'mongoose';
 import { QuestionCreateDto } from './dto/question-create.dto';
 import { QuestionUpdateDto } from './dto/question-update.dto';
 import { QuizCreateDto } from './dto/quiz-create.dto';
+import { QuizUpdateDto } from './dto/quiz-update.dto';
 import { Quiz } from './schemas/quiz.schema';
 
 @Injectable()
@@ -69,6 +70,23 @@ export class QuizService {
           message: 'Quiz already exists',
           statusCode: 400,
         });
+      throw new RpcException(error.message);
+    }
+  }
+  async updateQuiz(quizId: string, data: QuizUpdateDto) {
+    try {
+      const quiz = await this.quizModel.findOne({
+        _id: new Types.ObjectId(quizId),
+      });
+      if (!quiz)
+        throw new RpcException({
+          message: 'Quiz not found',
+          statusCode: 404,
+        });
+      quiz.name = data.name;
+      quiz.duration = data.duration;
+      return await quiz.save();
+    } catch (error) {
       throw new RpcException(error.message);
     }
   }

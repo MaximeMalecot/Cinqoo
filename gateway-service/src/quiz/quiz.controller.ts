@@ -16,6 +16,7 @@ import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { QuestionCreateDto } from './dto/question-create.dto';
 import { QuestionUpdateDto } from './dto/question-update.dto';
 import { QuizCreateDto } from './dto/quiz-create.dto';
+import { QuizUpdateDto } from './dto/quiz-update.dto';
 
 @ApiTags('quiz')
 @Controller('quiz')
@@ -34,6 +35,18 @@ export class QuizController {
   @Roles(ROLE.ADMIN)
   public createQuiz(@Body() body: QuizCreateDto) {
     return this.quizService.send('QUIZ.CREATE', body);
+  }
+
+  @Put(':id')
+  @Roles(ROLE.ADMIN)
+  public updateQuiz(
+    @Param('id', CheckObjectIdPipe) id: string,
+    @Body() body: QuizUpdateDto,
+  ) {
+    return this.quizService.send('QUIZ.UPDATE', {
+      quizId: id,
+      ...body,
+    });
   }
 
   @Get(':id/full')
