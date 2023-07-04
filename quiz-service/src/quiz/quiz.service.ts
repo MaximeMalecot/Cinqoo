@@ -86,6 +86,7 @@ export class QuizService {
         });
       quiz.name = data.name;
       quiz.duration = data.duration;
+      quiz.description = data.description??"";
       return await quiz.save();
     } catch (error) {
       throw new RpcException(error.message);
