@@ -11,7 +11,7 @@ import {
 } from "../../../contexts/admin-quiz.context";
 import { FullQuiz } from "../../../interfaces/quiz";
 import quizService from "../../../services/quiz.service";
-import { displayMsg } from "../../../utils/toast";
+import { displayMsg, notify } from "../../../utils/toast";
 
 export default function AdminEditQuiz() {
     const { id } = useParams();
@@ -131,6 +131,9 @@ function QuestionsPart() {
                 label: question.label.trim(),
             });
             reload();
+            setActiveTab(-1);
+            notify("Question added");
+            return true;
         } catch (e: any) {
             console.log(e.message);
             displayMsg(e.message, "error");
@@ -141,6 +144,21 @@ function QuestionsPart() {
         try {
             await quizService.updateQuestion(id, data);
             reload();
+            notify("Question updated");
+            return true;
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    };
+
+    const deleteQuestion = async (id: string) => {
+        try {
+            await quizService.deleteQuestion(id);
+            setActiveTab(-1);
+            reload();
+            notify("Question deleted");
+            return true;
         } catch (e: any) {
             console.log(e.message);
             displayMsg(e.message, "error");
@@ -150,14 +168,11 @@ function QuestionsPart() {
     return (
         <>
             <div className="flex items-center justify-between">
-                <h3 className="text-2xl">Questions</h3>
+                <h3 className="text-2xl">
+                    Questions ({quiz?.questions?.length ?? 0})
+                </h3>
             </div>
-            {quiz?.questions?.length === 0 && (
-                <p className="text-xs text-slate-400">
-                    There is no question yet
-                </p>
-            )}
-            {quiz && quiz?.questions?.length > 0 && (
+            {quiz && (
                 <>
                     <div className="tabs tabs-boxed">
                         <p
@@ -186,6 +201,9 @@ function QuestionsPart() {
                                 type="edit"
                                 submitAction={(data: any) =>
                                     editQuestion(activeQuestion._id, data)
+                                }
+                                deleteAction={() =>
+                                    deleteQuestion(activeQuestion._id)
                                 }
                                 initData={activeQuestion}
                             />

@@ -141,6 +141,26 @@ class QuizService {
         }
         return await res.json();
     }
+
+    async deleteQuestion(id: string) {
+        const res = await fetch(`${API_ENDPOINT}quiz/questions/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+        });
+        const status = res.status;
+
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to delete question");
+        }
+        return true;
+    }
 }
 
 export default new QuizService();

@@ -18,6 +18,13 @@ export default function AnswerItem({
 }: AnswerProps) {
     const [label, setLabel] = useState<string>("");
     const [isRight, setIsRight] = useState<boolean>(false);
+    const edited =
+        type === "edit"
+            ? JSON.stringify(data) !==
+              JSON.stringify({ ...data, label, isRight })
+                ? true
+                : false
+            : true;
 
     useEffect(() => {
         if (data) {
@@ -83,13 +90,15 @@ export default function AnswerItem({
                     />
                 </label>
             </div>
-            <Button
-                visual="bordered-primary"
-                className="bg-white"
-                onClick={handleActionWrapper}
-            >
-                Apply
-            </Button>
+            {edited && (
+                <Button
+                    visual="bordered-primary"
+                    className="bg-white"
+                    onClick={handleActionWrapper}
+                >
+                    Apply
+                </Button>
+            )}
             {deleteAnswer && (
                 <Button visual="danger" onClick={handleDelete}>
                     Delete
