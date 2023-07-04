@@ -29,6 +29,17 @@ export class SocketGateway {
     console.log(body);
   }
 
+  @SubscribeMessage('answer_quiz')
+  async handleAnserQuiz(@MessageBody() body, @ConnectedSocket() client) {
+    const canAnswer = await this.socketService.canAnswerQuiz(
+      body.quizId,
+      client?.user,
+    );
+    if (!canAnswer) {
+      client.emit('error', 'already answered at this quiz');
+    }
+  }
+
   @SubscribeMessage('join_room')
   joinRoom(@MessageBody() body: any, @ConnectedSocket() client) {
     console.log(body, client?.user);

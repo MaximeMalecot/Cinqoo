@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AttemptModule } from 'src/attempts/attempts.module';
 import { PORTS, SERVICES } from 'src/constants';
 import { SocketGateway } from './socket.gateway';
 import { SocketService } from './socket.service';
@@ -24,6 +25,7 @@ import { SocketService } from './socket.service';
         },
       },
     ]),
+    AttemptModule,
   ],
   providers: [SocketGateway, SocketService],
 })
