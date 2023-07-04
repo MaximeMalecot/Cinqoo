@@ -226,6 +226,7 @@ services:
             - mongo-db
         ports:
             - "3002:3002"
+            - "3003:80"
 
     front:
         build:
