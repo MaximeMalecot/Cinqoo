@@ -26,7 +26,9 @@ export default function AnswerItem({
         }
     }, [data]);
 
-    const handleAction = () => {
+    const handleAction = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
         const answer: AnswerAdmin = {
             label,
             isRight,
@@ -37,6 +39,15 @@ export default function AnswerItem({
             setIsRight(false);
         }
     };
+
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (data && deleteAnswer) {
+            deleteAnswer(data);
+        }
+    };
+
     return (
         <div
             className={`flex flex-col p-2 rounded-md ${
@@ -70,7 +81,7 @@ export default function AnswerItem({
                 Apply
             </Button>
             {data?._id && deleteAnswer && (
-                <Button visual="danger" onClick={() => deleteAnswer(data)}>
+                <Button visual="danger" onClick={handleDelete}>
                     Delete
                 </Button>
             )}

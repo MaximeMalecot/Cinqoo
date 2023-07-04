@@ -25,19 +25,20 @@ export default function QuestionForm({
         reset();
     };
 
-    const updateAnswer = (answer: AnswerAdmin) => {
-        const index = answers.findIndex((a) => a._id === answer._id);
+    const updateAnswer = (index: number, answer: AnswerAdmin) => {
         const newAnswers = [...answers];
         newAnswers[index] = answer;
         setAnswers(newAnswers);
     };
 
-    const deleteAnswer = (answer: AnswerAdmin) => {
-        setAnswers(answers.filter((a) => a._id !== answer._id));
+    const deleteAnswer = (index: number, answer: AnswerAdmin) => {
+        const newAnswers = [...answers];
+        newAnswers.splice(index, 1);
+        setAnswers(newAnswers);
     };
 
     const addAnswer = (answer: AnswerAdmin) => {
-        setAnswers([...answers, { ...answer, _id: "fjndf" }]);
+        setAnswers([...answers, { ...answer }]);
     };
 
     useEffect(() => {
@@ -45,6 +46,10 @@ export default function QuestionForm({
             setAnswers(initData.answers);
         }
     }, [initData]);
+
+    useEffect(() => {
+        console.log(answers);
+    }, [answers]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
@@ -66,18 +71,16 @@ export default function QuestionForm({
                         <AnswerItem
                             key={index}
                             data={answer}
-                            action={updateAnswer}
-                            deleteAnswer={deleteAnswer}
+                            action={(data: any) => updateAnswer(index, data)}
+                            deleteAnswer={(data: any) =>
+                                deleteAnswer(index, data)
+                            }
                             type={"edit"}
                         />
                     ))}
                 </div>
             )}
-            <AnswerItem
-                action={addAnswer}
-                deleteAnswer={deleteAnswer}
-                type={"create"}
-            />
+            <AnswerItem action={addAnswer} type={"create"} />
             <Button visual={"bordered-primary"} type="submit">
                 {type == "create" ? "Add" : "Apply"}
             </Button>

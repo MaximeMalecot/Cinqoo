@@ -22,36 +22,14 @@ export default function AdminEditQuiz() {
         try {
             if (!id) throw new Error("Id is not defined");
             const res = await quizService.getFullQuiz(id);
-            if (res._id) {
-                setQuiz(res);
+            if (res[0]?._id) {
+                setQuiz(res[0]);
             } else {
                 throw new Error("Quiz not found");
             }
         } catch (e: any) {
             displayMsg(e.message, "error");
             navigate("/admin/quiz");
-        }
-    };
-
-    const addQuestion = async (question: any) => {
-        try {
-            console.log("Edit receive question to add");
-            console.log(question);
-            // await quizService.createQuestion(question);
-            // setQuestions([...questions, question]);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
-        }
-    };
-
-    const editQuestion = async (_: any) => {
-        try {
-            // await quizService.editQuestion(question);
-            // setQuestions([...questions, question]);
-        } catch (e: any) {
-            console.log(e.message);
-            displayMsg(e.message, "error");
         }
     };
 
@@ -76,32 +54,7 @@ export default function AdminEditQuiz() {
                             id="questions-part"
                             className="flex flex-col gap-3"
                         >
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-2xl">Questions</h3>
-                            </div>
-                            {quiz?.questions?.length === 0 && (
-                                <p className="text-xs text-slate-400">
-                                    There is no question yet
-                                </p>
-                            )}
-                            {quiz && quiz?.questions?.length > 0 && (
-                                <div className="flex flex-col gap-3">
-                                    {quiz.questions.map((question, index) => (
-                                        <QuestionForm
-                                            type="edit"
-                                            submitAction={editQuestion}
-                                            initData={question}
-                                            key={index}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                            <div className="border border-2 p-2 flex flex-col gap-3 rounded-md">
-                                <QuestionForm
-                                    type="create"
-                                    submitAction={addQuestion}
-                                />
-                            </div>
+                            <QuestionsPart />
                         </section>
                     </AdminQuizContextProvider>
                 )}
@@ -111,14 +64,13 @@ export default function AdminEditQuiz() {
 }
 
 function EditQuizDataForm() {
-    const { quiz } = useAdminQuizContext();
+    const { quiz, reload } = useAdminQuizContext();
     const { register: registerField, handleSubmit, reset } = useForm();
-    const navigate = useNavigate();
 
     const submitForm = async (data: any) => {
         try {
-            const res = await quizService.create(data.name, data.duration);
-            navigate(`/admin/quiz/${res._id}`);
+            const res = await quizService.update(quiz._id, data);
+            reload();
         } catch (e: any) {
             console.log(e.message);
             displayMsg(e.message, "error");
@@ -161,5 +113,61 @@ function EditQuizDataForm() {
 
             <Button type="submit">Apply</Button>
         </form>
+    );
+}
+
+function QuestionsPart() {
+    const { quiz, reload } = useAdminQuizContext();
+
+    const addQuestion = async (question: any) => {
+        try {
+            if (!quiz?._id) throw new Error("Quiz id is not defined");
+            // console.log("Edit receive question to add");
+            // console.log(question);
+            await quizService.createQuestion(quiz._id, question);
+            // setQuestions([...questions, question]);
+            reload();
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    };
+
+    const editQuestion = async (_: any) => {
+        try {
+            // await quizService.editQuestion(question);
+            // setQuestions([...questions, question]);
+        } catch (e: any) {
+            console.log(e.message);
+            displayMsg(e.message, "error");
+        }
+    };
+
+    return (
+        <>
+            <div className="flex items-center justify-between">
+                <h3 className="text-2xl">Questions</h3>
+            </div>
+            {quiz?.questions?.length === 0 && (
+                <p className="text-xs text-slate-400">
+                    There is no question yet
+                </p>
+            )}
+            {quiz && quiz?.questions?.length > 0 && (
+                <div className="flex flex-col gap-3">
+                    {quiz.questions.map((question, index) => (
+                        <QuestionForm
+                            type="edit"
+                            submitAction={editQuestion}
+                            initData={question}
+                            key={index}
+                        />
+                    ))}
+                </div>
+            )}
+            <div className="border border-2 p-2 flex flex-col gap-3 rounded-md">
+                <QuestionForm type="create" submitAction={addQuestion} />
+            </div>
+        </>
     );
 }
