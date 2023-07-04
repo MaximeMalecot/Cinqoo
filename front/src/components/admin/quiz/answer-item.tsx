@@ -26,9 +26,7 @@ export default function AnswerItem({
         }
     }, [data]);
 
-    const handleAction = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
+    const handleAction = () => {
         const answer: AnswerAdmin = {
             label,
             isRight,
@@ -38,6 +36,12 @@ export default function AnswerItem({
             setLabel("");
             setIsRight(false);
         }
+    };
+
+    const handleActionWrapper = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        handleAction();
     };
 
     const handleDelete = (e: React.MouseEvent) => {
@@ -59,6 +63,12 @@ export default function AnswerItem({
                 placeholder="Label"
                 type="text"
                 value={label}
+                onKeyUp={(e) => {
+                    e.preventDefault();
+                    if (e.key === "Enter") {
+                        handleAction();
+                    }
+                }}
                 onChange={(e) => setLabel(e.target.value)}
             />
             <div className="form-control w-52">
@@ -76,11 +86,11 @@ export default function AnswerItem({
             <Button
                 visual="bordered-primary"
                 className="bg-white"
-                onClick={handleAction}
+                onClick={handleActionWrapper}
             >
                 Apply
             </Button>
-            {data?._id && deleteAnswer && (
+            {deleteAnswer && (
                 <Button visual="danger" onClick={handleDelete}>
                     Delete
                 </Button>

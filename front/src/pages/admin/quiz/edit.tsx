@@ -22,8 +22,8 @@ export default function AdminEditQuiz() {
         try {
             if (!id) throw new Error("Id is not defined");
             const res = await quizService.getFullQuiz(id);
-            if (res[0]?._id) {
-                setQuiz(res[0]);
+            if (res?._id) {
+                setQuiz(res);
             } else {
                 throw new Error("Quiz not found");
             }
@@ -69,7 +69,7 @@ function EditQuizDataForm() {
 
     const submitForm = async (data: any) => {
         try {
-            const res = await quizService.update(quiz._id, data);
+            await quizService.update(quiz._id, data);
             reload();
         } catch (e: any) {
             console.log(e.message);
@@ -88,7 +88,6 @@ function EditQuizDataForm() {
             onSubmit={handleSubmit(submitForm)}
             className="flex flex-col gap-3"
         >
-            {JSON.stringify(quiz)}
             <Input
                 placeholder="Name"
                 register={registerField("name", {
@@ -122,10 +121,13 @@ function QuestionsPart() {
     const addQuestion = async (question: any) => {
         try {
             if (!quiz?._id) throw new Error("Quiz id is not defined");
-            // console.log("Edit receive question to add");
-            // console.log(question);
-            await quizService.createQuestion(quiz._id, question);
-            // setQuestions([...questions, question]);
+            if (!question.label || question.label.trim() === "") {
+                throw new Error("Question label is required");
+            }
+            await quizService.createQuestion(quiz._id, {
+                ...question,
+                label: question.label.trim(),
+            });
             reload();
         } catch (e: any) {
             console.log(e.message);
@@ -133,10 +135,10 @@ function QuestionsPart() {
         }
     };
 
-    const editQuestion = async (_: any) => {
+    const editQuestion = async (id: string, data: any) => {
         try {
-            // await quizService.editQuestion(question);
-            // setQuestions([...questions, question]);
+            await quizService.updateQuestion(id, data);
+            reload();
         } catch (e: any) {
             console.log(e.message);
             displayMsg(e.message, "error");
@@ -158,7 +160,9 @@ function QuestionsPart() {
                     {quiz.questions.map((question, index) => (
                         <QuestionForm
                             type="edit"
-                            submitAction={editQuestion}
+                            submitAction={(data: any) =>
+                                editQuestion(question._id, data)
+                            }
                             initData={question}
                             key={index}
                         />

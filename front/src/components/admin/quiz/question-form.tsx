@@ -31,14 +31,15 @@ export default function QuestionForm({
         setAnswers(newAnswers);
     };
 
-    const deleteAnswer = (index: number, answer: AnswerAdmin) => {
+    const deleteAnswer = (index: number) => {
         const newAnswers = [...answers];
         newAnswers.splice(index, 1);
         setAnswers(newAnswers);
     };
 
     const addAnswer = (answer: AnswerAdmin) => {
-        setAnswers([...answers, { ...answer }]);
+        if (!answer.label || answer.label.trim() === "") return;
+        setAnswers([...answers, { ...answer, label: answer.label.trim() }]);
     };
 
     useEffect(() => {
@@ -46,10 +47,6 @@ export default function QuestionForm({
             setAnswers(initData.answers);
         }
     }, [initData]);
-
-    useEffect(() => {
-        console.log(answers);
-    }, [answers]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
@@ -72,9 +69,7 @@ export default function QuestionForm({
                             key={index}
                             data={answer}
                             action={(data: any) => updateAnswer(index, data)}
-                            deleteAnswer={(data: any) =>
-                                deleteAnswer(index, data)
-                            }
+                            deleteAnswer={() => deleteAnswer(index)}
                             type={"edit"}
                         />
                     ))}

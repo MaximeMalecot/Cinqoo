@@ -39,8 +39,8 @@ class QuizService {
         return await res.json();
     }
 
-    async getFullQuiz(_: string) {
-        const res = await fetch(`${API_ENDPOINT}quiz/full`, {
+    async getFullQuiz(id: string) {
+        const res = await fetch(`${API_ENDPOINT}quiz/${id}/full`, {
             method: "GET",
             headers: {
                 ...authHeader(),
@@ -123,7 +123,24 @@ class QuizService {
         return await res.json();
     }
 
-    async updateQuestion(_: string, __: string) {}
+    async updateQuestion(id: string, question: QuestionAdmin) {
+        const res = await fetch(`${API_ENDPOINT}quiz/questions/${id}`, {
+            method: "PUT",
+            headers: {
+                ...authHeader(),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(question),
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(JSON.stringify(jsonRes.message));
+            }
+            throw new Error("Failed to update question");
+        }
+        return await res.json();
+    }
 }
 
 export default new QuizService();
