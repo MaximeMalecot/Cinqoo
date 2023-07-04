@@ -24,7 +24,7 @@ This project is a Fiverr like marketplace using a microservices architecture wit
 ## Urls (dev)
 
 -   http://localhost:3000: Gateway api
--   http://localhost:3001/conversations/sse: Hybrid-gateway api to handle Server-send events
+-   http://localhost:3001/conversations/sse: Hybrid-gateway api to handle Server-sent events
 -   http://localhost:3000/docs: Api documentation
 -   http://localhost:8080: Front-end
 -   http://localhost:8081: Progressive Web App
@@ -36,7 +36,7 @@ Also, you need a Stripe account since we are using it to handle payments and pro
 
 ## Get your Stripe secret key
 
-The project is using Stripe to handle payments, therefore, you might need an actual Stripe secret key to create products and be able to perform most user flows. To do this, you just have to go to the [Stripe test developer page](https://dashboard.stripe.com/test/apikeys) and generate a secret key.
+The project is using Stripe to handle payments, therefore, you need an actual Stripe secret key to create products and be able to perform most user flows. To do this, you just have to go to the [Stripe test developer page](https://dashboard.stripe.com/test/apikeys) and generate a secret key.
 
 Create the .env file like that :
 
@@ -105,7 +105,7 @@ docker compose exec gateway-service npm run db:seed
 ```
 
 Only 3 users accounts are created, along with a few categories.
-Both users cannot create any service/prestation since they need to follow the Become a Freelancer workflow that implies to complete the Stripe Connect Account procedure and cannot be automated since it requires a human interaction.
+Both users cannot create any service/prestation since they need to follow the "Become a Freelancer" workflow that implies to complete the Stripe Connect Account procedure and cannot be automated since it requires a human interaction.
 
 **Accounts credentials:**
 | email | Password | Roles

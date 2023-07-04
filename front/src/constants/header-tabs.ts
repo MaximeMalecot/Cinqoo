@@ -45,6 +45,10 @@ export const ADMIN_HEADER_TABS = [
         name: "Report reasons",
         path: "/admin/report_reason",
     },
+    {
+        name: "Quiz",
+        path: "/admin/quiz",
+    },
 ];
 
 export const ADMIN_TABS = [
