@@ -21,5 +21,5 @@ export interface Question {
 export interface Answer {
     id: string;
     label: string;
-    isCorrect: boolean;
+    isCorrect?: boolean;
 }

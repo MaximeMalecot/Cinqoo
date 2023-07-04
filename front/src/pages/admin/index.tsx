@@ -16,6 +16,7 @@ import AdminUsers from "./users";
 
 const AdminQuiz = lazy(() => import("./quiz"));
 const AdminCreateQuiz = lazy(() => import("./quiz/create"));
+const AdminEditQuiz = lazy(() => import("./quiz/edit"));
 
 function AdminLayout() {
     return (
@@ -69,7 +70,7 @@ export default function AdminRouter() {
                 <Route path="*" element={<div>Not found</div>} />
                 <Route path="/" element={<Navigate to={"/admin/users"} />} />
                 <Route path="/quiz/create" element={<AdminCreateQuiz />} />
-                <Route path="/quiz/:id" element={<AdminQuiz />} />
+                <Route path="/quiz/:id" element={<AdminEditQuiz />} />
                 <Route path="/quiz" element={<AdminQuiz />} />
             </Route>
         </Routes>

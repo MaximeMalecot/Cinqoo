@@ -1,14 +1,11 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/button";
 import { Input } from "../../../components/input";
-import { QuizListItem } from "../../../interfaces/quiz";
 import quizService from "../../../services/quiz.service";
 import { displayMsg } from "../../../utils/toast";
 
 export default function AdminCreateQuiz() {
-    const [quizzes, setQuizzes] = useState<QuizListItem[]>([]);
     const navigate = useNavigate();
     const { register: registerField, handleSubmit } = useForm();
 
