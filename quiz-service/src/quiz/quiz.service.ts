@@ -39,6 +39,44 @@ export class QuizService {
     return quiz;
   }
 
+  async getPublicQuiz(quizId: string) {
+    const quiz = await this.quizModel.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(quizId),
+        },
+      },
+      {
+        $addFields: {
+          totalQuestions: {
+            $cond: {
+              if: { $isArray: '$questions' },
+              then: { $size: '$questions' },
+              else: 'NA',
+            },
+          },
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          duration: 1,
+          totalQuestions: 1,
+        },
+      },
+    ]);
+
+    if(!quiz?.[0]){
+      throw new RpcException({
+        message: 'Quiz not found',
+        statusCode: 404,
+      });
+    }
+        
+    return quiz[0];
+  }
+
   async getFullQuestion(questionId: string) {
     const questions = await this.quizModel.aggregate([
       {

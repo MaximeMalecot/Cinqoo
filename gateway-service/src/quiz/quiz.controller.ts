@@ -49,6 +49,12 @@ export class QuizController {
     });
   }
 
+  @Get(':id')
+  @Roles(ROLE.FREELANCER)
+  public getQuizPublic(@Param('id', CheckObjectIdPipe) id: string) {
+    return this.quizService.send('QUIZ.GET_PUBLIC', id);
+  }
+
   @Get(':id/full')
   @Roles(ROLE.ADMIN)
   public getQuizFull(@Param('id', CheckObjectIdPipe) id: string) {

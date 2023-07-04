@@ -47,6 +47,11 @@ export class QuizController {
     return await this.quizService.getFullQuiz(quizId);
   }
 
+  @EventPattern('QUIZ.GET_PUBLIC')
+  async getPublicQuiz(quizId: string) {
+    return await this.quizService.getPublicQuiz(quizId);
+  }
+
   @EventPattern('QUIZ.GET_FULL_QUESTION')
   async getOneQuiz(questionId: string) {
     return await this.quizService.getFullQuestion(questionId);
