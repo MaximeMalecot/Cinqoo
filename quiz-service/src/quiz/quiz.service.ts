@@ -73,6 +73,7 @@ export class QuizService {
       throw new RpcException(error.message);
     }
   }
+
   async updateQuiz(quizId: string, data: QuizUpdateDto) {
     try {
       const quiz = await this.quizModel.findOne({
