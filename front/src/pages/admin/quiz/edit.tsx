@@ -16,15 +16,20 @@ import { displayMsg } from "../../../utils/toast";
 export default function AdminEditQuiz() {
     const { id } = useParams();
     const [quiz, setQuiz] = useState<FullQuiz | null>(null);
-    const { reload } = useAdminQuizContext();
+    const navigate = useNavigate();
 
     const fetchQuiz = async () => {
         try {
             if (!id) throw new Error("Id is not defined");
             const res = await quizService.getFullQuiz(id);
-            setQuiz(res);
+            if (res._id) {
+                setQuiz(res);
+            } else {
+                throw new Error("Quiz not found");
+            }
         } catch (e: any) {
             displayMsg(e.message, "error");
+            navigate("/admin/quiz");
         }
     };
 
@@ -40,7 +45,7 @@ export default function AdminEditQuiz() {
         }
     };
 
-    const editQuestion = async (question: any) => {
+    const editQuestion = async (_: any) => {
         try {
             // await quizService.editQuestion(question);
             // setQuestions([...questions, question]);
@@ -74,12 +79,12 @@ export default function AdminEditQuiz() {
                             <div className="flex items-center justify-between">
                                 <h3 className="text-2xl">Questions</h3>
                             </div>
-                            {quiz?.questions.length === 0 && (
+                            {quiz?.questions?.length === 0 && (
                                 <p className="text-xs text-slate-400">
                                     There is no question yet
                                 </p>
                             )}
-                            {quiz && quiz?.questions.length > 0 && (
+                            {quiz && quiz?.questions?.length > 0 && (
                                 <div className="flex flex-col gap-3">
                                     {quiz.questions.map((question, index) => (
                                         <QuestionForm
@@ -120,11 +125,18 @@ function EditQuizDataForm() {
         }
     };
 
+    useEffect(() => {
+        if (quiz && quiz._id) {
+            reset();
+        }
+    }, [quiz]);
+
     return (
         <form
             onSubmit={handleSubmit(submitForm)}
             className="flex flex-col gap-3"
         >
+            {JSON.stringify(quiz)}
             <Input
                 placeholder="Name"
                 register={registerField("name", {
@@ -136,14 +148,14 @@ function EditQuizDataForm() {
                 type="number"
                 step="0.1"
                 register={registerField("duration", {
-                    value: quiz?.duration,
+                    value: quiz.duration,
                 })}
             />
 
             <TextArea
                 placeholder="Description"
                 register={registerField("description", {
-                    value: quiz?.description,
+                    value: quiz.description,
                 })}
             />
 

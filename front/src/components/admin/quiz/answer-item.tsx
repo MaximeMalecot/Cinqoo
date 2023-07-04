@@ -54,7 +54,7 @@ export default function AnswerItem({
                 <label className="cursor-pointer label">
                     <span className="label-text">Is right</span>
                     <input
-                        onClick={(e) => setIsRight((prev) => !prev)}
+                        onClick={() => setIsRight((prev) => !prev)}
                         type="checkbox"
                         className="toggle toggle-accent"
                         checked={!!isRight}

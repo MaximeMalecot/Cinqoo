@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/button";
 import { Input } from "../../../components/input";
+import { TextArea } from "../../../components/text-area";
 import quizService from "../../../services/quiz.service";
 import { displayMsg } from "../../../utils/toast";
 
@@ -12,7 +13,11 @@ export default function AdminCreateQuiz() {
     const submitForm = async (data: any) => {
         console.log(data);
         try {
-            const res = await quizService.create(data.name, data.duration);
+            const res = await quizService.create(
+                data.name,
+                parseInt(data.duration),
+                data.description
+            );
             navigate(`/admin/quiz/${res._id}`);
         } catch (e: any) {
             console.log(e.message);
@@ -27,12 +32,16 @@ export default function AdminCreateQuiz() {
                 onSubmit={handleSubmit(submitForm)}
                 className="flex flex-col gap-3"
             >
-                <Input placeholder="Name" {...registerField("name")} />
+                <Input placeholder="Name" register={registerField("name")} />
                 <Input
                     placeholder="Duration (in minutes)"
                     type="number"
                     step="0.1"
-                    {...registerField("duration")}
+                    register={registerField("duration")}
+                />
+                <TextArea
+                    placeholder="Description"
+                    register={registerField("description")}
                 />
                 <Button type="submit">Create</Button>
             </form>

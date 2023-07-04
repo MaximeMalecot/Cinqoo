@@ -11,6 +11,7 @@ export interface FullQuiz {
     duration: number;
     questions: QuestionAdmin[];
     description?: string;
+    totalQuestions?: number;
 }
 
 export interface Question {
