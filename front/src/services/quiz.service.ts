@@ -1,3 +1,5 @@
+import { QuestionAdmin } from "../interfaces/quiz";
+
 class QuizService {
     async getAllQuiz() {
         return [
@@ -33,6 +35,16 @@ class QuizService {
             _id: "12323",
         };
     }
+
+    // QUESTIONS
+
+    async createQuestion(_: QuestionAdmin) {
+        return {
+            _id: "12323",
+        };
+    }
+
+    async updateQuestion(_: string, __: string) {}
 }
 
 export default new QuizService();

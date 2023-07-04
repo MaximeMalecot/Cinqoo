@@ -9,17 +9,28 @@ export interface FullQuiz {
     _id: string;
     name: string;
     duration: number;
-    questions: Question[];
+    questions: QuestionAdmin[];
+    description?: string;
 }
 
 export interface Question {
-    id: string;
+    _id: string;
     label: string;
     answers: Answer[];
 }
 
-export interface Answer {
-    id: string;
+export interface QuestionAdmin {
+    _id: string;
     label: string;
-    isCorrect?: boolean;
+    answers: AnswerAdmin[];
+}
+
+export interface Answer {
+    _id?: string;
+    label: string;
+    isRight?: boolean;
+}
+
+export interface AnswerAdmin extends Answer {
+    isRight: boolean;
 }
