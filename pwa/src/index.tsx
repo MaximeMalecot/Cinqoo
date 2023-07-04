@@ -1,3 +1,4 @@
+import { AnalyticsContextProvider } from "ratflow-sdk-react-rollup";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -6,20 +7,20 @@ import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import { AuthContextProvider } from "./contexts/auth.context";
 import "./index.css";
+import { sdkConfig } from "./ratflow";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <BrowserRouter>
-            <AuthContextProvider>
-                <App />
-                <ToastContainer />
-            </AuthContextProvider>
-        </BrowserRouter>
+        <AnalyticsContextProvider {...sdkConfig}>
+            <BrowserRouter>
+                <AuthContextProvider>
+                    <App />
+                    <ToastContainer />
+                </AuthContextProvider>
+            </BrowserRouter>
+        </AnalyticsContextProvider>
     </React.StrictMode>
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
 serviceWorkerRegistration.register();
