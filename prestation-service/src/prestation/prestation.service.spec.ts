@@ -87,62 +87,62 @@ describe('PrestationService', () => {
     });
   });
 
-  // describe('searchPrestations', () => {
-  //   beforeAll(async () => {
-  //     await Promise.all([
-  //       prestationModel.create({
-  //         name: '#1',
-  //         description: 'Lorem ipsum',
-  //         price: 1,
-  //         owner: USER_ID_1,
-  //       }),
-  //       prestationModel.create({
-  //         name: '#2',
-  //         description: 'Lorem ipsum',
-  //         price: 100,
-  //         owner: USER_ID_2,
-  //       }),
-  //       prestationModel.create({
-  //         name: 'NOT VISIBLE',
-  //         description: 'Lorem ipsum',
-  //         price: 555,
-  //         owner: USER_ID_2,
-  //         isActive: false,
-  //       }),
-  //     ]);
-  //   });
+  describe('searchPrestations', () => {
+    beforeAll(async () => {
+      await Promise.all([
+        prestationModel.create({
+          name: '#1',
+          description: 'Lorem ipsum',
+          price: 1,
+          owner: USER_ID_1,
+        }),
+        prestationModel.create({
+          name: '#2',
+          description: 'Lorem ipsum',
+          price: 100,
+          owner: USER_ID_2,
+        }),
+        prestationModel.create({
+          name: 'NOT VISIBLE',
+          description: 'Lorem ipsum',
+          price: 555,
+          owner: USER_ID_2,
+          isActive: false,
+        }),
+      ]);
+    });
 
-  //   afterAll(async () => {
-  //     await prestationModel.deleteMany({});
-  //   });
+    afterAll(async () => {
+      await prestationModel.deleteMany({});
+    });
 
-  //   it('Should only returns #1 prestation', async () => {
-  //     const r = await service.searchPrestations({
-  //       query: undefined,
-  //       price_max: 1,
-  //       price_min: 0,
-  //       categories: undefined,
-  //     });
-  //     expect(r).toBeDefined();
-  //     expect(r).toBeInstanceOf(Object);
-  //     expect(r).toHaveLength(1);
-  //     expect(r[0].name).toBe('#1');
-  //   });
+    it('Should only returns #1 prestation', async () => {
+      const r = await service.searchPrestations({
+        query: undefined,
+        price_max: 1,
+        price_min: 0,
+        categories: undefined,
+      });
+      expect(r).toBeDefined();
+      expect(r).toBeInstanceOf(Object);
+      expect(r).toHaveLength(1);
+      expect(r[0].name).toBe('#1');
+    });
 
-  //   it('Should only returns #2 prestation', async () => {
-  //     const r = await service.searchPrestations({
-  //       query: '#2',
-  //       price_max: undefined,
-  //       price_min: undefined,
-  //       categories: undefined,
-  //     });
-  //     console.log(r);
-  //     expect(r).toBeDefined();
-  //     expect(r).toBeInstanceOf(Object);
-  //     expect(r).toHaveLength(1);
-  //     expect(r[0].name).toBe('#2');
-  //   });
-  // });
+    it('Should only returns #2 prestation', async () => {
+      const r = await service.searchPrestations({
+        query: '#2',
+        price_max: undefined,
+        price_min: undefined,
+        categories: undefined,
+      });
+      console.log(r);
+      expect(r).toBeDefined();
+      expect(r).toBeInstanceOf(Object);
+      expect(r).toHaveLength(1);
+      expect(r[0].name).toBe('#2');
+    });
+  });
 
   describe('create', () => {
     beforeAll(async () => {
