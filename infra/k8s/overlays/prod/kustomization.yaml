@@ -59,18 +59,51 @@ patches:
             path: /metadata/annotations
             value:
               cloud.google.com/backend-config: '{"ports": {
-                "3000": "sse-backendconfig",
-                "3001": "sse-backendconfig",
-                "443": "sse-backendconfig",
-                "80": "sse-backendconfig",
-                "default": "sse-backendconfig",
-                "my-ms-port": "sse-backendconfig",
-                "my-https-port": "sse-backendconfig",
-                "my-http-port": "sse-backendconfig"
+                "3000": "statefull-backendconfig",
+                "3001": "statefull-backendconfig",
+                "443": "statefull-backendconfig",
+                "80": "statefull-backendconfig",
+                "default": "statefull-backendconfig",
+                "my-ms-port": "statefull-backendconfig",
+                "my-https-port": "statefull-backendconfig",
+                "my-http-port": "statefull-backendconfig"
               }}'
       target:
           kind: Service
           name: hybrid-service
+    - patch: |-
+          - op: add
+            path: /metadata/annotations
+            value:
+              cloud.google.com/neg: '{"ingress": true}'
+      target:
+          kind: Service
+          name: quiz-service
+    - patch: |-
+          - op: add
+            path: /metadata/annotations
+            value:
+              cloud.google.com/app-protocols: '{"my-https-port":"HTTPS","my-http-port":"HTTP"}'
+      target:
+          kind: Service
+          name: quiz-service
+    - patch: |-
+          - op: add
+            path: /metadata/annotations
+            value:
+              cloud.google.com/backend-config: '{"ports": {
+                "3000": "statefull-backendconfig",
+                "3002": "statefull-backendconfig",
+                "443": "statefull-backendconfig",
+                "80": "statefull-backendconfig",
+                "default": "statefull-backendconfig",
+                "my-ms-port": "statefull-backendconfig",
+                "my-https-port": "statefull-backendconfig",
+                "my-http-port": "statefull-backendconfig"
+              }}'
+      target:
+          kind: Service
+          name: quiz-service
     - path: gateway-service-patch.yaml
       target:
           kind: Deployment

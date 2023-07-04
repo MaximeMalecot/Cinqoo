@@ -87,6 +87,12 @@ jobs:
               with:
                   path: hybrid-service
 
+            - name: quiz-version
+              id: quiz-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+              with:
+                  path: quiz-service
+
             - name: mailer-version
               id: mailer-version
               uses: martinbeentjes/npm-get-version-action@v1.3.1
@@ -149,6 +155,7 @@ jobs:
                   sed -i 's/latest/${{ steps.favorite-version.outputs.current-version}}/g' favorite-service.yaml
                   sed -i 's/latest/${{ steps.gateway-version.outputs.current-version}}/g' gateway-service.yaml
                   sed -i 's/latest/${{ steps.hybrid-version.outputs.current-version}}/g' hybrid-service.yaml
+                  sed -i 's/latest/${{ steps.quiz-version.outputs.current-version}}/g' quiz-service.yaml
                   sed -i 's/latest/${{ steps.mailer-version.outputs.current-version}}/g' mailer-service.yaml
                   sed -i 's/latest/${{ steps.message-version.outputs.current-version}}/g' message-service.yaml
                   sed -i 's/latest/${{ steps.order-version.outputs.current-version}}/g' order-service.yaml
