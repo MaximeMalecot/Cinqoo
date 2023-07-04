@@ -28,6 +28,7 @@ const Prestations = lazy(() => import("./pages/prestations"));
 const Favorites = lazy(() => import("./pages/favorites"));
 const Freelancer = lazy(() => import("./pages/freelancer"));
 const TermsOfService = lazy(() => import("./pages/terms-of-service"));
+const EvaluateSkills = lazy(() => import("./pages/account/evaluate-skills"));
 
 function App() {
     const { isConnected, isFreelancer, isAdmin } = useAuthContext();
@@ -81,6 +82,10 @@ function App() {
                                         <Route
                                             path="/account/requests"
                                             element={<Requests />}
+                                        />
+                                        <Route
+                                            path="/account/evaluate-skills"
+                                            element={<EvaluateSkills />}
                                         />
                                     </>
                                 )}

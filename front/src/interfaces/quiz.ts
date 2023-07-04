@@ -3,6 +3,7 @@ export interface QuizListItem {
     name: string;
     questions: number;
     duration: number;
+    totalQuestions?: number;
 }
 
 export interface FullQuiz {
