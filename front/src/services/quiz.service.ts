@@ -22,7 +22,7 @@ class QuizService {
     }
 
     async getQuiz(id: string) {
-        const res = await fetch(`${API_ENDPOINT}quiz/${id}`, {
+        const res = await fetch(`${API_ENDPOINT}quiz/${id}/full`, {
             method: "GET",
             headers: {
                 ...authHeader(),
@@ -85,7 +85,7 @@ class QuizService {
         newData: { name: string; duration: number; description?: string }
     ) {
         const res = await fetch(`${API_ENDPOINT}quiz/${id}`, {
-            method: "PATCH",
+            method: "PUT",
             headers: {
                 ...authHeader(),
                 "Content-Type": "application/json",

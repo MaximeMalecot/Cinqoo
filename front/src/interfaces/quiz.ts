@@ -15,6 +15,14 @@ export interface FullQuiz {
     totalQuestions?: number;
 }
 
+export interface QuizData {
+    _id: string;
+    name: string;
+    duration: number;
+    description?: string;
+    totalQuestions?: number;
+}
+
 export interface Question {
     _id: string;
     label: string;
