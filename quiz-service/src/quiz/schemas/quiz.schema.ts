@@ -5,7 +5,7 @@ export type QuizDocument = HydratedDocument<Quiz>;
 
 @Schema()
 export class Quiz {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, unique: true })
   name: string;
 
   @Prop({ type: String, required: false })

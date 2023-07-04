@@ -1,5 +1,6 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
+import { RpcException, Transport } from '@nestjs/microservices';
 import {
   WinstonModule,
   utilities as nestWinstonModuleUtilities,
@@ -36,6 +37,20 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? '*',
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      exceptionFactory: (errors) => {
+        throw new RpcException({
+          message: `Validation failed: ${
+            errors[0].property
+          } has wrong value ${JSON.stringify(errors[0].constraints)}`,
+          statusCode: 400,
+        });
+      },
+    }),
+  );
 
   await app.startAllMicroservices();
   await app.listen(PORTS.QUIZ);
