@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Attempt } from './schemas/attempt.schema';
+import { Result } from './schemas/result.schema';
 
 @Injectable()
-export class AttemptService {
+export class ResultService {
   constructor(
-    @InjectModel(Attempt.name) private readonly attemptModule: Model<Attempt>,
+    @InjectModel(Result.name) private readonly attemptModule: Model<Result>,
   ) {}
 
-  public async getAttempts() {
+  public async getResults() {
     return await this.attemptModule.find();
   }
 }

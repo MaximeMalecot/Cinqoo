@@ -3,15 +3,15 @@ import { ClientProxy } from '@nestjs/microservices';
 import { WsException } from '@nestjs/websockets';
 import { firstValueFrom } from 'rxjs';
 import { Socket } from 'socket.io';
-import { AttemptService } from 'src/attempts/attempt.service';
 import { ROLE } from 'src/enums/role.enum';
+import { ResultService } from 'src/results/result.service';
 
 @Injectable()
 export class SocketService {
   constructor(
     @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
     @Inject('USER_SERVICE') private readonly userService: ClientProxy,
-    private readonly attemptService: AttemptService,
+    private readonly resultService: ResultService,
   ) {}
 
   public async authenticate(bearer_token: string, socket: Socket) {

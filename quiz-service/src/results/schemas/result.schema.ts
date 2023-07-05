@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type AttemptDocument = HydratedDocument<Attempt>;
+export type ResultDocument = HydratedDocument<Result>;
 
 @Schema()
-export class Attempt {
+export class Result {
   _id?: string;
 
   @Prop({
@@ -20,10 +20,22 @@ export class Attempt {
   quizId: string;
 
   @Prop({
+    type: Boolean,
+    default: false,
+  })
+  success: boolean;
+
+  @Prop({
+    type: Number,
+    default: 0,
+  })
+  score: number;
+
+  @Prop({
     type: Date,
     default: Date.now,
   })
   attemptedAt: Date;
 }
 
-export const AttemptSchema = SchemaFactory.createForClass(Attempt);
+export const ResultSchema = SchemaFactory.createForClass(Result);
