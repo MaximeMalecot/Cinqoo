@@ -10,12 +10,24 @@ import { useAuthContext } from "../../../../contexts/auth.context";
 import { QuizData } from "../../../../interfaces/quiz";
 import quizService from "../../../../services/quiz.service";
 import { displayMsg } from "../../../../utils/toast";
+import QuestionScreen from "./question-screen";
 
 enum SCREENS {
     CONNECTING = "CONNECTING",
     DISPLAY_QUESTION = "DISPLAY_QUESTION",
     WAITING = "WAITING",
     RESULTS = "RESULTS",
+}
+
+export interface RECEIVED_QUESTION {
+    label: string;
+    answers: RECEIVED_ANSWER[];
+}
+
+export interface RECEIVED_ANSWER {
+    _id: string;
+    label: string;
+    isRight: boolean;
 }
 
 export default function Quiz() {
@@ -26,6 +38,7 @@ export default function Quiz() {
     const [socket, setSocket] = useState<Socket | null>(null);
     const navigate = useNavigate();
     const [screen, setScreen] = useState<SCREENS>(SCREENS.CONNECTING);
+    const [question, setQuestion] = useState<RECEIVED_QUESTION | null>(null);
 
     const fetchQuiz = async () => {
         try {
@@ -56,9 +69,15 @@ export default function Quiz() {
             setScreen(SCREENS.WAITING);
         });
 
-        socketRef.current.on(SERVER_EVENTS.NEW_QUESTION, (_) => {
-            setScreen(SCREENS.DISPLAY_QUESTION);
-        });
+        socketRef.current.on(
+            SERVER_EVENTS.NEW_QUESTION,
+            (received_question: RECEIVED_QUESTION) => {
+                console.log(received_question);
+                if (!received_question) return;
+                setScreen(SCREENS.DISPLAY_QUESTION);
+                setQuestion(received_question);
+            }
+        );
 
         socketRef.current.on(SERVER_EVENTS.ERROR, (e) => {
             console.log(e);
@@ -68,7 +87,7 @@ export default function Quiz() {
             console.log(e);
             console.log("ping");
         });
-        console.log("HERE");
+
         socketRef.current.emit(CLIENT_EVENTS.START_QUIZ, {
             quizId: id,
         });
@@ -80,6 +99,7 @@ export default function Quiz() {
         socketRef.current.off(SERVER_EVENTS.CONNECT);
         socketRef.current.off(SERVER_EVENTS.ERROR);
         socketRef.current.off(SERVER_EVENTS.PING);
+        socketRef.current.off(SERVER_EVENTS.NEW_QUESTION);
     };
 
     useEffect(() => {
@@ -115,6 +135,13 @@ export default function Quiz() {
         };
     }, [quiz]);
 
+    const answerQuestion = (answers: string[]) => {
+        if (!socketRef.current) return;
+        socketRef.current.emit(CLIENT_EVENTS.ANSWER_QUESTION, {
+            answers,
+        });
+    };
+
     if (!quiz)
         return (
             <div className="container mx-auto flex flex-col p-5 md:p-0 md:py-10 gap-5 bg-white">
@@ -135,7 +162,10 @@ export default function Quiz() {
                             </div>
                         )}
                         {screen === SCREENS.DISPLAY_QUESTION && (
-                            <p>QUESTION REPOND MTN</p>
+                            <QuestionScreen
+                                question={question}
+                                onSubmit={answerQuestion}
+                            />
                         )}
                     </div>
                 )}
