@@ -84,6 +84,8 @@ export default function Quiz() {
     }, [id]);
 
     useEffect(() => {
+        if (!quiz) return;
+
         if (!socketRef.current) {
             const newSocket = io(WEBSOCKET_ENDPOINT, {
                 path: "/sockets/quiz",
@@ -106,7 +108,7 @@ export default function Quiz() {
                 socketRef.current = null;
             }
         };
-    }, [id]);
+    }, [quiz]);
 
     if (!quiz)
         return (
