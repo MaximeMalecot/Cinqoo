@@ -129,10 +129,17 @@ export class PrestationController {
     if (body.categories) {
       body.categories = JSON.parse(body.categories) as String[];
     }
+    let imageUrl = '';
+    if (process.env.NODE_ENV === 'production') {
+      console.log('production');
+      imageUrl = `https://${req.get('Host')}/${image.path}`;
+    } else {
+      imageUrl = `http://${req.get('Host')}/${image.path}`;
+    }
     return this.prestationService.send('PRESTATION.UPDATE_ONE', {
       id: prestationId,
       prestation: body,
-      image: `${req.protocol}://${req.get('Host')}/${image.path}`,
+      image: imageUrl,
     });
   }
 
@@ -215,10 +222,17 @@ export class PrestationController {
     if (body.categories) {
       body.categories = JSON.parse(body.categories) as String[];
     }
+    let imageUrl = '';
+    if (process.env.NODE_ENV === 'production') {
+      console.log('production');
+      imageUrl = `https://${req.get('Host')}/${image.path}`;
+    } else {
+      imageUrl = `http://${req.get('Host')}/${image.path}`;
+    }
     return this.prestationService.send('PRESTATION.CREATE', {
       user: req.user._id,
       prestation: body,
-      image: `${req.protocol}://${req.get('Host')}/${image.path}`,
+      image: imageUrl,
     });
   }
 }
