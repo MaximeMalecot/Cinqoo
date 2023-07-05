@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { QuizService } from 'src/quiz/quiz.service';
 import { Result } from './schemas/result.schema';
 
 @Injectable()
 export class ResultService {
   constructor(
     @InjectModel(Result.name) private readonly resultModel: Model<Result>,
+    private readonly quizService: QuizService,
   ) {}
 
   public async getResults() {
@@ -14,18 +16,53 @@ export class ResultService {
   }
 
   public async getResultsOfUser(userId: string) {
-    return await this.resultModel.find({ userId });
+    const results = await this.resultModel.find({ userId });
+    const resultObjects = [];
+
+    for (const result of results) {
+      const quiz = await this.quizService.getPublicQuiz(result.quizId);
+      resultObjects.push({
+        quiz: quiz,
+        ...result.toObject(),
+      });
+    }
+
+    return resultObjects;
   }
 
   public async getSuccessOfUser(userId: string) {
     const results = await this.resultModel.find({ userId, success: true });
-    return results;
+    const resultObjects = [];
+    for (const result of results) {
+      const quiz = await this.quizService.getPublicQuiz(result.quizId);
+      resultObjects.push({
+        quiz: quiz,
+        ...result.toObject(),
+      });
+    }
+
+    return resultObjects;
   }
 
   public async canParticipateQuiz(userId: string, quizId: string) {
     console.log(userId, quizId);
     const results = await this.resultModel.findOne({ userId, quizId });
     return results;
+  }
+
+  public async getResultOfUserOnQuiz(userId: string, quizId: string) {
+    const result = await this.resultModel.findOne({
+      userId,
+      quizId,
+    });
+
+    if (!result) return {};
+
+    const quiz = await this.quizService.getPublicQuiz(quizId);
+    return {
+      quiz: quiz,
+      ...result.toObject(),
+    };
   }
 
   public async saveResult(userId: string, quizId: string, points: number) {

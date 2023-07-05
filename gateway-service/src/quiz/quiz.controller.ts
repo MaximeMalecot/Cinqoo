@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
@@ -62,10 +63,39 @@ export class QuizController {
     return this.quizService.send('QUIZ.DELETE_QUESTION', id);
   }
 
+  /// RESULTS
+
   @Get('results')
   @Roles(ROLE.FREELANCER, ROLE.ADMIN)
   public getSelfResults(@Req() req: any) {
     return this.quizService.send('RESULT.GET_RESULTS_OF_USER', req.user._id);
+  }
+
+  @Get('results/success/self')
+  @Roles(ROLE.FREELANCER, ROLE.ADMIN)
+  public getSelfSuccess(@Req() req: any) {
+    return this.quizService.send('RESULT.GET_SUCCES_OF_USER', req.user._id);
+  }
+
+  @Get('results/success/:id')
+  @Public()
+  public getSuccessOfUser(
+    @Req() req: any,
+    @Param('id', CheckObjectIdPipe) id: string,
+  ) {
+    return this.quizService.send('RESULT.GET_SUCCES_OF_USER', id);
+  }
+
+  @Get('results/quiz/:id')
+  @Roles(ROLE.FREELANCER, ROLE.ADMIN)
+  public getSelfResultsOfQuiz(
+    @Req() req: any,
+    @Param('id', CheckObjectIdPipe) id: string,
+  ) {
+    return this.quizService.send('RESULT.GET_RESULT_OF_QUIZ_FOR_USER', {
+      userId: req.user._id,
+      quizId: id,
+    });
   }
 
   @Get('results/:id')
