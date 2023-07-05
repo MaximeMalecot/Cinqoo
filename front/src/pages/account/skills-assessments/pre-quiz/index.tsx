@@ -128,9 +128,14 @@ export default function PreQuiz() {
                         </ul>
                     </div>
                     <div className="divider my-0" />
-                    <Button visual="primary" className="w-fit ml-auto">
-                        Start the quiz
-                    </Button>
+                    <Link
+                        className="w-fit ml-auto"
+                        to={`/account/skills-assessments/quiz/${quiz._id}`}
+                    >
+                        <Button visual="primary" className="w-fit ml-auto">
+                            Start the quiz
+                        </Button>
+                    </Link>
                 </div>
             )}
         </div>

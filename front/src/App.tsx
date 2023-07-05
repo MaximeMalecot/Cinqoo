@@ -34,6 +34,7 @@ const EvaluateSkills = lazy(
 const PreQuiz = lazy(
     () => import("./pages/account/skills-assessments/pre-quiz")
 );
+const Quiz = lazy(() => import("./pages/account/skills-assessments/quiz"));
 
 function App() {
     const { isConnected, isFreelancer, isAdmin } = useAuthContext();
@@ -91,6 +92,10 @@ function App() {
                                         <Route
                                             path="/account/skills-assessments"
                                             element={<EvaluateSkills />}
+                                        />
+                                        <Route
+                                            path="/account/skills-assessments/quiz/:id"
+                                            element={<Quiz />}
                                         />
                                         <Route
                                             path="/account/skills-assessments/:id"

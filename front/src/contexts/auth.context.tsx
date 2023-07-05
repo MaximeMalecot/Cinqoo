@@ -19,6 +19,7 @@ type AuthContextType = {
     isAdmin: boolean;
     data: UserData | null;
     reload: () => void;
+    token: string | null;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
     isAdmin: false,
     data: null,
     reload: () => {},
+    token: null,
 });
 
 export const useAuthContext = () => {
@@ -54,6 +56,7 @@ export const AuthContextProvider: React.FC<Props> = ({ children }) => {
         reload,
         isFreelancer,
         isAdmin,
+        token,
     } = useAuth();
 
     return (
@@ -67,6 +70,7 @@ export const AuthContextProvider: React.FC<Props> = ({ children }) => {
                 reload,
                 isFreelancer,
                 isAdmin,
+                token,
             }}
         >
             {children}

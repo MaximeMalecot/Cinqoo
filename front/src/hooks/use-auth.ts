@@ -107,6 +107,7 @@ const useAuth = () => {
         reload: getUser,
         isFreelancer,
         isAdmin,
+        token,
     };
 };
 
