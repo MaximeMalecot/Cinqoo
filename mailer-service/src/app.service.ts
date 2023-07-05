@@ -29,6 +29,9 @@ export class AppService {
   private async getUser(id: string) {
     return await firstValueFrom(this.userService.send('getUserById', { id }));
   }
+  getHello(): string {
+    return 'Mailer Service';
+  }
 
   async sendInformativeMail(data: SendInformativeMailDto) {
     try {

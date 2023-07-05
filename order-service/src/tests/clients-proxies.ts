@@ -15,54 +15,18 @@ class ClientProxyMock {
   public close(): void {}
 }
 
-class StripeService extends ClientProxyMock {
+class PresationService extends ClientProxyMock {
+  invalidServiceId = 'invalidServiceId';
   public send(pattern: string, data: any): any {
     let observable;
-
     switch (pattern) {
-      case 'STRIPE.CREATE_PRICE':
+      case 'PRESTATION.CREATE':
         observable = new Observable((observer) => {
-          observer.next({ id: 'mockPriceId' });
-          observer.complete();
-        });
-      case 'STRIPE.CREATE_CHECKOUT_SESSION':
-        observable = new Observable((observer) => {
-          observer.next({ url: 'mockUrl', id: 'mockSessionId' });
+          observer.next({ _id: '507f1f77bcf86cd799439019' });
           observer.complete();
         });
         return observable;
-      case 'STRIPE.REFUND_PAYMENT_INTENT':
-        observable = new Observable((observer) => {
-          observer.next({ id: 'mockRefundId' });
-          observer.complete();
-        });
-        return observable;
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
 
-class OrderService extends ClientProxyMock {
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      case 'ORDER.CREATE':
-        const observable = new Observable((observer) => {
-          observer.next({ _id: '507f1f77bcf86cd799439011' });
-          observer.complete();
-        });
-        return observable;
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
-class PrestationService extends ClientProxyMock {
-  invalidServiceId = 'invalidServiceId';
-
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
       case 'PRESTATION.GET_ONE':
         if (data == this.invalidServiceId) {
           throw new RpcException({
@@ -78,7 +42,7 @@ class PrestationService extends ClientProxyMock {
           stripeId: 'mockStripeId',
         };
 
-        const observable = new Observable((observer) => {
+        observable = new Observable((observer) => {
           observer.next(mockPrestation);
           observer.complete();
         });
@@ -89,7 +53,7 @@ class PrestationService extends ClientProxyMock {
   }
 }
 
-class UserService extends ClientProxyMock {
+class PaymentService extends ClientProxyMock {
   public send(pattern: string, data: any): any {
     switch (pattern) {
       default:
@@ -107,8 +71,6 @@ class MailerService extends ClientProxyMock {
   }
 }
 
-export const MockPrestationService = new PrestationService();
-export const MockOrderService = new OrderService();
-export const MockStripeService = new StripeService();
-export const MockUserService = new UserService();
+export const MockPrestationService = new PresationService();
+export const MockPaymentService = new PaymentService();
 export const MockMailerService = new MailerService();

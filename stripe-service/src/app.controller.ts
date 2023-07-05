@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreateCheckoutSessionDto } from './dto/create-checkout-session.dto';
 import { CreatePriceDto } from './dto/create-price.dto';
@@ -19,7 +19,10 @@ export class AppController {
   ) {}
 
   // Payment/products
-
+  @Get()
+  getHello(): string {
+    return 'Welcome to Cinqoo STRIPE-SERVICE';
+  }
   @EventPattern('STRIPE.CREATE_PRICE')
   async createPrice(@Payload() data: CreatePriceDto) {
     return this.paymentService.createPrice(data);

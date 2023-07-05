@@ -15,6 +15,44 @@ class ClientProxyMock {
   public close(): void {}
 }
 
+class PresationService extends ClientProxyMock {
+  invalidServiceId = 'invalidServiceId';
+  public send(pattern: string, data: any): any {
+    let observable;
+    switch (pattern) {
+      case 'PRESTATION.CREATE':
+        observable = new Observable((observer) => {
+          observer.next({ _id: '507f1f77bcf86cd799439019' });
+          observer.complete();
+        });
+        return observable;
+
+      case 'PRESTATION.GET_ONE':
+        if (data == this.invalidServiceId) {
+          throw new RpcException({
+            message: 'Prestation not found',
+            status: 404,
+          });
+        }
+
+        const mockPrestation = {
+          _id: '507f1f77bcf86cd799439011',
+          name: 'mockPrestation',
+          price: 100,
+          stripeId: 'mockStripeId',
+        };
+
+        observable = new Observable((observer) => {
+          observer.next(mockPrestation);
+          observer.complete();
+        });
+        return observable;
+      default:
+        return super.send(pattern, data);
+    }
+  }
+}
+
 class StripeService extends ClientProxyMock {
   public send(pattern: string, data: any): any {
     let observable;
@@ -42,62 +80,6 @@ class StripeService extends ClientProxyMock {
     }
   }
 }
-
-class OrderService extends ClientProxyMock {
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      case 'ORDER.CREATE':
-        const observable = new Observable((observer) => {
-          observer.next({ _id: '507f1f77bcf86cd799439011' });
-          observer.complete();
-        });
-        return observable;
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
-class PrestationService extends ClientProxyMock {
-  invalidServiceId = 'invalidServiceId';
-
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      case 'PRESTATION.GET_ONE':
-        if (data == this.invalidServiceId) {
-          throw new RpcException({
-            message: 'Prestation not found',
-            status: 404,
-          });
-        }
-
-        const mockPrestation = {
-          _id: '507f1f77bcf86cd799439011',
-          name: 'mockPrestation',
-          price: 100,
-          stripeId: 'mockStripeId',
-        };
-
-        const observable = new Observable((observer) => {
-          observer.next(mockPrestation);
-          observer.complete();
-        });
-        return observable;
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
-class UserService extends ClientProxyMock {
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
 class MailerService extends ClientProxyMock {
   public send(pattern: string, data: any): any {
     switch (pattern) {
@@ -107,8 +89,6 @@ class MailerService extends ClientProxyMock {
   }
 }
 
-export const MockPrestationService = new PrestationService();
-export const MockOrderService = new OrderService();
-export const MockStripeService = new StripeService();
-export const MockUserService = new UserService();
+export const MockPrestationService = new PresationService();
 export const MockMailerService = new MailerService();
+export const MockStripeService = new StripeService();

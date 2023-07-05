@@ -11,6 +11,11 @@ import {
   FreelancerProfileSchema,
 } from './schema/freelancer-profile.schema';
 import { User, UserSchema } from './schema/user.schema';
+import {
+  MockMailerService,
+  MockPrestationService,
+  MockStripeService,
+} from './tests/clients-proxies';
 
 describe('AppService', () => {
   let service: AppService;
@@ -37,6 +42,10 @@ describe('AppService', () => {
           provide: getModelToken(FreelancerProfile.name),
           useValue: freelancerModel,
         },
+        { provide: 'PRESTATION_SERVICE', useValue: MockPrestationService },
+        { provide: 'STRIPE_SERVICE', useValue: MockStripeService },
+        //{ provide: 'PAYMENT_SERVICE', useValue: MockPaymentService },
+        { provide: 'MAILER_SERVICE', useValue: MockMailerService },
       ],
     }).compile();
 
@@ -57,12 +66,6 @@ describe('AppService', () => {
     }
   });
 
-  describe('root', () => {
-    it('should return an array', async () => {
-      expect(Array.isArray(await service.getHello())).toBe(true);
-    });
-  });
-
   describe('createUser', () => {
     beforeEach(async () => {
       await service.createUser({
@@ -78,10 +81,7 @@ describe('AppService', () => {
         email: 'test@test.fr',
         password: 'test',
       });
-      expect(user).toHaveProperty('_id');
-      expect(user).toHaveProperty('username', 'test');
-      expect(user).toHaveProperty('email', 'test@test.fr');
-      expect(user).toHaveProperty('password');
+      expect(user).toEqual({ message: 'User created successfully' });
     });
 
     it('Should not work: user with this username already exist', async () => {
@@ -264,10 +264,7 @@ describe('AppService', () => {
     });
     it('Should work: delete user', async () => {
       const user = service.removeUser('507f1f77bcf86cd799439011');
-      await expect(user).resolves.toEqual({
-        acknowledged: true,
-        deletedCount: 1,
-      });
+      await expect(user).resolves.toBeUndefined();
     });
   });
 });

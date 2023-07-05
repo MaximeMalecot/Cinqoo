@@ -1,22 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
+import { MockAuthService } from './tests/clients-proxies';
 describe('AppController', () => {
   let appController: AppController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        { provide: 'AUTH_SERVICE', useValue: MockAuthService },
+        { provide: 'PRESTATION_SERVICE', useValue: MockAuthService },
+      ],
     }).compile();
 
     appController = app.get<AppController>(AppController);
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return "Welcome to Cinqoo API-GATEWAY', () => {
+      expect(appController.getHelloTest()).toBe(
+        'Welcome to Cinqoo API-GATEWAY',
+      );
     });
   });
 });

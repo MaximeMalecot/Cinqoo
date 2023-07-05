@@ -1,4 +1,3 @@
-import { RpcException } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
 class ClientProxyMock {
@@ -43,52 +42,6 @@ class StripeService extends ClientProxyMock {
   }
 }
 
-class OrderService extends ClientProxyMock {
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      case 'ORDER.CREATE':
-        const observable = new Observable((observer) => {
-          observer.next({ _id: '507f1f77bcf86cd799439011' });
-          observer.complete();
-        });
-        return observable;
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
-class PrestationService extends ClientProxyMock {
-  invalidServiceId = 'invalidServiceId';
-
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      case 'PRESTATION.GET_ONE':
-        if (data == this.invalidServiceId) {
-          throw new RpcException({
-            message: 'Prestation not found',
-            status: 404,
-          });
-        }
-
-        const mockPrestation = {
-          _id: '507f1f77bcf86cd799439011',
-          name: 'mockPrestation',
-          price: 100,
-          stripeId: 'mockStripeId',
-        };
-
-        const observable = new Observable((observer) => {
-          observer.next(mockPrestation);
-          observer.complete();
-        });
-        return observable;
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
 class UserService extends ClientProxyMock {
   public send(pattern: string, data: any): any {
     switch (pattern) {
@@ -98,7 +51,7 @@ class UserService extends ClientProxyMock {
   }
 }
 
-class MailerService extends ClientProxyMock {
+class PrestationService extends ClientProxyMock {
   public send(pattern: string, data: any): any {
     switch (pattern) {
       default:
@@ -107,8 +60,6 @@ class MailerService extends ClientProxyMock {
   }
 }
 
-export const MockPrestationService = new PrestationService();
-export const MockOrderService = new OrderService();
 export const MockStripeService = new StripeService();
+export const MockPrestationService = new PrestationService();
 export const MockUserService = new UserService();
-export const MockMailerService = new MailerService();
