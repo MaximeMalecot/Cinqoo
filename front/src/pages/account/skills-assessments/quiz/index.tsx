@@ -84,7 +84,7 @@ export default function Quiz() {
     useEffect(() => {
         if (!socketRef.current) {
             const newSocket = io(WEBSOCKET_ENDPOINT, {
-                path: "",
+                path: "/sockets/quiz",
                 autoConnect: true,
                 auth: { token },
             });

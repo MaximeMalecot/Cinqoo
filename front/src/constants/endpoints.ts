@@ -5,4 +5,5 @@ export const SSE_ENDPOINT =
     import.meta.env.VITE_SSE_ENDPOINT ?? "http://localhost:3001/";
 
 export const WEBSOCKET_ENDPOINT =
-    import.meta.env.VITE_WEBSOCKET_ENDPOINT ?? "http://localhost:3002/";
+    import.meta.env.VITE_WEBSOCKET_ENDPOINT ??
+    "http://localhost:3002/sockets/quiz";

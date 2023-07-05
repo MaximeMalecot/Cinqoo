@@ -40,8 +40,11 @@ export class SocketService {
       ) {
         throw new WsException('Forbidden ressource');
       }
+      console.log("AVANT WWE")
+
       socket['user'] = user;
     } catch (err) {
+      console.log("WWE")
       socket.emit(SENT_EVENTS.ERROR, err.message);
       socket.disconnect();
     }

@@ -2,7 +2,7 @@ export enum SERVER_EVENTS {
     CONNECT = "connect",
     PING = "ping",
     NEW_QUESTION = "NEW_QUESTION",
-    ERROR = "error",
+    ERROR = "ERROR",
 }
 
 export enum CLIENT_EVENTS {
