@@ -254,14 +254,14 @@ class PrestationService {
         if (categories) {
             data = { ...data, categories: categories };
         }
-
         if (revisionNb) {
             data = { ...data, revisionNb };
         }
 
-        const res = await fetch(`${API_ENDPOINT}prestation/${id}`, {
+        const res = await fetch(`${API_ENDPOINT}prestation/${id}/nofile`, {
             method: "PATCH",
             headers: {
+                "Content-Type": "application/json",
                 ...authHeader(),
             },
             body: JSON.stringify(data),

@@ -23,7 +23,7 @@ export default function EditSection({ prestation, refetch }: EditSectionProps) {
                         image
                     );
                 } else {
-                    await prestationService.updatePrestation(
+                    await prestationService.updatePrestationWithoutFile(
                         prestation._id,
                         data as CreatePrestationForm
                     );
