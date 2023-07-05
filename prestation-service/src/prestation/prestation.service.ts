@@ -252,6 +252,7 @@ export class PrestationService {
         delay: prestation.delay,
         image: file,
         categories: localCategories,
+        revisionNb: prestation.revisionNb,
       },
       { new: true },
     );
@@ -288,6 +289,7 @@ export class PrestationService {
         price: prestation.price,
         delay: prestation.delay,
         categories: localCategories,
+        revisionNb: prestation.revisionNb,
       },
       { new: true },
     );
