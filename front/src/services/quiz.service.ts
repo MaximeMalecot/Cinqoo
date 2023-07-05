@@ -164,8 +164,8 @@ class QuizService {
 
     // RESULTS
 
-    async getSelfSuccesses(userId: string) {
-        const res = await fetch(`${API_ENDPOINT}results/success/self`, {
+    async getSelfSuccesses() {
+        const res = await fetch(`${API_ENDPOINT}quiz/results/success/self`, {
             method: "GET",
         });
         if (res.status !== 200) {
@@ -180,9 +180,12 @@ class QuizService {
     }
 
     async getUserSuccesses(userId: string) {
-        const res = await fetch(`${API_ENDPOINT}results/success/${userId}`, {
-            method: "GET",
-        });
+        const res = await fetch(
+            `${API_ENDPOINT}quiz/results/success/${userId}`,
+            {
+                method: "GET",
+            }
+        );
         if (res.status !== 200) {
             const jsonRes = await res.json();
             if (jsonRes.message) {
