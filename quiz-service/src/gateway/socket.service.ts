@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { Socket } from 'socket.io';
 import { ROLE } from 'src/enums/role.enum';
 import { QuizService } from 'src/quiz/quiz.service';
+import { Question } from 'src/quiz/schemas/quiz.schema';
 import { ResultService } from 'src/results/result.service';
 import { SENT_EVENTS } from './socket.events';
 
@@ -64,12 +65,30 @@ export class SocketService {
     return type === 'Bearer' ? token : undefined;
   }
 
-  public shuffleArray = (array) => {
+  public shuffleArray = (receiveArray) => {
+    const array = [...receiveArray];
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const temp = array[i];
       array[i] = array[j];
       array[j] = temp;
     }
+    return array;
   };
+
+  public getQuestionPayload(questions: Question[], current: number) {
+    const question = questions[current];
+    if (!question) {
+      return null;
+    }
+    const answersWithoutRightLabel = question.answers.map((answer) => {
+      delete answer.isRight;
+      return answer;
+    });
+
+    return {
+      label: question.label,
+      answers: answersWithoutRightLabel,
+    };
+  }
 }

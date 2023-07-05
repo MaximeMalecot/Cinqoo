@@ -33,43 +33,45 @@ export class SocketGateway {
   ) {
     try {
       if (!quizId) {
-        client.emit(SENT_EVENTS.ERROR, 'quizId is required');
+        throw new Error('quizId is required');
       }
       const canParticipate = await this.socketService.canParticipateQuiz(
         client?.user?.id,
         quizId,
       );
       if (!canParticipate) {
-        client.emit(SENT_EVENTS.ERROR, 'already participated at this quiz');
+        throw new Error('you cannot participate at this quiz');
       }
       const quiz = await this.socketService.getQuiz(quizId);
       if (!quiz) {
-        client.emit(SENT_EVENTS.ERROR, 'quiz not found');
+        throw new Error('quiz not found');
       }
+
       let { questions } = quiz;
       if (questions.length === 0) {
-        client.emit(SENT_EVENTS.ERROR, 'quiz has no questions');
-        client.disconnect();
-        return;
+        throw new Error('quiz has no questions');
       }
+
       // shuffle questions
-      this.socketService.shuffleArray(questions);
-      client.variables = {
+      const randomQuestions = this.socketService.shuffleArray(questions);
+
+      const variables = {
         quiz,
-        questions,
+        questions: randomQuestions,
         current: 0,
         points: 0,
       };
-      const question = client.variables.questions[
-        client.variables.current
-      ].answers.map((answer) => {
-        delete answer.isRight;
-        return answer;
-      });
-      console.log(question);
-      client.emit(SENT_EVENTS.NEW_QUESTION, question);
+      client.variables = variables;
+
+      const payload = this.socketService.getQuestionPayload(
+        variables.questions,
+        0,
+      );
+
+      client.emit(SENT_EVENTS.NEW_QUESTION, payload);
     } catch (err) {
       client.emit(SENT_EVENTS.ERROR, err.message);
+      client.disconnect();
     }
   }
 
