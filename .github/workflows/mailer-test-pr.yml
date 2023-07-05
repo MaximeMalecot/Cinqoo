@@ -1,4 +1,4 @@
-name: deliverable service tests
+name: mailer service tests
 
 on:
     workflow_dispatch:
@@ -6,14 +6,14 @@ on:
         branches:
             - master
         paths:
-            - deliverable-service/**
+            - mailer-service/**
         types:
             - opened
             - synchronize
 
 jobs:
     test_deliverable:
-        name: Test deliverable service before merging
+        name: Test mailer service before merging
         runs-on: ubuntu-latest
         steps:
             - name: Test Deliverable service
@@ -23,7 +23,7 @@ jobs:
               with:
                   node-version: "18.x"
             - name: Install dependencies and test deliverable service
-              working-directory: ./deliverable-service
+              working-directory: ./mailer-service
               run: |
                   npm ci
                   npm run test
