@@ -9,6 +9,7 @@ import {
   BroadcastOrderDto,
   BroadcastUserDto,
 } from './dto/broadcast.dto';
+import { MessageType } from './enums/message.enum';
 
 @Controller()
 export class AppController {
@@ -51,7 +52,7 @@ export class AppController {
 
       req.on('close', (err) => {
         this.logger.log('closing req of client: ' + userId);
-        res.write(this.appService.convertMessage({ type: 'end', err }));
+        res.write(this.appService.convertMessage({ type: MessageType.END, data: err }));
         this.appService.deleteUser(userId, sseId, req.user.roles);
       });
 
@@ -61,7 +62,7 @@ export class AppController {
         Connection: 'keep-alive',
       };
       res.writeHead(200, headers);
-      res.write(this.appService.convertMessage({ type: 'connect', userId }));
+      res.write(this.appService.convertMessage({ type: MessageType.CONNECT, data:{ userId: userId} }));
       res.setTimeout(0);
     } catch (err) {
       console.error(err);
@@ -80,7 +81,7 @@ export class AppController {
 
   @EventPattern('HYBRID.BROADCAST_ORDER')
   async broadcastOrder(@Payload() data: BroadcastOrderDto) {
-    await this.appService.broadcastOrder(data.message, data.orderId);
+    this.appService.broadcastOrder(data.message, data.orderId);
     return {
       event: 'message_printed',
       success: true,

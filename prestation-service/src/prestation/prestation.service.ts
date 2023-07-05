@@ -252,6 +252,44 @@ export class PrestationService {
         delay: prestation.delay,
         image: file,
         categories: localCategories,
+        revisionNb: prestation.revisionNb,
+      },
+      { new: true },
+    );
+
+    return updatedPrestation;
+  }
+
+  async updatePrestationNoFile(
+    prestationId: string,
+    prestation: UpdatePrestationDto,
+  ) {
+    const localCategories = [];
+    if (
+      prestation.categories &&
+      Array.isArray(prestation.categories) &&
+      prestation.categories.length > 0
+    ) {
+      const rawCategories = Array.from(new Set(prestation.categories));
+      await Promise.all(
+        rawCategories.map(async (category: string) => {
+          const exists = await this.categoryService.getOne(category);
+          if (exists) {
+            localCategories.push(exists._id);
+          }
+        }),
+      );
+    }
+
+    const updatedPrestation = await this.prestationModel.findByIdAndUpdate(
+      new Types.ObjectId(prestationId),
+      {
+        name: prestation.name,
+        description: prestation.description,
+        price: prestation.price,
+        delay: prestation.delay,
+        categories: localCategories,
+        revisionNb: prestation.revisionNb,
       },
       { new: true },
     );

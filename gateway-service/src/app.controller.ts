@@ -8,6 +8,10 @@ export class AppController {
   async getHello(@Req() req): Promise<string> {
     return 'Welcome to Cinqoo API-GATEWAY';
   }
+  @Get()
+  getHelloTest(): string {
+    return 'Welcome to Cinqoo API-GATEWAY';
+  }
 
   @Get('/health')
   @HttpCode(200)

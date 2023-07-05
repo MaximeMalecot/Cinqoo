@@ -1,6 +1,6 @@
 {
     "name": "pwa",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "private": true,
     "dependencies": {
         "@testing-library/jest-dom": "^5.16.5",
@@ -13,6 +13,7 @@
         "@types/react-router-dom": "^5.3.3",
         "hamburger-react": "^2.5.0",
         "jwt-decode": "^3.1.2",
+        "ratflow-sdk-react-rollup": "^0.0.10",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-hook-form": "^7.45.1",

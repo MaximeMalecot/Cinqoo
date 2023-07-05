@@ -7,6 +7,7 @@ import { FreelancerData } from "../../interfaces/user";
 import prestationService from "../../services/prestation.service";
 import userService from "../../services/user.service";
 import { displayMsg } from "../../utils/toast";
+import BadgesPart from "./badges-part";
 import ReportPart from "./report-part";
 
 const IMG =
@@ -73,6 +74,7 @@ export default function Freelancer() {
                                 : "I have no description yet"}
                         </p>
                     </div>
+                    <BadgesPart userId={freelancer._id} />
                     <ReportPart userId={freelancer._id} />
                 </div>
                 <div className="w-full md:w-2/3 flex flex-col gap-5">

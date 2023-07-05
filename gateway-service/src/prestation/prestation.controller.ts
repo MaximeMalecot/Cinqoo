@@ -79,6 +79,22 @@ export class PrestationController {
     return this.prestationService.send('PRESTATION.GET_ONE', prestationId);
   }
 
+  @Patch(':prestationId/nofile')
+  @UseGuards(IsServiceOwner)
+  public updateNoFilePrestation(
+    @Param('prestationId', CheckObjectIdPipe) prestationId: string,
+    @Body() body,
+  ) {
+    body as UpdatePrestationDto;
+    if (body.categories) {
+      body.categories = JSON.parse(body.categories) as String[];
+    }
+    return this.prestationService.send('PRESTATION.UPDATE_ONE_NO_FILE', {
+      id: prestationId,
+      prestation: body,
+    });
+  }
+
   @Patch(':prestationId')
   @UseGuards(IsServiceOwner)
   @UseInterceptors(

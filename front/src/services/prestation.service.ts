@@ -240,6 +240,43 @@ class PrestationService {
         return await res.json();
     }
 
+    async updatePrestationWithoutFile(id: string, form: CreatePrestationForm) {
+        const { name, description, revisionNb, delay, price, categories } =
+            form;
+        let data = {};
+        data = {
+            ...data,
+            name,
+            description,
+            delay,
+            price,
+        };
+        if (categories) {
+            data = { ...data, categories: categories };
+        }
+        if (revisionNb) {
+            data = { ...data, revisionNb };
+        }
+
+        const res = await fetch(`${API_ENDPOINT}prestation/${id}/nofile`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to update prestation");
+        }
+        return await res.json();
+    }
+
     async enablePrestation(id: string) {
         const res = await fetch(`${API_ENDPOINT}prestation/enable/${id}`, {
             method: "PATCH",
