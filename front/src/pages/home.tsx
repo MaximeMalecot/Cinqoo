@@ -75,7 +75,7 @@ export default function Home() {
                                             key={index}
                                             className="cursor-pointer border border-1 border-white w-fit px-2 rounded-md hover:bg-white hover:text-primary duration-500"
                                         >
-                                            {c.name}
+                                            {c.name}{" "}
                                         </Link>
                                     ))}
                                 </div>
