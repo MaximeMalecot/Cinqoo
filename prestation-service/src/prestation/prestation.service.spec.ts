@@ -174,7 +174,6 @@ describe('PrestationService', () => {
         'files/prestations/test.png',
       );
       expect(r).toBeDefined();
-      console.log(r);
       expect(r).rejects.toEqual(
         new RpcException({
           message:

@@ -14,15 +14,6 @@ class ClientProxyMock {
   public close(): void {}
 }
 
-class UserService extends ClientProxyMock {
-  public send(pattern: string, data: any): any {
-    switch (pattern) {
-      default:
-        return super.send(pattern, data);
-    }
-  }
-}
-
 class OrderService extends ClientProxyMock {
   public send(pattern: string, data: any): any {
     switch (pattern) {
@@ -33,4 +24,3 @@ class OrderService extends ClientProxyMock {
 }
 
 export const MockOrderService = new OrderService();
-export const MockUserService = new UserService();
