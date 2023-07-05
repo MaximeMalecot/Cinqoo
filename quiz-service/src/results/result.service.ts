@@ -12,4 +12,13 @@ export class ResultService {
   public async getResults() {
     return await this.attemptModule.find();
   }
+
+  public async getResultsOfUser(userId: string) {
+    return await this.attemptModule.find({ userId });
+  }
+
+  public async getSuccessOfUser(userId: string) {
+    const results = await this.attemptModule.find({ userId, success: true });
+    return results;
+  }
 }

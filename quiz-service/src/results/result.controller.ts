@@ -10,4 +10,14 @@ export class ResultController {
   public getResults() {
     return this.resultService.getResults();
   }
+
+  @EventPattern('RESULT.GET_RESULTS_OF_USER')
+  public getResultsOfUser(userId: string) {
+    return this.resultService.getResultsOfUser(userId);
+  }
+
+  @EventPattern('RESULT.GET_SUCCES_OF_USER')
+  public getSuccessOfUser(userId: string) {
+    return this.resultService.getSuccessOfUser(userId);
+  }
 }

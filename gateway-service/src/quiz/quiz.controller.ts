@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
@@ -37,42 +38,6 @@ export class QuizController {
     return this.quizService.send('QUIZ.CREATE', body);
   }
 
-  @Put(':id')
-  @Roles(ROLE.ADMIN)
-  public updateQuiz(
-    @Param('id', CheckObjectIdPipe) id: string,
-    @Body() body: QuizUpdateDto,
-  ) {
-    return this.quizService.send('QUIZ.UPDATE', {
-      quizId: id,
-      ...body,
-    });
-  }
-
-  @Get(':id')
-  @Roles(ROLE.FREELANCER)
-  public getQuizPublic(@Param('id', CheckObjectIdPipe) id: string) {
-    return this.quizService.send('QUIZ.GET_PUBLIC', id);
-  }
-
-  @Get(':id/full')
-  @Roles(ROLE.ADMIN)
-  public getQuizFull(@Param('id', CheckObjectIdPipe) id: string) {
-    return this.quizService.send('QUIZ.GET_FULL', id);
-  }
-
-  @Post(':id/question')
-  @Roles(ROLE.ADMIN)
-  public createQuestion(
-    @Param('id', CheckObjectIdPipe) id: string,
-    @Body() body: QuestionCreateDto,
-  ) {
-    return this.quizService.send('QUIZ.CREATE_QUESTION', {
-      quizId: id,
-      ...body,
-    });
-  }
-
   @Get('questions/:id')
   @Roles(ROLE.ADMIN)
   public getQuestionFull(@Param('id', CheckObjectIdPipe) id: string) {
@@ -95,5 +60,58 @@ export class QuizController {
   @Roles(ROLE.ADMIN)
   public deleteQuestion(@Param('id', CheckObjectIdPipe) id: string) {
     return this.quizService.send('QUIZ.DELETE_QUESTION', id);
+  }
+
+  @Get('results')
+  @Roles(ROLE.FREELANCER, ROLE.ADMIN)
+  public getSelfResults(@Req() req: any) {
+    return this.quizService.send('RESULT.GET_RESULTS_OF_USER', req.user._id);
+  }
+
+  @Get('results/:id')
+  @Roles(ROLE.ADMIN)
+  public getResults(@Param('id', CheckObjectIdPipe) id: string) {
+    return this.quizService.send('RESULT.GET_RESULTS_OF_USER', id);
+  }
+
+  @Get('results/success/:id')
+  public getResultOfQuiz(@Param('id', CheckObjectIdPipe) id: string) {
+    return this.quizService.send('RESULT.GET_SUCCES_OF_USER', id);
+  }
+
+  @Put(':id')
+  @Roles(ROLE.ADMIN)
+  public updateQuiz(
+    @Param('id', CheckObjectIdPipe) id: string,
+    @Body() body: QuizUpdateDto,
+  ) {
+    return this.quizService.send('QUIZ.UPDATE', {
+      quizId: id,
+      ...body,
+    });
+  }
+
+  @Get(':id')
+  @Roles(ROLE.FREELANCER, ROLE.ADMIN)
+  public getQuizPublic(@Param('id', CheckObjectIdPipe) id: string) {
+    return this.quizService.send('QUIZ.GET_PUBLIC', id);
+  }
+
+  @Get(':id/full')
+  @Roles(ROLE.ADMIN)
+  public getQuizFull(@Param('id', CheckObjectIdPipe) id: string) {
+    return this.quizService.send('QUIZ.GET_FULL', id);
+  }
+
+  @Post(':id/question')
+  @Roles(ROLE.ADMIN)
+  public createQuestion(
+    @Param('id', CheckObjectIdPipe) id: string,
+    @Body() body: QuestionCreateDto,
+  ) {
+    return this.quizService.send('QUIZ.CREATE_QUESTION', {
+      quizId: id,
+      ...body,
+    });
   }
 }
