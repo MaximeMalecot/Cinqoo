@@ -9,6 +9,7 @@ import quizService from "../../../../services/quiz.service";
 import { displayMsg } from "../../../../utils/toast";
 
 enum SCREENS {
+    CONNECTING = "CONNECTING",
     DISPLAY_QUESTION = "DISPLAY_QUESTION",
     WAITING = "WAITING",
     RESULTS = "RESULTS",
@@ -21,7 +22,7 @@ export default function Quiz() {
     const socketRef = useRef<Socket | null>(null);
     const [socket, setSocket] = useState<Socket | null>(null);
     const navigate = useNavigate();
-    const [screen, setScreen] = useState<SCREENS>(SCREENS.WAITING);
+    const [screen, setScreen] = useState<SCREENS>(SCREENS.CONNECTING);
 
     const fetchQuiz = async () => {
         try {
@@ -49,6 +50,7 @@ export default function Quiz() {
 
         socketRef.current.on(SERVER_EVENTS.CONNECT, () => {
             console.log("connected");
+            setScreen(SCREENS.WAITING);
         });
 
         socketRef.current.on(SERVER_EVENTS.NEW_QUESTION, (_) => {
@@ -86,7 +88,9 @@ export default function Quiz() {
             const newSocket = io(WEBSOCKET_ENDPOINT, {
                 path: "/sockets/quiz",
                 autoConnect: true,
-                auth: { token },
+                extraHeaders: {
+                    Authorization: "Bearer " + token,
+                },
             });
             socketRef.current = newSocket;
             setSocket(newSocket);

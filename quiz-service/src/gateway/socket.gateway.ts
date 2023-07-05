@@ -24,6 +24,7 @@ export class SocketGateway {
   async handleConnection(client: Socket) {
     console.log('new connection');
     const payload = client.handshake.headers;
+    console.log(payload);
     await this.socketService.authenticate(payload.authorization, client);
   }
 
