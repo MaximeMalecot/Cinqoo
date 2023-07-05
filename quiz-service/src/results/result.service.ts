@@ -28,13 +28,21 @@ export class ResultService {
     return results;
   }
 
-  public saveResult(userId: string, quizId: string, points: number) {
-    const result = new this.resultModel({
+  public async saveResult(userId: string, quizId: string, points: number) {
+    let result = await this.resultModel.findOne({ userId, quizId });
+    if (result) {
+      result.score = points;
+      result.success = points > 50;
+      result.attemptedAt = new Date();
+      return await result.save();
+    }
+
+    result = new this.resultModel({
       userId,
       quizId,
       score: points,
       success: points > 50,
     });
-    return result.save();
+    return await result.save();
   }
 }

@@ -58,8 +58,18 @@ export class SocketGateway implements OnGatewayConnection {
           client.emit(SENT_EVENTS.QUIZ_OVER, { results: result.score });
           throw new Error('you already succeded at this quiz');
         }
-        client.emit(SENT_EVENTS.QUIZ_OVER, { results: result.score });
-        throw new Error('you cannot participate at this quiz');
+
+        const attemptedAt = new Date(result.attemptedAt);
+        const deadline = new Date(new Date().getTime() - 30 * 1000);
+        //Checks if the user has already attempted the quiz less than 2 minutes ago
+        console.log(attemptedAt, deadline);
+        if (attemptedAt > deadline) {
+          console.log('here');
+          client.emit(SENT_EVENTS.QUIZ_OVER, { results: result.score });
+          throw new Error(
+            "You've already attempted this quiz less than 2 minutes ago",
+          );
+        }
       }
       const quiz = await this.socketService.getQuiz(quizId);
       if (!quiz) {
