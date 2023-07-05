@@ -9,7 +9,7 @@ import quizService from "../../../../services/quiz.service";
 import { displayMsg } from "../../../../utils/toast";
 
 enum SCREENS {
-    DISPLAY_QUIZ = "DISPLAY_QUIZ",
+    DISPLAY_QUESTION = "DISPLAY_QUESTION",
     WAITING = "WAITING",
     RESULTS = "RESULTS",
 }
@@ -49,6 +49,10 @@ export default function Quiz() {
 
         socketRef.current.on(SERVER_EVENTS.CONNECT, () => {
             console.log("connected");
+        });
+
+        socketRef.current.on(SERVER_EVENTS.NEW_QUESTION, (_) => {
+            setScreen(SCREENS.DISPLAY_QUESTION);
         });
 
         socketRef.current.on(SERVER_EVENTS.ERROR, (e) => {
@@ -117,8 +121,8 @@ export default function Quiz() {
                                 <span className="loading loading-spinner"></span>
                             </div>
                         )}
-                        {screen === SCREENS.DISPLAY_QUIZ && (
-                            <p>QUIZ REPOND MTN</p>
+                        {screen === SCREENS.DISPLAY_QUESTION && (
+                            <p>QUESTION REPOND MTN</p>
                         )}
                     </div>
                 )}
