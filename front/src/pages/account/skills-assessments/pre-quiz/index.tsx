@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../../../components/button";
-import { QuizData } from "../../../../interfaces/quiz";
+import { QuizData, ResultData } from "../../../../interfaces/quiz";
 import quizService from "../../../../services/quiz.service";
 import { displayMsg } from "../../../../utils/toast";
 
@@ -9,6 +9,8 @@ export default function PreQuiz() {
     const [quiz, setQuiz] = useState<QuizData | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const [selfResult, setSelfResult] = useState<ResultData | null>(null);
+    const canDoQuiz = selfResult ? !!!selfResult.success : true;
 
     const fetchQuiz = async () => {
         try {
@@ -25,9 +27,22 @@ export default function PreQuiz() {
         }
     };
 
+    const fetchSelfResult = async () => {
+        try {
+            if (!id) throw new Error("Id is not defined");
+            const res = await quizService.getSelfResultsOnQuiz(id);
+            if (res?._id) {
+                setSelfResult(res);
+            }
+        } catch (e: any) {
+            // displayMsg(e.message, "error");
+        }
+    };
+
     useEffect(() => {
         if (id) {
             fetchQuiz();
+            fetchSelfResult();
         }
     }, [id]);
 
@@ -130,9 +145,17 @@ export default function PreQuiz() {
                     <div className="divider my-0" />
                     <Link
                         className="w-fit ml-auto"
-                        to={`/account/skills-assessments/quiz/${quiz._id}`}
+                        to={
+                            canDoQuiz
+                                ? `/account/skills-assessments/quiz/${quiz._id}`
+                                : "#"
+                        }
                     >
-                        <Button visual="primary" className="w-fit ml-auto">
+                        <Button
+                            disabled={!canDoQuiz}
+                            visual="primary"
+                            className="w-fit ml-auto"
+                        >
                             Start the quiz
                         </Button>
                     </Link>

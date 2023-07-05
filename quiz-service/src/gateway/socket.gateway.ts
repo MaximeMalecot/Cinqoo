@@ -38,7 +38,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleDisconnect(@ConnectedSocket() client) {
-    if (client.variables.timeout) {
+    if (client?.variables?.timeout) {
       console.log('clearing timeout');
       clearTimeout(client.variables.timeout);
     }
