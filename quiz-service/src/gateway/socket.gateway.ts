@@ -41,11 +41,15 @@ export class SocketGateway {
     @ConnectedSocket() client,
   ) {
     try {
+      if (!client.user) {
+        throw new Error('user not found');
+      }
+
       if (!quizId) {
         throw new Error('quizId is required');
       }
       const result = await this.socketService.getQuizResult(
-        client?.user?.id,
+        client?.user?._id.toString(),
         quizId,
       );
       if (result) {
@@ -154,7 +158,7 @@ export class SocketGateway {
     const { points } = client.variables;
     const percentage = (points / client.variables.questions.length) * 100;
     this.socketService.saveResult(
-      client.user.id,
+      client.user._id.toString(),
       client.variables.quiz._id,
       percentage,
     );
