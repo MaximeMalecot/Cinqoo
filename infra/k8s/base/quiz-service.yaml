@@ -20,6 +20,11 @@ spec:
                   env:
                       - name: PORT
                         value: "3002"
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: QUIZ_DATABASE_URL
                   ports:
                       - containerPort: 3002
                   resources:
