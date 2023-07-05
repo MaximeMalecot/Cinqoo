@@ -1,11 +1,12 @@
 import { Controller, Param, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
 import { SseService } from './sse.service';
 
 @ApiTags('sse')
+@ApiExcludeController()
 @Controller('sse')
 export class SseController {
   constructor(private readonly sseService: SseService) {}

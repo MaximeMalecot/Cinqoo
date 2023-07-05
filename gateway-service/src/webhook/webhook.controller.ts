@@ -7,12 +7,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExcludeController, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { StripeSignatureGuard } from './guards/check-stripe-signature.pipe';
 
 @Controller('webhook')
 @ApiTags('webhook')
+@ApiExcludeController()
 export class WebhookController {
   constructor(
     @Inject('STRIPE_SERVICE') private readonly stripeService: ClientProxy,
