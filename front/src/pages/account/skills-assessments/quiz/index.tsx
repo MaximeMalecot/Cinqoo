@@ -63,6 +63,8 @@ export default function Quiz() {
             console.log(e);
             console.log("ping");
         });
+        console.log("HERE");
+        socketRef.current.emit("join_room", {});
     };
 
     const removeListeners = () => {
@@ -82,8 +84,8 @@ export default function Quiz() {
     useEffect(() => {
         if (!socketRef.current) {
             const newSocket = io(WEBSOCKET_ENDPOINT, {
-                path: "/channel",
-                autoConnect: false,
+                path: "",
+                autoConnect: true,
                 auth: { token },
             });
             socketRef.current = newSocket;

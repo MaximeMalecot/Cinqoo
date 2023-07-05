@@ -22,6 +22,7 @@ export class SocketGateway {
   @WebSocketServer() private server: Server;
 
   async handleConnection(client: Socket) {
+    console.log('new connection');
     const payload = client.handshake.headers;
     await this.socketService.authenticate(payload.authorization, client);
   }
