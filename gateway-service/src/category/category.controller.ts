@@ -15,7 +15,7 @@ import { ROLE } from 'src/auth/enums/role.enum';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-@ApiTags('Category')
+@ApiTags('category')
 @Controller('category')
 export class CategoryController {
   constructor(

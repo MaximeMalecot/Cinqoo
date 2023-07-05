@@ -11,6 +11,10 @@ export const FREELANCER_TABS = [
         name: "requests",
         path: "/account/requests",
     },
+    {
+        name: "Evaluate your skills 🚀",
+        path: "/account/skills-assessments",
+    },
 ];
 
 export const USER_TABS = [
@@ -44,6 +48,10 @@ export const ADMIN_HEADER_TABS = [
     {
         name: "Report reasons",
         path: "/admin/report_reason",
+    },
+    {
+        name: "Quiz",
+        path: "/admin/quiz",
     },
 ];
 

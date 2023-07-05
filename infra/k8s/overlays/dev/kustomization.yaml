@@ -44,3 +44,11 @@ patches:
       target:
           kind: Service
           name: hybrid-service
+    - patch: |-
+          - op: replace
+            path: /spec/type
+            value:
+              LoadBalancer
+      target:
+          kind: Service
+          name: quiz-service

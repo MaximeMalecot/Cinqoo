@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: quiz-service
+    labels:
+        app: quiz-service
+spec:
+    selector:
+        matchLabels:
+            app: quiz-service
+    template:
+        metadata:
+            labels:
+                app: quiz-service
+        spec:
+            containers:
+                - name: quiz-service
+                  image: europe-west9-docker.pkg.dev/cinqoo/challenge/quiz-service:latest
+                  imagePullPolicy: Always
+                  env:
+                      - name: PORT
+                        value: "3002"
+                  ports:
+                      - containerPort: 3002
+                  resources:
+                      limits:
+                          cpu: 1000m
+                      requests:
+                          cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: quiz-service
+    labels:
+        app: quiz-service
+spec:
+    type: NodePort
+    selector:
+        app: quiz-service
+    ports:
+        - name: default
+          port: 3002
+          targetPort: 3002
+        - name: my-ms-port
+          port: 3000
+          targetPort: 3000
+        - name: my-https-port
+          port: 443
+          targetPort: 3002
+        - name: my-http-port
+          port: 80
+          targetPort: 3002

@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { NavLink, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { ADMIN_HEADER_TABS } from "../../constants/header-tabs";
 import AdminCategories from "./categories";
@@ -12,6 +13,10 @@ import AdminReportReason from "./report_reason/specific";
 import AdminUser from "./user";
 import AdminEditUser from "./user_edit";
 import AdminUsers from "./users";
+
+const AdminQuiz = lazy(() => import("./quiz"));
+const AdminCreateQuiz = lazy(() => import("./quiz/create"));
+const AdminEditQuiz = lazy(() => import("./quiz/edit"));
 
 function AdminLayout() {
     return (
@@ -64,6 +69,9 @@ export default function AdminRouter() {
                 />
                 <Route path="*" element={<div>Not found</div>} />
                 <Route path="/" element={<Navigate to={"/admin/users"} />} />
+                <Route path="/quiz/create" element={<AdminCreateQuiz />} />
+                <Route path="/quiz/:id" element={<AdminEditQuiz />} />
+                <Route path="/quiz" element={<AdminQuiz />} />
             </Route>
         </Routes>
     );

@@ -4,10 +4,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { FRONT_URL } from './constants';
+import { BroadcastOrderDto } from './dto/broadcast.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { DoneRequestDto } from './dto/done-request.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
+import { MessageType } from './enums/message.enum';
 import { Order, OrderStatus } from './schemas/order.schema';
 
 @Injectable()
@@ -20,6 +22,8 @@ export class AppService {
     private readonly paymentService: ClientProxy,
     @Inject('MAILER_SERVICE')
     private readonly mailerService: ClientProxy,
+    @Inject('HYBRID_SERVICE')
+    private readonly hybridService: ClientProxy,
   ) {}
 
   async getHello(): Promise<string> {
@@ -285,6 +289,7 @@ export class AppService {
     }
     order.status = OrderStatus.IN_PROGRESS;
     this.sendOrderAcceptedEmail(order.applicant);
+    this.sendOrderStatusChangedNotification(order._id.toString(), order.status);
     await order.save();
     return { message: 'Order accepted' };
   }
@@ -311,6 +316,10 @@ export class AppService {
         this.paymentService.send('PAYMENT.REFUND_BILL', order.billId),
       );
       this.sendOrderRefusedEmail(order.applicant);
+      this.sendOrderStatusChangedNotification(
+        order._id.toString(),
+        order.status,
+      );
       return { message: 'Order refused' };
     } catch (e: any) {
       if (e instanceof RpcException) {
@@ -343,6 +352,7 @@ export class AppService {
     order.status = OrderStatus.TERMINATED;
     await order.save();
     this.sendOrderTerminatedEmail(order.applicant);
+    this.sendOrderStatusChangedNotification(order._id.toString(), order.status);
     return { message: 'Order terminated' };
   }
 
@@ -370,6 +380,7 @@ export class AppService {
     await firstValueFrom(
       this.paymentService.send('PAYMENT.PAY_PRESTATION_PROVIDER', order.billId),
     );
+    this.sendOrderStatusChangedNotification(order._id.toString(), order.status);
 
     //Mail already sent in PAYMENT.PAY_PRESTATION_PROVIDER
 
@@ -408,6 +419,10 @@ export class AppService {
 
       // Todo : send mail to the provider
       this.sendRevisionStartedEmail(order.serviceId);
+      this.sendOrderStatusChangedNotification(
+        order._id.toString(),
+        order.status,
+      );
 
       return { message: 'Revision started' };
     } catch (e: any) {
@@ -433,6 +448,7 @@ export class AppService {
     }
     order.status = data.status;
     await order.save();
+    this.sendOrderStatusChangedNotification(order._id.toString(), order.status);
     return { message: 'Order status updated' };
   }
 
@@ -513,5 +529,28 @@ export class AppService {
       redirectUrl: `${FRONT_URL}/account/requests`,
       label: 'Manage your requests',
     });
+  }
+
+  async sendOrderStatusChangedNotification(
+    orderId: string,
+    status: OrderStatus,
+  ) {
+    const validStatus = [
+      OrderStatus.IN_PROGRESS,
+      OrderStatus.REFUSED,
+      OrderStatus.TERMINATED,
+      OrderStatus.DONE,
+    ];
+
+    if (!validStatus.includes(status)) {
+      return;
+    }
+
+    console.log('sending message');
+
+    this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
+      message: { type: MessageType.ORDER_UPDATED, data: {} },
+      orderId,
+    } as BroadcastOrderDto);
   }
 }

@@ -1,7 +1,9 @@
+import { MessageType } from "src/enums/message.enum";
+
 export class BroadcastDto {
   message: {
-    type: string;
-    data: object | string | Array<any>;
+    type: MessageType;
+    data: any;
   };
 }
 

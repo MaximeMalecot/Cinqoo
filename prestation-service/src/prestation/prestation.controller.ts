@@ -3,6 +3,7 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { CreatePrestationRequestDto } from './dto/create-prestation-request.dto';
 import { GetUserPrestationsDto } from './dto/get-user-prestations.dto';
 import { SearchPrestationsDto } from './dto/search-prestation.dto';
+import { UpdateNoFilePrestationDto } from './dto/update-no-file-prestation.dto';
 import { UpdatePrestationDto } from './dto/update-prestation.dto';
 import { PrestationService } from './prestation.service';
 
@@ -53,6 +54,18 @@ export class PrestationController {
   ) {
     const { id, prestation, image } = data;
     return await this.appService.updatePrestation(id, prestation, image);
+  }
+
+  @EventPattern('PRESTATION.UPDATE_ONE_NO_FILE')
+  async updatePrestationNoFile(
+    @Payload()
+    data: {
+      id: string;
+      prestation: UpdateNoFilePrestationDto;
+    },
+  ) {
+    const { id, prestation } = data;
+    return await this.appService.updatePrestationNoFile(id, prestation);
   }
 
   @EventPattern('PRESTATION.ENABLE_ONE')

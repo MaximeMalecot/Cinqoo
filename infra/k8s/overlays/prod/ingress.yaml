@@ -39,3 +39,17 @@ spec:
                             name: hybrid-service
                             port:
                                 number: 3001
+                  - pathType: ImplementationSpecific
+                    path: /sockets
+                    backend:
+                        service:
+                            name: quiz-service
+                            port:
+                                number: 3002
+                  - pathType: ImplementationSpecific
+                    path: /sockets/*
+                    backend:
+                        service:
+                            name: quiz-service
+                            port:
+                                number: 3002

@@ -222,3 +222,30 @@
           configMapKeyRef:
               name: variables
               key: HYBRID_MS_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+      name: QUIZ_SERVICE
+      valueFrom:
+          configMapKeyRef:
+              name: variables
+              key: QUIZ_SERVICE
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+      name: QUIZ_PORT
+      valueFrom:
+          configMapKeyRef:
+              name: variables
+              key: QUIZ_PORT
+
+- op: add
+  path: /spec/template/spec/containers/0/env/-
+  value:
+      name: QUIZ_MS_PORT
+      valueFrom:
+          configMapKeyRef:
+              name: variables
+              key: QUIZ_MS_PORT

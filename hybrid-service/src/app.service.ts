@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { MessageType } from './enums/message.enum';
 import { ROLE } from './enums/role.enum';
 
 interface IUserConnections {
@@ -14,6 +15,11 @@ interface IOrderConnections {
   [orderId: string]: Set<string>;
 }
 
+interface MessageDto {
+  type: MessageType;
+  data: any;
+}
+
 @Injectable()
 export class AppService {
   private readonly logger: Logger = new Logger(AppService.name);
@@ -24,11 +30,11 @@ export class AppService {
     @Inject('ORDER_SERVICE') private readonly orderService: ClientProxy,
   ) {}
 
-  convertMessage({ type, ...data }) {
+  convertMessage({ type, data }: MessageDto) {
     return `event: ${type}\n` + `data: ${JSON.stringify(data)}\n\n`;
   }
 
-  broadcastSpecific(message, userId) {
+  broadcastSpecific(message: MessageDto, userId: string) {
     if (this.users[userId]) {
       this.logger.log(
         'sending message to client: ' + userId + ', type: ' + message?.type,
@@ -41,7 +47,7 @@ export class AppService {
     }
   }
 
-  broadcastOrder(message, orderId) {
+  broadcastOrder(message: MessageDto, orderId: string) {
     if (
       this.orders[orderId] &&
       this.orders[orderId].size &&
@@ -53,7 +59,7 @@ export class AppService {
     }
   }
 
-  broadcastAll(message) {
+  broadcastAll(message: MessageDto) {
     Object.keys(this.users).forEach((userId) => {
       this.broadcastSpecific(message, userId);
     });
@@ -73,6 +79,17 @@ export class AppService {
       orders.map((order) => {
         if (!this.orders[order._id]) this.orders[order._id] = new Set();
         this.orders[order._id].add(userId);
+        this.broadcastOrder(
+          {
+            type: MessageType.USER_JOINED,
+            data: {
+              userId,
+              users: Array.from(this.orders[order._id]),
+              orderId: order._id,
+            }
+          },
+          order._id,
+        )
       });
     }
   }
@@ -109,5 +126,9 @@ export class AppService {
       )),
     ];
     return orders;
+  }
+
+  async getOrdersConnections (userId: string) {
+    
   }
 }

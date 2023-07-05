@@ -16,14 +16,18 @@ export default function EditSection({ prestation, refetch }: EditSectionProps) {
     const updatePrestation = useCallback(
         async (data: CreatePrestationForm, image?: File | null) => {
             try {
-                if (!image) {
-                    throw new Error("You must provide an image");
+                if (image) {
+                    await prestationService.updatePrestation(
+                        prestation._id,
+                        data as CreatePrestationForm,
+                        image
+                    );
+                } else {
+                    await prestationService.updatePrestationWithoutFile(
+                        prestation._id,
+                        data as CreatePrestationForm
+                    );
                 }
-                await prestationService.updatePrestation(
-                    prestation._id,
-                    data as CreatePrestationForm,
-                    image ?? undefined
-                );
 
                 displayMsg("Prestation updated", "success");
                 refetch;
