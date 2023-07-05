@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QuizService } from 'src/quiz/quiz.service';
@@ -8,6 +8,7 @@ import { Result } from './schemas/result.schema';
 export class ResultService {
   constructor(
     @InjectModel(Result.name) private readonly resultModel: Model<Result>,
+    @Inject(forwardRef(() => QuizService))
     private readonly quizService: QuizService,
   ) {}
 
@@ -81,5 +82,13 @@ export class ResultService {
       success: points > 50,
     });
     return await result.save();
+  }
+
+  public async deleteEveryQuizResult(quizId: string) {
+    try {
+      await this.resultModel.deleteMany({ quizId });
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

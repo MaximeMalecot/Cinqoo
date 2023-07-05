@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuizModule } from 'src/quiz/quiz.module';
 import { ResultController } from './result.controller';
@@ -14,7 +14,7 @@ import { Result, ResultSchema } from './schemas/result.schema';
         schema: ResultSchema,
       },
     ]),
-    QuizModule,
+    forwardRef(() => QuizModule),
   ],
   controllers: [ResultController],
   providers: [ResultService],
