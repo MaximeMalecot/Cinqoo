@@ -143,22 +143,25 @@ export default function PreQuiz() {
                         </ul>
                     </div>
                     <div className="divider my-0" />
-                    <Link
-                        className="w-fit ml-auto"
-                        to={
-                            canDoQuiz
-                                ? `/account/skills-assessments/quiz/${quiz._id}`
-                                : "#"
-                        }
-                    >
-                        <Button
-                            disabled={!canDoQuiz}
-                            visual="primary"
-                            className="w-fit ml-auto"
+                    <div className="w-fit ml-auto flex flex-col">
+                        <Link
+                            className="w-fit"
+                            to={
+                                canDoQuiz
+                                    ? `/account/skills-assessments/quiz/${quiz._id}`
+                                    : "#"
+                            }
                         >
-                            Start the quiz
-                        </Button>
-                    </Link>
+                            <Button
+                                disabled={!canDoQuiz}
+                                visual="primary"
+                                className="w-fit ml-auto"
+                            >
+                                Start the quiz
+                            </Button>
+                        </Link>
+                        {selfResult ? `Last score: ${selfResult.score}%` : ""}
+                    </div>
                 </div>
             )}
         </div>
