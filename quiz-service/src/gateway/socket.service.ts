@@ -91,4 +91,8 @@ export class SocketService {
       answers: answersWithoutRightLabel,
     };
   }
+
+  public saveResult(userId: string, quizId: string, result: number) {
+    return this.resultService.saveResult(userId, quizId, result);
+  }
 }

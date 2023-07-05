@@ -116,10 +116,7 @@ export class SocketGateway {
       const payload = this.socketService.getQuestionPayload(questions, next);
 
       if (!payload) {
-        client.emit(SENT_EVENTS.QUIZ_OVER, {
-          results: client.variables.points,
-        });
-        client.disconnect();
+        this.handleResult(client);
         return;
       } else {
         client.variables.current = next;
@@ -146,5 +143,20 @@ export class SocketGateway {
         warnings: client.variables.warnings,
       });
     }
+  }
+
+  private handleResult(client) {
+    const { points } = client.variables;
+    const percentage = (points / client.variables.questions.length) * 100;
+    this.socketService.saveResult(
+      client.user.id,
+      client.variables.quiz._id,
+      percentage,
+    );
+
+    client.emit(SENT_EVENTS.QUIZ_OVER, {
+      results: percentage,
+    });
+    client.disconnect();
   }
 }

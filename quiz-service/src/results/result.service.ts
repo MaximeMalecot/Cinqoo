@@ -26,4 +26,14 @@ export class ResultService {
     const results = await this.attemptModule.find({ userId, quizId });
     return results.length === 0;
   }
+
+  public saveResult(userId: string, quizId: string, points: number) {
+    const result = new this.attemptModule({
+      userId,
+      quizId,
+      score: points,
+      success: points > 50,
+    });
+    return result.save();
+  }
 }
