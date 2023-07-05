@@ -161,6 +161,74 @@ class QuizService {
         }
         return true;
     }
+
+    // RESULTS
+
+    async getSelfSuccesses(userId: string) {
+        const res = await fetch(`${API_ENDPOINT}results/success/self`, {
+            method: "GET",
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to fetch results");
+        }
+
+        return await res.json();
+    }
+
+    async getUserSuccesses(userId: string) {
+        const res = await fetch(`${API_ENDPOINT}results/success/${userId}`, {
+            method: "GET",
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to fetch results");
+        }
+
+        return await res.json();
+    }
+
+    async getSelfResults() {
+        const res = await fetch(`${API_ENDPOINT}quiz/results`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to fetch results");
+        }
+
+        return await res.json();
+    }
+
+    async getSelfResultsOnQuiz(quizId: string) {
+        const res = await fetch(`${API_ENDPOINT}quiz/results/quiz/${quizId}`, {
+            method: "GET",
+            headers: {
+                ...authHeader(),
+            },
+        });
+        if (res.status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to fetch results");
+        }
+
+        return await res.json();
+    }
 }
 
 export default new QuizService();

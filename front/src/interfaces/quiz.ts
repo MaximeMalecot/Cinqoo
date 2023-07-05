@@ -44,3 +44,13 @@ export interface Answer {
 export interface AnswerAdmin extends Answer {
     isRight: boolean;
 }
+
+export interface ResultData {
+    _id: string;
+    userId: string;
+    quizId: string;
+    success: boolean;
+    score: number;
+    attemptedAt: Date;
+    quiz: QuizData;
+}

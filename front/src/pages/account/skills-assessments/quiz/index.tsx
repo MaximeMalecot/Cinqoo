@@ -82,7 +82,7 @@ export default function Quiz() {
             }
         );
 
-        socketRef.current.on(SERVER_EVENTS.CLIENT_CONNECTED, (e) => {
+        socketRef.current.on(SERVER_EVENTS.CLIENT_CONNECTED, () => {
             if (socketRef.current) {
                 socketRef.current.emit(CLIENT_EVENTS.START_QUIZ, {
                     quizId: id,
