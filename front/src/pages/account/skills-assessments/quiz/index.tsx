@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 import { WEBSOCKET_ENDPOINT } from "../../../../constants/endpoints";
-import { SERVER_EVENTS } from "../../../../constants/quiz_events";
+import {
+    CLIENT_EVENTS,
+    SERVER_EVENTS,
+} from "../../../../constants/quiz_events";
 import { useAuthContext } from "../../../../contexts/auth.context";
 import { QuizData } from "../../../../interfaces/quiz";
 import quizService from "../../../../services/quiz.service";
@@ -66,7 +69,9 @@ export default function Quiz() {
             console.log("ping");
         });
         console.log("HERE");
-        socketRef.current.emit("join_room", {});
+        socketRef.current.emit(CLIENT_EVENTS.START_QUIZ, {
+            quizId: id,
+        });
     };
 
     const removeListeners = () => {

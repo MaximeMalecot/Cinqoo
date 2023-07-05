@@ -22,9 +22,7 @@ export class SocketGateway {
   @WebSocketServer() private server: Server;
 
   async handleConnection(client: Socket) {
-    console.log('new connection');
     const payload = client.handshake.headers;
-    console.log(payload);
     await this.socketService.authenticate(payload.authorization, client);
   }
 
@@ -48,10 +46,28 @@ export class SocketGateway {
       if (!quiz) {
         client.emit(SENT_EVENTS.ERROR, 'quiz not found');
       }
-      const questions = await this.socketService.getQuestions(quizId);
-      client.emit(SENT_EVENTS.NEW_QUESTION, {
+      let { questions } = quiz;
+      if (questions.length === 0) {
+        client.emit(SENT_EVENTS.ERROR, 'quiz has no questions');
+        client.disconnect();
+        return;
+      }
+      // shuffle questions
+      this.socketService.shuffleArray(questions);
+      client.variables = {
+        quiz,
         questions,
+        current: 0,
+        points: 0,
+      };
+      const question = client.variables.questions[
+        client.variables.current
+      ].answers.map((answer) => {
+        delete answer.isRight;
+        return answer;
       });
+      console.log(question);
+      client.emit(SENT_EVENTS.NEW_QUESTION, question);
     } catch (err) {
       client.emit(SENT_EVENTS.ERROR, err.message);
     }

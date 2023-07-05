@@ -7,4 +7,5 @@ export enum SERVER_EVENTS {
 
 export enum CLIENT_EVENTS {
     ANSWER_QUESTION = "ANSWER_QUESTION",
+    START_QUIZ = "START_QUIZ",
 }

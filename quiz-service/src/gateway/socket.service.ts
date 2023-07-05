@@ -40,11 +40,8 @@ export class SocketService {
       ) {
         throw new WsException('Forbidden ressource');
       }
-      console.log("AVANT WWE")
-
       socket['user'] = user;
     } catch (err) {
-      console.log("WWE")
       socket.emit(SENT_EVENTS.ERROR, err.message);
       socket.disconnect();
     }
@@ -55,7 +52,7 @@ export class SocketService {
   }
 
   public async getQuiz(quizId: string) {
-    return await this.quizService.getPublicQuiz(quizId);
+    return await this.quizService.getFullQuiz(quizId);
   }
 
   public async getQuestions(quizId: string) {
@@ -66,4 +63,13 @@ export class SocketService {
     const [type, token] = fullToken.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
+
+  public shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+  };
 }
