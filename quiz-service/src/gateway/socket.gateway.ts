@@ -2,11 +2,12 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { RECEIVED_EVENTS, SENT_EVENTS } from './socket.events';
 import { SocketService } from './socket.service';
 
@@ -26,14 +27,21 @@ const MAX_WARNINGS = 2;
     origin: '*',
   },
 })
-export class SocketGateway implements OnGatewayConnection {
+export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly socketService: SocketService) {}
 
   @WebSocketServer() private server: Server;
 
-  async handleConnection(client: Socket) {
+  async handleConnection(@ConnectedSocket() client) {
     const payload = client.handshake.headers;
     await this.socketService.authenticate(payload.authorization, client);
+  }
+
+  async handleDisconnect(@ConnectedSocket() client) {
+    if (client.variables.timeout) {
+      console.log('clearing timeout');
+      clearTimeout(client.variables.timeout);
+    }
   }
 
   @SubscribeMessage(RECEIVED_EVENTS.START_QUIZ)
@@ -80,6 +88,13 @@ export class SocketGateway implements OnGatewayConnection {
       if (questions.length === 0) {
         throw new Error('quiz has no questions');
       }
+      const timeout = setTimeout(() => {
+        console.log('quiz duration passed');
+        client.emit(SENT_EVENTS.QUIZ_OVER, {
+          results: client.variables.points,
+        });
+        client.disconnect();
+      }, 1000 * 60 * quiz.duration);
 
       // shuffle questions
       const randomQuestions = this.socketService.shuffleArray(questions);
@@ -90,6 +105,7 @@ export class SocketGateway implements OnGatewayConnection {
         current: 0,
         points: 0,
         warnings: 0,
+        timeout,
       };
       client.variables = variables;
 
@@ -155,6 +171,7 @@ export class SocketGateway implements OnGatewayConnection {
       client.emit(SENT_EVENTS.QUIZ_OVER, {
         results: client.variables.points,
       });
+      this.handleResult(client);
       client.disconnect();
     } else {
       client.variables.warnings = warnings + 1;
