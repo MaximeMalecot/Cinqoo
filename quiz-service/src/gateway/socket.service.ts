@@ -43,6 +43,7 @@ export class SocketService {
         throw new WsException('Forbidden ressource');
       }
       socket['user'] = user;
+      socket.emit(SENT_EVENTS.CLIENT_CONNECTED, user);
     } catch (err) {
       socket.emit(SENT_EVENTS.ERROR, err.message);
       socket.disconnect();

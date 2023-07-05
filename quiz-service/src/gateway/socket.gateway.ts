@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -25,7 +26,7 @@ const MAX_WARNINGS = 2;
     origin: '*',
   },
 })
-export class SocketGateway {
+export class SocketGateway implements OnGatewayConnection {
   constructor(private readonly socketService: SocketService) {}
 
   @WebSocketServer() private server: Server;

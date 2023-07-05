@@ -5,6 +5,7 @@ export enum SERVER_EVENTS {
     ERROR = "ERROR",
     QUIZ_OVER = "QUIZ_OVER",
     WARNING = "WARNING",
+    CLIENT_CONNECTED = "CLIENT_CONNECTED",
 }
 
 export enum CLIENT_EVENTS {

@@ -82,6 +82,14 @@ export default function Quiz() {
             }
         );
 
+        socketRef.current.on(SERVER_EVENTS.CLIENT_CONNECTED, (e) => {
+            if (socketRef.current) {
+                socketRef.current.emit(CLIENT_EVENTS.START_QUIZ, {
+                    quizId: id,
+                });
+            }
+        });
+
         socketRef.current.on(SERVER_EVENTS.ERROR, (e) => {
             console.log(e);
         });
@@ -95,10 +103,6 @@ export default function Quiz() {
         socketRef.current.on(SERVER_EVENTS.WARNING, (e: any) => {
             setWarnings(e.warnings);
             displayMsg(e.message, "error");
-        });
-
-        socketRef.current.emit(CLIENT_EVENTS.START_QUIZ, {
-            quizId: id,
         });
     };
 
@@ -120,9 +124,11 @@ export default function Quiz() {
     }, [id]);
 
     useEffect(() => {
+        if (!token) return;
         if (!quiz) return;
 
         if (!socketRef.current) {
+            console.log("REQUESTING WITH", token);
             const newSocket = io(WEBSOCKET_ENDPOINT, {
                 path: "/sockets/quiz",
                 autoConnect: true,
@@ -155,7 +161,7 @@ export default function Quiz() {
             }
             document.removeEventListener("visibilitychange", tabFocusedCb);
         };
-    }, [quiz]);
+    }, [quiz, token]);
 
     const answerQuestion = (answers: string[]) => {
         if (!socketRef.current) return;
