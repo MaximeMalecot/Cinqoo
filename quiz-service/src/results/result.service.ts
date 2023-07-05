@@ -23,8 +23,8 @@ export class ResultService {
   }
 
   public async canParticipateQuiz(userId: string, quizId: string) {
-    const results = await this.attemptModule.find({ userId, quizId });
-    return results.length === 0;
+    const results = await this.attemptModule.findOne({ userId, quizId });
+    return results;
   }
 
   public saveResult(userId: string, quizId: string, points: number) {

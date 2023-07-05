@@ -44,11 +44,16 @@ export class SocketGateway {
       if (!quizId) {
         throw new Error('quizId is required');
       }
-      const canParticipate = await this.socketService.canParticipateQuiz(
+      const result = await this.socketService.getQuizResult(
         client?.user?.id,
         quizId,
       );
-      if (!canParticipate) {
+      if (result) {
+        if (result.success) {
+          client.emit(SENT_EVENTS.QUIZ_OVER, { results: result.score });
+          throw new Error('you already succeded at this quiz');
+        }
+        client.emit(SENT_EVENTS.QUIZ_OVER, { results: result.score });
         throw new Error('you cannot participate at this quiz');
       }
       const quiz = await this.socketService.getQuiz(quizId);

@@ -7,6 +7,7 @@ import { ROLE } from 'src/enums/role.enum';
 import { QuizService } from 'src/quiz/quiz.service';
 import { Question } from 'src/quiz/schemas/quiz.schema';
 import { ResultService } from 'src/results/result.service';
+import { ResultDocument } from 'src/results/schemas/result.schema';
 import { SENT_EVENTS } from './socket.events';
 
 @Injectable()
@@ -48,7 +49,10 @@ export class SocketService {
     }
   }
 
-  public async canParticipateQuiz(userId: string, quizId: string) {
+  public async getQuizResult(
+    userId: string,
+    quizId: string,
+  ): Promise<ResultDocument> {
     return await this.resultService.canParticipateQuiz(userId, quizId);
   }
 
