@@ -21,4 +21,9 @@ export class ResultService {
     const results = await this.attemptModule.find({ userId, success: true });
     return results;
   }
+
+  public async canParticipateQuiz(userId: string, quizId: string) {
+    const results = await this.attemptModule.find({ userId, quizId });
+    return results.length === 0;
+  }
 }

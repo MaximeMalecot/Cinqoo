@@ -4,7 +4,9 @@ import { WsException } from '@nestjs/websockets';
 import { firstValueFrom } from 'rxjs';
 import { Socket } from 'socket.io';
 import { ROLE } from 'src/enums/role.enum';
+import { QuizService } from 'src/quiz/quiz.service';
 import { ResultService } from 'src/results/result.service';
+import { SENT_EVENTS } from './socket.events';
 
 @Injectable()
 export class SocketService {
@@ -12,6 +14,7 @@ export class SocketService {
     @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
     @Inject('USER_SERVICE') private readonly userService: ClientProxy,
     private readonly resultService: ResultService,
+    private readonly quizService: QuizService,
   ) {}
 
   public async authenticate(bearer_token: string, socket: Socket) {
@@ -39,13 +42,21 @@ export class SocketService {
       }
       socket['user'] = user;
     } catch (err) {
-      socket.emit('error', err.message);
+      socket.emit(SENT_EVENTS.ERROR, err.message);
       socket.disconnect();
     }
   }
 
-  public canAnswerQuiz(quizId: string, userId: string): boolean {
-    return true;
+  public async canParticipateQuiz(userId: string, quizId: string) {
+    return await this.resultService.canParticipateQuiz(userId, quizId);
+  }
+
+  public async getQuiz(quizId: string) {
+    return await this.quizService.getPublicQuiz(quizId);
+  }
+
+  public async getQuestions(quizId: string) {
+    return await this.quizService.getPublicQuestions(quizId);
   }
 
   private extractToken(fullToken: string): string | undefined {

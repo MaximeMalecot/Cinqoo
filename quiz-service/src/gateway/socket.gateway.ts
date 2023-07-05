@@ -6,9 +6,11 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { RECEIVED_EVENTS, SENT_EVENTS } from './socket.events';
 import { SocketService } from './socket.service';
 
 @WebSocketGateway({
+  path: '/sockets/quiz',
   namespace: 'sockets/quiz',
   cors: {
     origin: '*',
@@ -24,24 +26,40 @@ export class SocketGateway {
     await this.socketService.authenticate(payload.authorization, client);
   }
 
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() body: any) {
-    console.log(body);
-  }
-
-  @SubscribeMessage('answer_quiz')
-  async handleAnserQuiz(@MessageBody() body, @ConnectedSocket() client) {
-    const canAnswer = await this.socketService.canAnswerQuiz(
-      body.quizId,
-      client?.user,
-    );
-    if (!canAnswer) {
-      client.emit('error', 'already answered at this quiz');
+  @SubscribeMessage(RECEIVED_EVENTS.START_QUIZ)
+  async handleStartQuiz(
+    @MessageBody('quizId') quizId,
+    @ConnectedSocket() client,
+  ) {
+    try {
+      if (!quizId) {
+        client.emit(SENT_EVENTS.ERROR, 'quizId is required');
+      }
+      const canParticipate = await this.socketService.canParticipateQuiz(
+        client?.user?.id,
+        quizId,
+      );
+      if (!canParticipate) {
+        client.emit(SENT_EVENTS.ERROR, 'already participated at this quiz');
+      }
+      const quiz = await this.socketService.getQuiz(quizId);
+      if (!quiz) {
+        client.emit(SENT_EVENTS.ERROR, 'quiz not found');
+      }
+      const questions = await this.socketService.getQuestions(quizId);
+      client.emit(SENT_EVENTS.NEW_QUESTION, {
+        questions,
+      });
+    } catch (err) {
+      client.emit(SENT_EVENTS.ERROR, err.message);
     }
   }
 
-  @SubscribeMessage('join_room')
-  joinRoom(@MessageBody() body: any, @ConnectedSocket() client) {
-    console.log(body, client?.user);
+  @SubscribeMessage(RECEIVED_EVENTS.ANSWER_QUESTION)
+  async handleAnswerQuestion(
+    @MessageBody('questionId') questionId,
+    @ConnectedSocket() client,
+  ) {
+    console.log('onéla');
   }
 }

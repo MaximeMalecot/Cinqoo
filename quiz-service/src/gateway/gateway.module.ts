@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PORTS, SERVICES } from 'src/constants';
+import { QuizModule } from 'src/quiz/quiz.module';
 import { ResultModule } from 'src/results/result.module';
 import { SocketGateway } from './socket.gateway';
 import { SocketService } from './socket.service';
@@ -26,6 +27,7 @@ import { SocketService } from './socket.service';
       },
     ]),
     ResultModule,
+    QuizModule,
   ],
   providers: [SocketGateway, SocketService],
 })

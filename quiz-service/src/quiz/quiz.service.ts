@@ -55,7 +55,7 @@ export class QuizService {
               else: 'NA',
             },
           },
-        }
+        },
       },
       {
         $project: {
@@ -67,13 +67,13 @@ export class QuizService {
       },
     ]);
 
-    if(!quiz?.[0]){
+    if (!quiz?.[0]) {
       throw new RpcException({
         message: 'Quiz not found',
         statusCode: 404,
       });
     }
-        
+
     return quiz[0];
   }
 
@@ -96,6 +96,32 @@ export class QuizService {
       },
     ]);
     return questions[0];
+  }
+
+  async getPublicQuestions(quizId: string) {
+    const questions = await this.quizModel.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(quizId),
+        },
+      },
+      {
+        $unwind: '$questions',
+      },
+      {
+        $project: {
+          _id: '$questions._id',
+          label: '$questions.label',
+          answers: '$questions.answers',
+        },
+      },
+    ]);
+    questions.forEach((question) => {
+      question.answers.forEach((answer) => {
+        delete answer.isRight;
+      });
+    });
+    return questions;
   }
 
   async createQuiz(data: QuizCreateDto) {
@@ -124,7 +150,7 @@ export class QuizService {
         });
       quiz.name = data.name;
       quiz.duration = data.duration;
-      quiz.description = data.description??"";
+      quiz.description = data.description ?? '';
       return await quiz.save();
     } catch (error) {
       throw new RpcException(error.message);
