@@ -98,6 +98,7 @@ export default function ManageOrder() {
                             }}
                         >
                             <RequestConversation
+                                reloadOrder={fetchOrder}
                                 request={order}
                                 isVisible={activeTab === 2}
                             />

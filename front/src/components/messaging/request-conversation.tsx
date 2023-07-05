@@ -12,11 +12,13 @@ import ConversationLayout from "./conversation-layout";
 interface RequestConversationProps {
     request: Request;
     isVisible?: boolean;
+    reloadOrder: () => void;
 }
 
 export default function RequestConversation({
     request,
     isVisible = false,
+    reloadOrder,
 }: RequestConversationProps) {
     const { data } = useAuthContext();
     const [messages, setMessages] = useState<MessageI[]>([]);
@@ -64,10 +66,11 @@ export default function RequestConversation({
 
         sse.addEventListener(SSE_EVENTS.ORDER_UPDATED, (data: any) => {
             try {
-                notify("Order updated");
                 const message = JSON.parse(data.data);
+                console.log(message.orderId, request._id);
                 if (message.orderId === request._id) {
-                    fetchMessages();
+                    notify("Order updated");
+                    reloadOrder && reloadOrder();
                 }
             } catch (e: any) {
                 console.log(e.message);

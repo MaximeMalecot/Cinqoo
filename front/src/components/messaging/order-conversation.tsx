@@ -12,11 +12,13 @@ import ConversationLayout from "./conversation-layout";
 interface OrderConversationProps {
     order: Order;
     isVisible?: boolean;
+    reloadOrder: () => void;
 }
 
 export default function OrderConversation({
     order,
     isVisible = true,
+    reloadOrder,
 }: OrderConversationProps) {
     const [messages, setMessages] = useState<MessageI[]>([]);
     const { data } = useAuthContext();
@@ -65,10 +67,12 @@ export default function OrderConversation({
 
         sse.addEventListener(SSE_EVENTS.ORDER_UPDATED, (data: any) => {
             try {
-                notify("Order updated");
                 const message = JSON.parse(data.data);
+                console.log(message.orderId, order._id);
                 if (message.orderId === order._id) {
-                    fetchMessages();
+                    notify("Order updated");
+                    console.log("reload");
+                    reloadOrder && reloadOrder();
                 }
             } catch (e: any) {
                 console.log(e.message);

@@ -48,7 +48,7 @@ export class AppService {
       await deliverable.save();
       this.sendNewDeliverableEmail(orderId);
       this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
-        message: { type: MessageType.ORDER_UPDATED, data: {} },
+        message: { type: MessageType.ORDER_UPDATED, data: { orderId } },
         orderId,
       } as BroadcastOrderDto);
 
