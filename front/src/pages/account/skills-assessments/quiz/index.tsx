@@ -11,6 +11,7 @@ import { QuizData } from "../../../../interfaces/quiz";
 import quizService from "../../../../services/quiz.service";
 import { displayMsg } from "../../../../utils/toast";
 import QuestionScreen from "./question-screen";
+import ResultScreen from "./result-screen";
 
 enum SCREENS {
     CONNECTING = "CONNECTING",
@@ -192,7 +193,9 @@ export default function Quiz() {
                                 onSubmit={answerQuestion}
                             />
                         )}
-                        {screen === SCREENS.RESULTS && <p>{result ?? 0}</p>}
+                        {screen === SCREENS.RESULTS && (
+                            <ResultScreen result={result} />
+                        )}
                     </div>
                 )}
             </div>
