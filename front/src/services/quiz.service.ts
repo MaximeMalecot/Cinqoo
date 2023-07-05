@@ -102,6 +102,26 @@ class QuizService {
         return await res.json();
     }
 
+    async deleteQuiz(id: string) {
+        const res = await fetch(`${API_ENDPOINT}quiz/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            },
+        });
+        const status = res.status;
+
+        if (status !== 200) {
+            const jsonRes = await res.json();
+            if (jsonRes.message) {
+                throw new Error(jsonRes.message);
+            }
+            throw new Error("Failed to delete quiz");
+        }
+        return true;
+    }
+
     // QUESTIONS
 
     async createQuestion(quizId: string, question: QuestionAdmin) {

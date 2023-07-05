@@ -26,6 +26,11 @@ export class QuizController {
     return await this.quizService.updateQuiz(quizId, rest);
   }
 
+  @EventPattern('QUIZ.DELETE')
+  async deleteQuiz(quizId: string) {
+    return await this.quizService.deleteQuiz(quizId);
+  }
+
   @EventPattern('QUIZ.CREATE_QUESTION')
   async createQuestion(@Payload() data: QuestionCreateDto) {
     return await this.quizService.createQuestion(data);
