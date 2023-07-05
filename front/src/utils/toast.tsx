@@ -19,6 +19,8 @@ export function displayMsg(msg: string, type = "success") {
         case "error":
             toast.error(msg, settings);
             break;
+        default:
+            toast(msg, settings);
     }
 }
 

@@ -3,9 +3,12 @@ export enum SERVER_EVENTS {
     PING = "ping",
     NEW_QUESTION = "NEW_QUESTION",
     ERROR = "ERROR",
+    QUIZ_OVER = "QUIZ_OVER",
+    WARNING = "WARNING",
 }
 
 export enum CLIENT_EVENTS {
     ANSWER_QUESTION = "ANSWER_QUESTION",
     START_QUIZ = "START_QUIZ",
+    TAB_HIDDEN = "TAB_HIDDEN",
 }

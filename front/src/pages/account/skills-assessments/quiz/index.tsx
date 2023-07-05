@@ -39,6 +39,8 @@ export default function Quiz() {
     const navigate = useNavigate();
     const [screen, setScreen] = useState<SCREENS>(SCREENS.CONNECTING);
     const [question, setQuestion] = useState<RECEIVED_QUESTION | null>(null);
+    const [result, setResult] = useState<number>(0);
+    const [warnings, setWarnings] = useState<number>(0);
 
     const fetchQuiz = async () => {
         try {
@@ -83,9 +85,15 @@ export default function Quiz() {
             console.log(e);
         });
 
-        socketRef.current.on(SERVER_EVENTS.PING, (e) => {
+        socketRef.current.on(SERVER_EVENTS.QUIZ_OVER, (e: any) => {
+            setScreen(SCREENS.RESULTS);
             console.log(e);
-            console.log("ping");
+            setResult(e.results);
+        });
+
+        socketRef.current.on(SERVER_EVENTS.WARNING, (e: any) => {
+            setWarnings(e.warnings);
+            displayMsg(e.message, "error");
         });
 
         socketRef.current.emit(CLIENT_EVENTS.START_QUIZ, {
@@ -100,6 +108,8 @@ export default function Quiz() {
         socketRef.current.off(SERVER_EVENTS.ERROR);
         socketRef.current.off(SERVER_EVENTS.PING);
         socketRef.current.off(SERVER_EVENTS.NEW_QUESTION);
+        socketRef.current.off(SERVER_EVENTS.QUIZ_OVER);
+        socketRef.current.off(SERVER_EVENTS.WARNING);
     };
 
     useEffect(() => {
@@ -124,6 +134,16 @@ export default function Quiz() {
             setListeners();
         }
 
+        const tabFocusedCb = (e: any) => {
+            if (e.target.visibilityState === "hidden") {
+                if (socketRef.current) {
+                    socketRef.current.emit(CLIENT_EVENTS.TAB_HIDDEN);
+                }
+            }
+        };
+
+        document.addEventListener("visibilitychange", tabFocusedCb);
+
         return () => {
             if (socket) {
                 removeListeners();
@@ -132,6 +152,7 @@ export default function Quiz() {
                 setSocket(null);
                 socketRef.current = null;
             }
+            document.removeEventListener("visibilitychange", tabFocusedCb);
         };
     }, [quiz]);
 
@@ -140,6 +161,7 @@ export default function Quiz() {
         socketRef.current.emit(CLIENT_EVENTS.ANSWER_QUESTION, {
             answers,
         });
+        setScreen(SCREENS.WAITING);
     };
 
     if (!quiz)
@@ -152,7 +174,10 @@ export default function Quiz() {
     return (
         <div className="container mx-auto flex flex-col p-5 md:p-0 md:py-10 gap-5 bg-white">
             <div className="flex flex-col gap-5 border border-1 rounded-md overflow-hidden p-6">
-                <h1 className="text-xl font-bold">{quiz.name}</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-xl font-bold">{quiz.name}</h1>
+                    {warnings > 0 && <p>Warnings: {warnings}</p>}
+                </div>
                 {socket && (
                     <div>
                         {screen === SCREENS.WAITING && (
@@ -167,6 +192,7 @@ export default function Quiz() {
                                 onSubmit={answerQuestion}
                             />
                         )}
+                        {screen === SCREENS.RESULTS && <p>{result ?? 0}</p>}
                     </div>
                 )}
             </div>

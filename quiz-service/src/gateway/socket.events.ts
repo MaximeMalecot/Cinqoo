@@ -1,6 +1,7 @@
 export enum RECEIVED_EVENTS {
   'START_QUIZ' = 'START_QUIZ',
   'ANSWER_QUESTION' = 'ANSWER_QUESTION',
+  'TAB_HIDDEN' = 'TAB_HIDDEN',
 }
 
 export enum SENT_EVENTS {

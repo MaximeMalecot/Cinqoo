@@ -9,6 +9,15 @@ import { Server, Socket } from 'socket.io';
 import { RECEIVED_EVENTS, SENT_EVENTS } from './socket.events';
 import { SocketService } from './socket.service';
 
+interface CLIENT_VARIABLES {
+  quiz: any;
+  questions: any[];
+  current: number;
+  points: number;
+  warnings: number;
+}
+
+const MAX_WARNINGS = 2;
 @WebSocketGateway({
   path: '/sockets/quiz',
   namespace: 'sockets/quiz',
@@ -60,6 +69,7 @@ export class SocketGateway {
         questions: randomQuestions,
         current: 0,
         points: 0,
+        warnings: 0,
       };
       client.variables = variables;
 
@@ -77,9 +87,64 @@ export class SocketGateway {
 
   @SubscribeMessage(RECEIVED_EVENTS.ANSWER_QUESTION)
   async handleAnswerQuestion(
-    @MessageBody('questionId') questionId,
+    @MessageBody('answers') answers: string[],
     @ConnectedSocket() client,
   ) {
-    console.log('onéla');
+    try {
+      const { current, questions, points } = client.variables;
+      const question = questions[current];
+
+      if (!question) {
+        throw new Error('question not found');
+      }
+
+      console.log('answers', answers);
+      const rightAnswers = question.answers
+        .filter((a) => a.isRight)
+        .map((a) => a._id.toString());
+
+      // algo to compares if the two arrays of string are equal
+      const isRight =
+        answers.length === rightAnswers.length &&
+        answers.every((value, index) => value === rightAnswers[index]);
+
+      if (isRight) {
+        client.variables.points = points + 1;
+      }
+
+      const next = current + 1;
+      const payload = this.socketService.getQuestionPayload(questions, next);
+
+      if (!payload) {
+        client.emit(SENT_EVENTS.QUIZ_OVER, {
+          results: client.variables.points,
+        });
+        client.disconnect();
+        return;
+      } else {
+        client.variables.current = next;
+        client.emit(SENT_EVENTS.NEW_QUESTION, payload);
+      }
+    } catch (e: any) {
+      client.emit(SENT_EVENTS.ERROR, e.message);
+      // client.disconnect();
+    }
+  }
+
+  @SubscribeMessage(RECEIVED_EVENTS.TAB_HIDDEN)
+  async handleTabHidden(@ConnectedSocket() client) {
+    const { warnings } = client.variables;
+    if (warnings >= MAX_WARNINGS) {
+      client.emit(SENT_EVENTS.QUIZ_OVER, {
+        results: client.variables.points,
+      });
+      client.disconnect();
+    } else {
+      client.variables.warnings = warnings + 1;
+      client.emit(SENT_EVENTS.WARNING, {
+        message: "It looks like you're not focused on the quiz.",
+        warnings: client.variables.warnings,
+      });
+    }
   }
 }
