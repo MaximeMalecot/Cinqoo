@@ -1,6 +1,7 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as Sentry from '@sentry/node';
 import * as compression from 'compression';
 import helmet from 'helmet';
 import {
@@ -9,6 +10,7 @@ import {
 } from 'nest-winston';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
+import { SentryFilter } from './filters/exception.filter';
 import { CustomErrorInterceptor } from './interceptors/error.interceptor';
 
 async function bootstrap() {
@@ -76,6 +78,32 @@ async function bootstrap() {
       threshold: 0,
     }),
   );
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      beforeSend(event, hint) {
+        /* tslint:disable:no-string-literal only-arrow-functions */
+        const isNonErrorException =
+          event.exception.values[0].value.startsWith(
+            'Non-Error exception captured',
+          ) ||
+          hint.originalException['message'].startsWith(
+            'Non-Error exception captured',
+          );
+        /* tslint:enable:no-string-literal only-arrow-functions */
+
+        if (isNonErrorException) {
+          // We want to ignore those kind of errors
+          return null;
+        }
+        return event;
+      },
+      tracesSampleRate: 1.0,
+    });
+    const { httpAdapter } = app.get(HttpAdapterHost);
+    app.useGlobalFilters(new SentryFilter(httpAdapter));
+  }
+  console.log('Yo Joris ca va');
   await app.listen(3000);
 }
 bootstrap();

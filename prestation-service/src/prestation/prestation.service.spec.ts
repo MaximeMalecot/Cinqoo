@@ -130,12 +130,19 @@ describe('PrestationService', () => {
     });
 
     it('Should only returns #2 prestation', async () => {
+      prestationModel.create({
+        name: '#2',
+        description: 'Lorem ipsum',
+        price: 100,
+        owner: USER_ID_2,
+      });
       const r = await service.searchPrestations({
         query: '#2',
         price_max: undefined,
         price_min: undefined,
         categories: undefined,
       });
+
       console.log(r);
       expect(r).toBeDefined();
       expect(r).toBeInstanceOf(Object);

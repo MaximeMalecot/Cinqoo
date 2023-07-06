@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { ResultService } from 'src/results/result.service';
 import { QuestionCreateDto } from './dto/question-create.dto';
 import { QuestionUpdateDto } from './dto/question-update.dto';
 import { QuizCreateDto } from './dto/quiz-create.dto';
@@ -10,7 +11,11 @@ import { Quiz } from './schemas/quiz.schema';
 
 @Injectable()
 export class QuizService {
-  constructor(@InjectModel(Quiz.name) private quizModel: Model<Quiz>) {}
+  constructor(
+    @InjectModel(Quiz.name) private quizModel: Model<Quiz>,
+    @Inject(forwardRef(() => ResultService))
+    private resultService: ResultService,
+  ) {}
 
   async getAll() {
     const quizzes = await this.quizModel.aggregate([
@@ -26,6 +31,12 @@ export class QuizService {
               else: 'NA',
             },
           },
+          createdAt: 1,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ]);
@@ -152,6 +163,25 @@ export class QuizService {
       quiz.duration = data.duration;
       quiz.description = data.description ?? '';
       return await quiz.save();
+    } catch (error) {
+      throw new RpcException(error.message);
+    }
+  }
+
+  async deleteQuiz(quizId: string) {
+    try {
+      const quiz = await this.quizModel.findOne({
+        _id: new Types.ObjectId(quizId),
+      });
+      if (!quiz)
+        throw new RpcException({
+          message: 'Quiz not found',
+          statusCode: 404,
+        });
+      await this.resultService.deleteEveryQuizResult(quizId);
+      return await this.quizModel.deleteOne({
+        _id: new Types.ObjectId(quizId),
+      });
     } catch (error) {
       throw new RpcException(error.message);
     }

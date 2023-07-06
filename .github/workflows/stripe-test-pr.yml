@@ -1,0 +1,29 @@
+name: stripe service tests
+
+on:
+    workflow_dispatch:
+    pull_request:
+        branches:
+            - master
+        paths:
+            - stripe-service/**
+        types:
+            - opened
+            - synchronize
+
+jobs:
+    test_deliverable:
+        name: Test stripe service before merging
+        runs-on: ubuntu-latest
+        steps:
+            - name: Test Deliverable service
+              uses: actions/checkout@v2
+            - name: Set up Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: "18.x"
+            - name: Install dependencies and test deliverable service
+              working-directory: ./stripe-service
+              run: |
+                  npm ci
+                  npm run test

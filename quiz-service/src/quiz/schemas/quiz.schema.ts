@@ -42,6 +42,9 @@ export class Quiz {
 
   @Prop({ type: [QuestionSchema], required: false, default: [] })
   questions: Array<Question>;
+
+  @Prop({ type: Date, required: false, default: Date.now })
+  createdAt: Date;
 }
 
 export const QuizSchema = SchemaFactory.createForClass(Quiz);

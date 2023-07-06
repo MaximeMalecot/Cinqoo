@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
 import { Role } from './enums/role.enum';
 import { FreelancerProfile } from './schema/freelancer-profile.schema';
+import { ResetToken } from './schema/reset-token';
 import { User } from './schema/user.schema';
 
 @Injectable()
@@ -19,6 +20,8 @@ export class AppService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(FreelancerProfile.name)
     private freelancerProfileModel: Model<FreelancerProfile>,
+    @InjectModel(ResetToken.name)
+    private resetTokenModel: Model<ResetToken>,
     @Inject('STRIPE_SERVICE') private readonly stripeService: ClientProxy,
     @Inject('MAILER_SERVICE') private readonly mailerService: ClientProxy,
     @Inject('PRESTATION_SERVICE')
@@ -446,6 +449,92 @@ export class AppService {
     }
   }
 
+  async createResetPasswordToken(email: string) {
+    try {
+      const user = await this.authGetUser(email);
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+      let token = await this.resetTokenModel.findOne({
+        user: user._id.toString(),
+      });
+      if (token) {
+        token.date = new Date();
+        token.isActive = true;
+        await token.save();
+      } else {
+        token = new this.resetTokenModel({
+          userId: user._id.toString(),
+        });
+        await token.save();
+      }
+      this.sendTokenEmail(user._id.toString(), token._id.toString());
+      console.log(token._id.toString());
+      return { message: 'Reset password token created or updated' };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
+  async resetPassword(token: string, password: string) {
+    try {
+      const resetToken = await this.resetTokenModel.findById(
+        new Types.ObjectId(token),
+      );
+      if (!resetToken) {
+        throw new RpcException({
+          message: `Reset token not found`,
+          statusCode: 404,
+        });
+      }
+      if (!resetToken.isActive) {
+        throw new RpcException({
+          message: `Reset token is not active`,
+          statusCode: 400,
+        });
+      }
+      if (resetToken.date.getTime() + 3600000 < new Date().getTime()) {
+        resetToken.isActive = false;
+        await resetToken.save();
+        throw new RpcException({
+          message: `Reset token expired`,
+          statusCode: 400,
+        });
+      }
+      const user = await this.userModel.findById(
+        new Types.ObjectId(resetToken.userId),
+      );
+      if (!user) {
+        throw new RpcException({
+          message: `User not found`,
+          statusCode: 404,
+        });
+      }
+      user.password = await bcrypt.hash(password, 10);
+      await user.save();
+      resetToken.isActive = false;
+      await resetToken.save();
+      return { message: 'Password reset' };
+    } catch (e: any) {
+      if (e instanceof RpcException) {
+        throw e;
+      }
+      throw new RpcException({
+        message: e.message,
+        statusCode: 400,
+      });
+    }
+  }
+
   //Emails
 
   sendWelcomeFreelancer(id: string) {
@@ -453,6 +542,16 @@ export class AppService {
       targetId: id,
       subject: 'You are now a freelancer!',
       text: 'You are now a freelancer! You can now update your freelancer profile, create services and start working!',
+    });
+  }
+
+  sendTokenEmail(userId: string, token: string) {
+    this.mailerService.emit('MAILER.SEND_REDIRECT_MAIL', {
+      targetId: userId,
+      subject: 'Reset password',
+      text: 'You have requested a password reset. Click the button below to reset your password.',
+      redirectUrl: `${process.env.FRONT_URL}/reset-password/${token}`,
+      label: 'Reset password',
     });
   }
 }

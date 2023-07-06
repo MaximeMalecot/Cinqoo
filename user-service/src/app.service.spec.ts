@@ -10,6 +10,7 @@ import {
   FreelancerProfile,
   FreelancerProfileSchema,
 } from './schema/freelancer-profile.schema';
+import { ResetToken, ResetTokenSchema } from './schema/reset-token';
 import { User, UserSchema } from './schema/user.schema';
 import {
   MockMailerService,
@@ -23,6 +24,7 @@ describe('AppService', () => {
   let mongoConnection: Connection;
   let userModel: Model<User>;
   let freelancerModel: Model<FreelancerProfile>;
+  let resetTokenModel: Model<ResetToken>;
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
@@ -33,6 +35,7 @@ describe('AppService', () => {
       FreelancerProfile.name,
       FreelancerProfileSchema,
     );
+    resetTokenModel = mongoConnection.model(ResetToken.name, ResetTokenSchema);
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
@@ -41,6 +44,10 @@ describe('AppService', () => {
         {
           provide: getModelToken(FreelancerProfile.name),
           useValue: freelancerModel,
+        },
+        {
+          provide: getModelToken(ResetToken.name),
+          useValue: resetTokenModel,
         },
         { provide: 'PRESTATION_SERVICE', useValue: MockPrestationService },
         { provide: 'STRIPE_SERVICE', useValue: MockStripeService },

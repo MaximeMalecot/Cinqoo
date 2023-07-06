@@ -89,11 +89,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         throw new Error('quiz has no questions');
       }
       const timeout = setTimeout(() => {
-        console.log('quiz duration passed');
-        client.emit(SENT_EVENTS.QUIZ_OVER, {
-          results: client.variables.points,
-        });
-        client.disconnect();
+        this.handleResult(client);
       }, 1000 * 60 * quiz.duration);
 
       // shuffle questions
@@ -168,11 +164,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleTabHidden(@ConnectedSocket() client) {
     const { warnings } = client.variables;
     if (warnings >= MAX_WARNINGS) {
-      client.emit(SENT_EVENTS.QUIZ_OVER, {
-        results: client.variables.points,
-      });
       this.handleResult(client);
-      client.disconnect();
     } else {
       client.variables.warnings = warnings + 1;
       client.emit(SENT_EVENTS.WARNING, {

@@ -1,21 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { SSE_EVENTS } from "../../constants/sse-events";
 import { ORDER_STATUS } from "../../constants/status";
 import { useAuthContext } from "../../contexts/auth.context";
 import { MessageI } from "../../interfaces/message";
 import { Order } from "../../interfaces/order";
 import eventSourceService from "../../services/event-source.service";
 import messageService from "../../services/message.service";
-import { displayMsg } from "../../utils/toast";
+import { displayMsg, notify } from "../../utils/toast";
 import ConversationLayout from "./conversation-layout";
 
 interface OrderConversationProps {
     order: Order;
     isVisible?: boolean;
+    reloadOrder: () => void;
 }
 
 export default function OrderConversation({
     order,
     isVisible = true,
+    reloadOrder,
 }: OrderConversationProps) {
     const [messages, setMessages] = useState<MessageI[]>([]);
     const { data } = useAuthContext();
@@ -56,6 +59,20 @@ export default function OrderConversation({
                 const message = JSON.parse(data.data);
                 if (message.orderId === order._id) {
                     setMessages((prev) => [...prev, message]);
+                }
+            } catch (e: any) {
+                console.log(e.message);
+            }
+        });
+
+        sse.addEventListener(SSE_EVENTS.ORDER_UPDATED, (data: any) => {
+            try {
+                const message = JSON.parse(data.data);
+                console.log(message.orderId, order._id);
+                if (message.orderId === order._id) {
+                    notify("Order updated");
+                    console.log("reload");
+                    reloadOrder && reloadOrder();
                 }
             } catch (e: any) {
                 console.log(e.message);

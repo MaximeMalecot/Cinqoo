@@ -12,6 +12,7 @@ import {
 import { FullQuiz } from "../../../interfaces/quiz";
 import quizService from "../../../services/quiz.service";
 import { displayMsg, notify } from "../../../utils/toast";
+import PromptDeleteModal from "./prompt-delete-modal";
 
 export default function AdminEditQuiz() {
     const { id } = useParams();
@@ -56,6 +57,7 @@ export default function AdminEditQuiz() {
                         >
                             <QuestionsPart />
                         </section>
+                        <DangerPart quizId={quiz._id} />
                     </AdminQuizContextProvider>
                 )}
             </div>
@@ -69,7 +71,10 @@ function EditQuizDataForm() {
 
     const submitForm = async (data: any) => {
         try {
-            await quizService.update(quiz._id, data);
+            await quizService.update(quiz._id, {
+                ...data,
+                duration: parseInt(data.duration),
+            });
             reload();
         } catch (e: any) {
             console.log(e.message);
@@ -98,6 +103,8 @@ function EditQuizDataForm() {
                 placeholder="Duration (in minutes)"
                 type="number"
                 step="0.1"
+                min={1}
+                max={60}
                 register={registerField("duration", {
                     value: quiz.duration,
                 })}
@@ -218,5 +225,41 @@ function QuestionsPart() {
                 </>
             )}
         </>
+    );
+}
+
+interface DangerPartProps {
+    quizId: string;
+}
+
+function DangerPart({ quizId }: DangerPartProps) {
+    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
+
+    const deleteQuiz = async () => {
+        try {
+            if (!quizId) throw new Error("Id is not defined");
+            await quizService.deleteQuiz(quizId);
+            displayMsg("Quiz deleted");
+            navigate("/admin/quiz");
+        } catch (e: any) {
+            displayMsg(e.message, "error");
+        }
+    };
+
+    if (!quizId) return null;
+
+    return (
+        <div className="flex flex-col gap-5">
+            <h2 className="text-xl">Danger Zone 🚨</h2>
+            <Button visual="danger" onClick={() => setShowModal(true)}>
+                Delete this quiz
+            </Button>
+            <PromptDeleteModal
+                isOpen={showModal}
+                setIsOpen={setShowModal}
+                confirm={deleteQuiz}
+            />
+        </div>
     );
 }

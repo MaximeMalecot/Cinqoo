@@ -25,6 +25,8 @@ services:
         volumes:
             - ./gateway-service:/home/node
             - /home/node/node_modules
+        environment:
+            - NODE_ENV=production
         env_file: .env
         ports:
             - "3000:3000"
@@ -216,9 +218,9 @@ services:
             context: ./quiz-service
             target: dev
         command: npm run start:dev
-        volumes:
-            - ./quiz-service:/home/node
-            - /home/node/node_modules
+        # volumes:
+        #     - ./quiz-service:/home/node
+        #     - /home/node/node_modules
         environment:
             - DATABASE_URL=mongodb://root:password@mongo-db:27017/quiz?authSource=admin&directConnection=true
         env_file: .env
@@ -232,6 +234,7 @@ services:
         build:
             args:
                 - VITE_API_ENDPOINT=${VITE_API_ENDPOINT}
+                - VITE_WEBSOCKET_ENDPOINT=${VITE_WEBSOCKET_ENDPOINT}
                 - VITE_SSE_ENDPOINT=${VITE_SSE_ENDPOINT}
             context: ./front
         env_file: .env
