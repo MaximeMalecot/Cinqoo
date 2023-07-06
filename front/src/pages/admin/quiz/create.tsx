@@ -11,7 +11,6 @@ export default function AdminCreateQuiz() {
     const { register: registerField, handleSubmit } = useForm();
 
     const submitForm = async (data: any) => {
-        console.log(data);
         try {
             const res = await quizService.create(
                 data.name,
@@ -37,6 +36,8 @@ export default function AdminCreateQuiz() {
                     placeholder="Duration (in minutes)"
                     type="number"
                     step="0.1"
+                    min={1}
+                    max={60}
                     register={registerField("duration")}
                 />
                 <TextArea

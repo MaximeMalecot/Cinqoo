@@ -71,7 +71,10 @@ function EditQuizDataForm() {
 
     const submitForm = async (data: any) => {
         try {
-            await quizService.update(quiz._id, data);
+            await quizService.update(quiz._id, {
+                ...data,
+                duration: parseInt(data.duration),
+            });
             reload();
         } catch (e: any) {
             console.log(e.message);
@@ -100,6 +103,8 @@ function EditQuizDataForm() {
                 placeholder="Duration (in minutes)"
                 type="number"
                 step="0.1"
+                min={1}
+                max={60}
                 register={registerField("duration", {
                     value: quiz.duration,
                 })}
