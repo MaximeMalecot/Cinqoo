@@ -1,4 +1,4 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as Sentry from '@sentry/node';
@@ -103,7 +103,7 @@ async function bootstrap() {
     const { httpAdapter } = app.get(HttpAdapterHost);
     app.useGlobalFilters(new SentryFilter(httpAdapter));
   }
-  console.log('Yo Joris ca va');
   await app.listen(3000);
+  Logger.warn('Yo Joris ca va ???');
 }
 bootstrap();
