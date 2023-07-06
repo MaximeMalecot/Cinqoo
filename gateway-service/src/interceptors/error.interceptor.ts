@@ -24,6 +24,10 @@ export class CustomErrorInterceptor implements NestInterceptor {
           },
           context.getClass().name,
         );
+        const res = context.switchToHttp().getResponse();
+        res.metadata = {
+          customContext: context.getClass().name,
+        };
 
         if (err instanceof HttpException) {
           return throwError(() => err);

@@ -1,6 +1,7 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as Sentry from '@sentry/node';
 import * as compression from 'compression';
 import helmet from 'helmet';
 import {
@@ -9,6 +10,7 @@ import {
 } from 'nest-winston';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
+import { SentryFilter } from './filters/exception.filter';
 import { CustomErrorInterceptor } from './interceptors/error.interceptor';
 
 async function bootstrap() {
@@ -76,6 +78,14 @@ async function bootstrap() {
       threshold: 0,
     }),
   );
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      tracesSampleRate: 1.0,
+    });
+    const { httpAdapter } = app.get(HttpAdapterHost);
+    app.useGlobalFilters(new SentryFilter(httpAdapter));
+  }
   await app.listen(3000);
 }
 bootstrap();

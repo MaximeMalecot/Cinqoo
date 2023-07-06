@@ -22,9 +22,9 @@ services:
             context: ./gateway-service
             target: dev
         command: npm run start:dev
-        # volumes:
-        #     - ./gateway-service:/home/node
-        #     - /home/node/node_modules
+        volumes:
+            - ./gateway-service:/home/node
+            - /home/node/node_modules
         environment:
             - NODE_ENV=production
         env_file: .env
