@@ -108,10 +108,23 @@ const networkFirst = async (request: Request) => {
         if (responseFromCache) {
             return responseFromCache;
         }
-        throw error;
+        return new Response("", {
+            status: 503,
+            statusText: "Service Unavailable",
+        });
     }
 };
 
 self.addEventListener("fetch", (event) => {
     event.respondWith(networkFirst(event.request));
+});
+
+self.addEventListener("fetch", (event) => {
+    // Vérifie si le navigateur est hors ligne
+    if (!navigator.onLine) {
+        // Répond avec une réponse vide ou une réponse d'erreur
+        event.respondWith(
+            new Response("", { status: 503, statusText: "Service Unavailable" })
+        );
+    }
 });
