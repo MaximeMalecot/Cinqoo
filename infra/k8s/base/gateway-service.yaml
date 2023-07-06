@@ -20,6 +20,11 @@ spec:
                   env:
                       - name: PORT
                         value: "3000"
+                      - name: SENTRY_DSN
+                        valueFrom:
+                            secretKeyRef:
+                                name: secrets
+                                key: SENTRY_DSN
                   ports:
                       - containerPort: 3000
                   resources:
