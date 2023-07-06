@@ -103,6 +103,7 @@ async function bootstrap() {
     const { httpAdapter } = app.get(HttpAdapterHost);
     app.useGlobalFilters(new SentryFilter(httpAdapter));
   }
+  console.log('Yo Joris ca va');
   await app.listen(3000);
 }
 bootstrap();
