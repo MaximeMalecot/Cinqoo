@@ -56,6 +56,7 @@ jobs:
                   sed -i 's/<smtpuser>/${{ secrets.SMTP_USER }}/g' .env.secrets
                   sed -i 's/<smtppwd>/${{ secrets.SMTP_PWD }}/g' .env.secrets
                   sed -i 's/<smtpfrom>/${{ secrets.SMTP_FROM }}/g' .env.secrets
+                  sed -i 's/<sentrydsn>/${{ secrets.SENTRY_DSN }}/g' .env.secrets
 
             - name: auth-version
               id: auth-version
