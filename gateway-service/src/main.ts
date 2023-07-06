@@ -81,6 +81,23 @@ async function bootstrap() {
   if (process.env.SENTRY_DSN) {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
+      beforeSend(event, hint) {
+        /* tslint:disable:no-string-literal only-arrow-functions */
+        const isNonErrorException =
+          event.exception.values[0].value.startsWith(
+            'Non-Error exception captured',
+          ) ||
+          hint.originalException['message'].startsWith(
+            'Non-Error exception captured',
+          );
+        /* tslint:enable:no-string-literal only-arrow-functions */
+
+        if (isNonErrorException) {
+          // We want to ignore those kind of errors
+          return null;
+        }
+        return event;
+      },
       tracesSampleRate: 1.0,
     });
     const { httpAdapter } = app.get(HttpAdapterHost);
