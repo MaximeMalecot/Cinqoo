@@ -80,6 +80,9 @@ describe('DeliverableService', () => {
           name: 'Deliverable 1',
           link: 'https://www.google.com',
         },
+      ]);
+
+      await deliverableModel.create([
         {
           orderId: orderId,
           name: 'Deliverable 2',
