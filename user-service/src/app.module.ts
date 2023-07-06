@@ -9,15 +9,17 @@ import {
   FreelancerProfile,
   FreelancerProfileSchema,
 } from './schema/freelancer-profile.schema';
+import { ResetToken, ResetTokenSchema } from './schema/reset-token';
 import { User, UserSchema } from './schema/user.schema';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URL),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
       { name: FreelancerProfile.name, schema: FreelancerProfileSchema },
+      { name: ResetToken.name, schema: ResetTokenSchema },
     ]),
     ClientsModule.register([
       {
