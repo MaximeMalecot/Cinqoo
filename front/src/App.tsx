@@ -59,7 +59,7 @@ function App() {
                     />
                     <Route
                         path="/reset-password/:token"
-                        element={<ForgotPassword />}
+                        element={<ResetPassword />}
                     />
                     <Route path="/prestations" element={<Prestations />} />
                     <Route path="/prestations/:id" element={<Prestation />} />
