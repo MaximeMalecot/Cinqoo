@@ -103,4 +103,20 @@ export class AppController {
   async demoteAdmin(userId: string) {
     return this.appService.demoteAdmin(userId);
   }
+
+  @EventPattern('USER.CREATE_RESET_PASSWORD_TOKEN')
+  async createResetPasswordToken(@Payload() data: { email: string }) {
+    return this.appService.createResetPasswordToken(data.email);
+  }
+
+  @EventPattern('USER.RESET_PASSWORD')
+  async resetPassword(
+    @Payload()
+    data: {
+      token: string;
+      password: string;
+    },
+  ) {
+    return this.appService.resetPassword(data.token, data.password);
+  }
 }

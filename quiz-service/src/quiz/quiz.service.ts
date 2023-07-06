@@ -31,6 +31,12 @@ export class QuizService {
               else: 'NA',
             },
           },
+          createdAt: 1,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
       },
     ]);

@@ -227,6 +227,44 @@ class UserService {
         }
         return true;
     }
+
+    async forgotPassword(email: string) {
+        const res = await fetch(`${API_ENDPOINT}user/reset_password_request`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+            }),
+        });
+        const status = res.status;
+        if (status !== 201) {
+            const jsonRes = await res.json();
+            throw new Error(JSON.stringify(jsonRes.message));
+        }
+        return true;
+    }
+
+    async resetPassword(password: string, token: string) {
+        console.log(token);
+        const res = await fetch(`${API_ENDPOINT}user/reset_password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                password,
+                token,
+            }),
+        });
+        const status = res.status;
+        if (status !== 201) {
+            const jsonRes = await res.json();
+            throw new Error(JSON.stringify(jsonRes.message));
+        }
+        return true;
+    }
 }
 
 export default new UserService();

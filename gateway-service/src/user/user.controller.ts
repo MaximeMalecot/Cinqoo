@@ -17,6 +17,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { ROLE } from 'src/auth/enums/role.enum';
 import { CheckObjectIdPipe } from 'src/pipes/checkobjectid.pipe';
+import { ResetPasswordDto, ResetPasswordRequestDto } from './dto/reset-pwd.dto';
 import { UpdateFreelancerDto } from './dto/update-freelancer.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePwdUserDto } from './dto/updatepwd-user.dto';
@@ -33,6 +34,20 @@ export class UserController {
   @Roles(ROLE.ADMIN)
   public getUsers() {
     return this.userService.send('getUsers', {});
+  }
+
+  @Post('reset_password_request')
+  @Public()
+  public resetPasswordRequest(@Body() body: ResetPasswordRequestDto) {
+    return this.userService.send('USER.CREATE_RESET_PASSWORD_TOKEN', {
+      email: body.email,
+    });
+  }
+
+  @Post('reset_password')
+  @Public()
+  public resetPassword(@Body() body: ResetPasswordDto) {
+    return this.userService.send('USER.RESET_PASSWORD', body);
   }
 
   @Get('self')
