@@ -24,6 +24,15 @@ secretGenerator:
 patches:
     - patch: |-
           - op: add
+            path: /spec/template/spec/containers/0/env/-
+            value:
+              name: TRACK_ERRORS
+              value: true
+      target:
+          kind: Deployment
+          name: gateway-service
+    - patch: |-
+          - op: add
             path: /metadata/annotations
             value:
               cloud.google.com/neg: '{"ingress": true}'
