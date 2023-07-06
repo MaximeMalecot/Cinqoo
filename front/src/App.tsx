@@ -9,6 +9,8 @@ import NotFound from "./pages/not-found";
 
 const Login = lazy(() => import("./pages/login"));
 const Register = lazy(() => import("./pages/register"));
+const ForgotPassword = lazy(() => import("./pages/forgot-pwd"));
+const ResetPassword = lazy(() => import("./pages/reset-pwd"));
 const BecomeFreelancer = lazy(() => import("./pages/become-freelancer"));
 const AccountSettings = lazy(() => import("./pages/account/settings"));
 const AccountPrestations = lazy(() => import("./pages/account/prestations"));
@@ -51,6 +53,14 @@ function App() {
                     />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route
+                        path="/password-forgotten"
+                        element={<ForgotPassword />}
+                    />
+                    <Route
+                        path="/reset-password/:token"
+                        element={<ForgotPassword />}
+                    />
                     <Route path="/prestations" element={<Prestations />} />
                     <Route path="/prestations/:id" element={<Prestation />} />
                     <Route path="/freelancer/:id" element={<Freelancer />} />
