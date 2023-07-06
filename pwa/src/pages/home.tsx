@@ -57,7 +57,7 @@ export default function Home() {
                         {categories.length > 0 && (
                             <div>
                                 <h3>Examples:</h3>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 max-w-screen overflow-x-scroll hide-scrollbar">
                                     {categories.slice(0, 5).map((c, index) => (
                                         <Link
                                             to={`/prestations?category=${c._id}`}
