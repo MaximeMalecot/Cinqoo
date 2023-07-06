@@ -74,7 +74,7 @@ export class AppService {
     console.log('add user', userId);
     if (!this.users[userId]) this.users[userId] = {};
     this.users[userId][sseId] = res;
-    let orders = await this.getOrders(userId, roles);
+    const orders = await this.getOrders(userId, roles);
     if (orders.length > 0) {
       orders.map((order) => {
         if (!this.orders[order._id]) this.orders[order._id] = new Set();
@@ -101,7 +101,7 @@ export class AppService {
   ) {
     console.log('deleting user', userId);
     delete this.users[userId][sseId];
-    let orders = await this.getOrders(userId, roles);
+    const orders = await this.getOrders(userId, roles);
     if (
       orders.length > 0 &&
       (!this.users[userId] || Object.values(this.users[userId]).length === 0)

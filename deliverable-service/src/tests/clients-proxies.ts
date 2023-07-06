@@ -65,5 +65,15 @@ class MailerService extends ClientProxyMock {
   }
 }
 
+class HybridService extends ClientProxyMock {
+  public send(pattern: string, data: any): any {
+    switch (pattern) {
+      default:
+        return super.send(pattern, data);
+    }
+  }
+}
+
 export const MockOrderService = new OrderService();
 export const MockMailerService = new MailerService();
+export const MockHybridService = new HybridService();
