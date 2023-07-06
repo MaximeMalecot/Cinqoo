@@ -1,12 +1,13 @@
-import { Suspense, lazy } from "react";
+import LogRocket from "logrocket";
+import { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { LOGROCKET_APP_ID } from "./constants/logs";
 import { useAuthContext } from "./contexts/auth.context";
 import AppLayout from "./layout/app-layout";
 import HomeLayout from "./layout/home-layout";
 import AdminRouter from "./pages/admin";
 import Home from "./pages/home";
 import NotFound from "./pages/not-found";
-
 const Login = lazy(() => import("./pages/login"));
 const Register = lazy(() => import("./pages/register"));
 const ForgotPassword = lazy(() => import("./pages/forgot-pwd"));
@@ -39,7 +40,18 @@ const PreQuiz = lazy(
 const Quiz = lazy(() => import("./pages/account/skills-assessments/quiz"));
 
 function App() {
-    const { isConnected, isFreelancer, isAdmin } = useAuthContext();
+    const { isConnected, isFreelancer, isAdmin, data } = useAuthContext();
+
+    useEffect(() => {
+        LogRocket.init(LOGROCKET_APP_ID);
+        if (isConnected && data) {
+            LogRocket.identify(data._id, {
+                name: data.username,
+                email: data.email,
+            });
+        }
+    }, [data]);
+
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
