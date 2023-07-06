@@ -25,6 +25,11 @@ spec:
                             secretKeyRef:
                                 name: secrets
                                 key: SENTRY_DSN
+                      - name: TRACK_ERRORS
+                        valueFrom:
+                            configMapKeyRef:
+                                name: variables
+                                key: TRACK_ERRORS
                   ports:
                       - containerPort: 3000
                   resources:
