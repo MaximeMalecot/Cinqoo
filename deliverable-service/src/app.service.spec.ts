@@ -4,7 +4,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, Model, connect } from 'mongoose';
 import { AppService } from './app.service';
 import { Deliverable, DeliverableSchema } from './schemas/deliverable.schema';
-import { MockMailerService, MockOrderService } from './tests/clients-proxies';
+import {
+  MockHybridService,
+  MockMailerService,
+  MockOrderService,
+} from './tests/clients-proxies';
 const USER_ID_1 = '507f1f77bcf86cd799439011';
 
 describe('DeliverableService', () => {
@@ -31,6 +35,7 @@ describe('DeliverableService', () => {
         },
         { provide: 'ORDER_SERVICE', useValue: MockOrderService },
         { provide: 'MAILER_SERVICE', useValue: MockMailerService },
+        { provide: 'HYBRID_SERVICE', useValue: MockHybridService },
       ],
     }).compile();
 
