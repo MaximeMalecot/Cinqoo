@@ -75,7 +75,12 @@ export class DeliverableController {
     file: Express.Multer.File,
     @Body() body: PublishDto,
   ) {
-    const fileUrl = `${req.protocol}://${req.get('Host')}/${file.path}`;
+    let fileUrl = '';
+    if (process.env.NODE_ENV === 'production') {
+      fileUrl = `https://${req.get('Host')}/${file.path}`;
+    } else {
+      fileUrl = `http://${req.get('Host')}/${file.path}`;
+    }
     return this.deliverableService.send('DELIVERABLE.PUBLISH_FOR_ORDER', {
       orderId,
       ...body,

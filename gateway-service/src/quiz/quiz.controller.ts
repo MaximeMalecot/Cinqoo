@@ -39,6 +39,12 @@ export class QuizController {
     return this.quizService.send('QUIZ.CREATE', body);
   }
 
+  @Delete(':id')
+  @Roles(ROLE.ADMIN)
+  public deleteQuiz(@Param('id', CheckObjectIdPipe) id: string) {
+    return this.quizService.send('QUIZ.DELETE', id);
+  }
+
   @Get('questions/:id')
   @Roles(ROLE.ADMIN)
   public getQuestionFull(@Param('id', CheckObjectIdPipe) id: string) {

@@ -1,5 +1,6 @@
-import { Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useAnalytics } from "ratflow-sdk-react-rollup";
+import { Suspense, lazy, useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { useAuthContext } from "./contexts/auth.context";
 import AppLayout from "./layout/app-layout";
@@ -8,6 +9,8 @@ import Home from "./pages/home";
 import NotFound from "./pages/not-found";
 
 function App() {
+    const { pathname } = useLocation();
+    const { setCurrentPage } = useAnalytics();
     const { isConnected } = useAuthContext();
     const Login = lazy(() => import("./pages/login"));
     const Register = lazy(() => import("./pages/register"));
@@ -18,6 +21,11 @@ function App() {
     const Freelancer = lazy(() => import("./pages/freelancer"));
     const Favorites = lazy(() => import("./pages/favorites"));
     const TermsOfService = lazy(() => import("./pages/terms-of-service"));
+
+    useEffect(() => {
+        setCurrentPage(pathname);
+    }, [pathname]);
+
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
