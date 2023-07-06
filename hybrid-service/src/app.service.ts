@@ -86,10 +86,10 @@ export class AppService {
               userId,
               users: Array.from(this.orders[order._id]),
               orderId: order._id,
-            }
+            },
           },
           order._id,
-        )
+        );
       });
     }
   }
@@ -107,7 +107,9 @@ export class AppService {
       (!this.users[userId] || Object.values(this.users[userId]).length === 0)
     ) {
       orders.map((order) => {
-        this.orders[order._id].delete(userId);
+        if (this.orders[order._id] && this.orders[order._id].has(userId)) {
+          this.orders[order._id].delete(userId);
+        }
       });
     }
   }
@@ -128,7 +130,5 @@ export class AppService {
     return orders;
   }
 
-  async getOrdersConnections (userId: string) {
-    
-  }
+  async getOrdersConnections(userId: string) {}
 }
