@@ -6,6 +6,7 @@ import { Connection, Model, connect } from 'mongoose';
 import { AppService } from './app.service';
 import { Order, OrderSchema } from './schemas/order.schema';
 import {
+  MockHybridService,
   MockMailerService,
   MockPaymentService,
   MockPrestationService,
@@ -31,6 +32,7 @@ describe('OrderService', () => {
         { provide: 'PRESTATION_SERVICE', useValue: MockPrestationService },
         { provide: 'PAYMENT_SERVICE', useValue: MockPaymentService },
         { provide: 'MAILER_SERVICE', useValue: MockMailerService },
+        { provide: 'HYBRID_SERVICE', useValue: MockHybridService },
       ],
     }).compile();
 
