@@ -549,7 +549,7 @@ export class AppService {
     console.log('sending message');
 
     this.hybridService.emit('HYBRID.BROADCAST_ORDER', {
-      message: { type: MessageType.ORDER_UPDATED, data: {} },
+      message: { type: MessageType.ORDER_UPDATED, data: { orderId } },
       orderId,
     } as BroadcastOrderDto);
   }

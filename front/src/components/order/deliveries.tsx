@@ -44,7 +44,7 @@ export default function Deliveries({
 
     useEffect(() => {
         getDeliverables();
-    }, []);
+    }, [order]);
 
     return (
         <section className="border border-1 border-slate-300 rounded-md p-5 overflow-hidden w-full shadow-xl">
