@@ -1,4 +1,4 @@
-# challenge-s2-g19
+# Cinqoo
 
 This project is a Fiverr like marketplace using a microservices architecture with CI/CD and IaC deployment.
 

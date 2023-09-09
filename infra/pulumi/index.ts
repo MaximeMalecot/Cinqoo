@@ -5,7 +5,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const repo = "MaximeMalecot/challenge-s2-g19";
+const repo = "MaximeMalecot/Cinqoo";
 const gcpLocation = "europe-west9";
 const atlasGcpLocation = "EUROPE_WEST_9";
 const DB_USER = process.env.DB_USER ?? "cinqoo-admin";
